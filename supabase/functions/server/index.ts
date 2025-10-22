@@ -8,26 +8,36 @@ import { decode } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
 
 const app = new Hono();
 
+// Define allowed origins
+const allowedOrigins = [
+  'https://aristoteportfolio.vercel.app',
+  'https://aristoteportfolio-17fq61cxh-aristote-codes-projects.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:5173',
+];
+
 // Middleware - Allow multiple origins for development and production
 app.use('*', cors({ 
-  origin: [
-    'https://aristoteportfolio-fq729pf8n-aristote-codes-projects.vercel.app',
-    'https://aristoteportfolio.vercel.app',
-    'http://localhost:3000',
-    'http://localhost:5173',
-    /https:\/\/.*\.vercel\.app$/,  // Allow any Vercel preview deployments
-  ],
-  credentials: true
+  origin: (origin) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return true;
+    
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) return origin;
+    
+    // Allow any Vercel preview deployments
+    if (origin.match(/https:\/\/.*\.vercel\.app$/)) return origin;
+    
+    // Reject all others
+    return false;
+  },
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+  exposeHeaders: ['Content-Length', 'X-Request-Id'],
+  maxAge: 600, // 10 minutes
 }));
 app.use('*', logger(console.log));
-
-app.options('*', (c) => {
-  return c.text('', 204, {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  });
-});
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
