@@ -481,21 +481,39 @@ app.post('/server/upload-image', async (c) => {
       return c.json({ error: 'No file provided' }, 400);
     }
 
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      return c.json({ error: 'Invalid file type. Only images are allowed.' }, 400);
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5242880) {
+      return c.json({ error: 'File too large. Maximum size is 5MB.' }, 400);
+    }
+
     // Convert file to ArrayBuffer then to Uint8Array
     const arrayBuffer = await file.arrayBuffer();
     const fileData = new Uint8Array(arrayBuffer);
 
+    // Generate unique filename
+    const timestamp = Date.now();
+    const randomStr = Math.random().toString(36).substring(7);
+    const fileExt = file.type.split('/')[1] || 'jpg';
+    const uniqueFilename = filename || `${timestamp}_${randomStr}.${fileExt}`;
+
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
       .from('project-images')
-      .upload(filename || `upload_${Date.now()}.jpg`, fileData, {
+      .upload(uniqueFilename, fileData, {
         contentType: file.type,
-        upsert: false,
+        upsert: true, // Allow overwriting
+        cacheControl: '3600', // Cache for 1 hour
       });
 
     if (error) {
       console.error('Storage upload error:', error);
-      return c.json({ error: error.message }, 500);
+      return c.json({ error: error.message || 'Failed to upload to storage' }, 500);
     }
 
     // Get public URL
@@ -505,11 +523,12 @@ app.post('/server/upload-image', async (c) => {
 
     return c.json({ 
       url: urlData.publicUrl,
-      path: data.path 
+      path: data.path,
+      success: true
     });
   } catch (error) {
     console.error('Upload error:', error);
-    return c.json({ error: 'Failed to upload image' }, 500);
+    return c.json({ error: 'Failed to upload image: ' + (error instanceof Error ? error.message : 'Unknown error') }, 500);
   }
 });
 

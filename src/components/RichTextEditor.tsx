@@ -63,13 +63,50 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   };
 
   const execCommand = (command: string, value?: string) => {
+    // Save selection before command
+    const selection = window.getSelection();
+    const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+    
     document.execCommand(command, false, value);
-    editorRef.current?.focus();
+    
+    // Restore selection and focus
+    if (range && editorRef.current) {
+      editorRef.current.focus();
+      const newSelection = window.getSelection();
+      if (newSelection) {
+        try {
+          newSelection.removeAllRanges();
+          newSelection.addRange(range);
+        } catch (e) {
+          // Selection restoration failed, just focus
+          console.warn('Selection restore failed:', e);
+        }
+      }
+    }
   };
 
   const formatBlock = (tag: string) => {
+    // Save selection before command
+    const selection = window.getSelection();
+    const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+    
     document.execCommand('formatBlock', false, tag);
-    editorRef.current?.focus();
+    
+    // Restore focus
+    if (editorRef.current) {
+      editorRef.current.focus();
+      if (range) {
+        const newSelection = window.getSelection();
+        if (newSelection) {
+          try {
+            newSelection.removeAllRanges();
+            newSelection.addRange(range);
+          } catch (e) {
+            console.warn('Selection restore failed:', e);
+          }
+        }
+      }
+    }
   };
 
   const insertLink = () => {
@@ -113,6 +150,9 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   }) => (
     <button
       type="button"
+      onMouseDown={(e) => {
+        e.preventDefault(); // Prevent losing selection
+      }}
       onClick={(e) => {
         e.preventDefault();
         onClick();
