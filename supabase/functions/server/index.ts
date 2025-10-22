@@ -45,13 +45,17 @@ const supabase = createClient(
 );
 
 // Helper function to verify admin authentication
-async function verifyAdmin(authHeader: string | null) {
+async function verifyAdmin(authHeader: string | null, adminKeyHeader: string | null) {
+  // Check for admin key in X-Admin-Key header first
+  const adminKey = Deno.env.get('ADMIN_KEY') || 'admin_key_aristote_2025';
+  if (adminKeyHeader === adminKey) {
+    return true;
+  }
+  
+  // Fallback: check Authorization header
   if (!authHeader) return false;
   
   const token = authHeader.split(' ')[1];
-  
-  // Check for admin key (for simple auth without Supabase users)
-  const adminKey = Deno.env.get('ADMIN_KEY') || 'admin_key_aristote_2025';
   if (token === adminKey) {
     return true;
   }
@@ -73,9 +77,8 @@ app.get('/server/projects', async (c) => {
   try {
     const projects = await kv.getByPrefix('project_');
     
-    // Filter out null values and sort by order or creation date
+    // getByPrefix already returns values, just filter null and sort
     const sortedProjects = projects
-      .map(p => p.value)
       .filter(p => p !== null && p !== undefined) // Filter out null/undefined values
       .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
     
@@ -88,7 +91,7 @@ app.get('/server/projects', async (c) => {
 
 // POST /server/admin/projects - Admin: Create a new project
 app.post('/server/admin/projects', async (c) => {
-  const isAdmin = await verifyAdmin(c.req.header('Authorization'));
+  const isAdmin = await verifyAdmin(c.req.header('Authorization'), c.req.header('X-Admin-Key'));
   if (!isAdmin) {
     return c.json({ error: 'Unauthorized' }, 401);
   }
@@ -127,7 +130,7 @@ app.post('/server/admin/projects', async (c) => {
 
 // PUT /server/admin/projects/:id - Admin: Update a project
 app.put('/server/admin/projects/:id', async (c) => {
-  const isAdmin = await verifyAdmin(c.req.header('Authorization'));
+  const isAdmin = await verifyAdmin(c.req.header('Authorization'), c.req.header('X-Admin-Key'));
   if (!isAdmin) {
     return c.json({ error: 'Unauthorized' }, 401);
   }
@@ -159,7 +162,7 @@ app.put('/server/admin/projects/:id', async (c) => {
 
 // DELETE /server/admin/projects/:id - Admin: Delete a project
 app.delete('/server/admin/projects/:id', async (c) => {
-  const isAdmin = await verifyAdmin(c.req.header('Authorization'));
+  const isAdmin = await verifyAdmin(c.req.header('Authorization'), c.req.header('X-Admin-Key'));
   if (!isAdmin) {
     return c.json({ error: 'Unauthorized' }, 401);
   }

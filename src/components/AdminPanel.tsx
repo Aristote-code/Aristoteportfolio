@@ -137,16 +137,23 @@ export function AdminPanel() {
 
   const checkServerAndFetchProjects = async () => {
     try {
-      // Check if server is available
+      // Check if server is available - use anon key for authorization
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpYWljaHBwZWhkemZoeXZuZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NDYzNDAsImV4cCI6MjA3NjMyMjM0MH0.YVROD96sRl1Hs_ng8D01vwCiod4FTx4MRnCvb1-HIAA';
       const healthCheck = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/health`,
-        { method: 'GET' }
+        { 
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${ANON_KEY}`
+          }
+        }
       );
       
       if (healthCheck.ok) {
         setIsServerAvailable(true);
         await fetchProjects();
       } else {
+        console.error('Health check failed:', healthCheck.status, await healthCheck.text());
         setIsServerAvailable(false);
         // Load from localStorage as fallback
         const localProjects = localStorage.getItem('admin_projects');
@@ -193,8 +200,14 @@ export function AdminPanel() {
 
   const fetchProjects = async () => {
     try {
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpYWljaHBwZWhkemZoeXZuZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NDYzNDAsImV4cCI6MjA3NjMyMjM0MH0.YVROD96sRl1Hs_ng8D01vwCiod4FTx4MRnCvb1-HIAA';
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/projects`
+        `https://${projectId}.supabase.co/functions/v1/server/projects`,
+        {
+          headers: {
+            'Authorization': `Bearer ${ANON_KEY}`
+          }
+        }
       );
 
       const data = await response.json();
@@ -236,11 +249,13 @@ export function AdminPanel() {
         console.log('Using admin key:', ADMIN_KEY);
         console.log('Project data:', selectedProject);
 
+        const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpYWljaHBwZWhkemZoeXZuZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NDYzNDAsImV4cCI6MjA3NjMyMjM0MH0.YVROD96sRl1Hs_ng8D01vwCiod4FTx4MRnCvb1-HIAA';
         const response = await fetch(url, {
           method: selectedProject.id ? 'PUT' : 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${ADMIN_KEY}`,
+            'Authorization': `Bearer ${ANON_KEY}`,
+            'X-Admin-Key': ADMIN_KEY,
           },
           body: JSON.stringify(selectedProject),
         });
@@ -307,12 +322,14 @@ export function AdminPanel() {
 
     setLoading(true);
     try {
+      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpYWljaHBwZWhkemZoeXZuZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NDYzNDAsImV4cCI6MjA3NjMyMjM0MH0.YVROD96sRl1Hs_ng8D01vwCiod4FTx4MRnCvb1-HIAA';
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/admin/projects/${projectToDelete.id}`,
         {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${ADMIN_KEY}`,
+            'Authorization': `Bearer ${ANON_KEY}`,
+            'X-Admin-Key': ADMIN_KEY,
           },
         }
       );
