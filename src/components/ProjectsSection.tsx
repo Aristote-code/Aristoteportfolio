@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, ArrowLeft } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 
@@ -78,8 +78,8 @@ export function ProjectsSection() {
             </div>
           )}
 
-          {/* Projects List */}
-          <div className="space-y-8">
+          {/* Projects List - Horizontal Card Layout */}
+          <div className="space-y-6 md:space-y-8">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
@@ -88,43 +88,40 @@ export function ProjectsSection() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => project.link ? window.open(project.link, '_blank') : setSelectedProject(project)}
-                className="border-[3px] border-[#474747] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-all p-6"
-                style={{ backgroundColor: project.color || '#fef08a' }}
+                className="group bg-white border-[3px] border-[#474747] rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
-                {/* Project Image */}
-                {project.image && (
-                  <div className="relative w-full h-[300px] mb-6 rounded-xl overflow-hidden">
-                    <ImageWithFallback
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-
-                {/* Project Info */}
-                <div>
-                  <h3 className="text-[32px] font-['Solway'] text-[#474747] mb-4 leading-[38.4px]">{project.title}</h3>
-                  
-                  {project.description && (
-                    <p className="font-['Gaegu'] text-[20px] text-[#474747] leading-[24px] mb-4">
-                      {project.description}
-                    </p>
-                  )}
-
-                  {/* Tags */}
-                  {project.tags && project.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map((tag, i) => (
-                        <span
-                          key={i}
-                          className="px-3 py-1 bg-white/50 border-2 border-[#474747] rounded-full text-[14px] font-['Gaegu'] text-[#474747]"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                <div className="flex flex-col md:flex-row md:items-center">
+                  {/* Project Image */}
+                  {project.image && (
+                    <div className="relative w-full md:w-[45%] lg:w-[40%] h-[240px] md:h-[280px] flex-shrink-0 overflow-hidden bg-gray-100">
+                      <ImageWithFallback
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      {/* Tag Badge */}
+                      {project.tags && project.tags.length > 0 && (
+                        <div className="absolute bottom-4 left-4 px-3 py-1.5 bg-white/95 backdrop-blur-sm border-2 border-[#474747] rounded-full">
+                          <span className="text-[12px] md:text-[13px] font-['Gaegu'] text-[#474747] uppercase tracking-wide font-medium">
+                            {project.tags[0]}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
+
+                  {/* Project Info */}
+                  <div className="flex-1 p-6 md:p-8 lg:p-10">
+                    <h3 className="text-[28px] md:text-[32px] lg:text-[36px] font-['Solway'] text-[#474747] mb-3 md:mb-4 leading-tight">
+                      {project.title}
+                    </h3>
+                    
+                    {project.description && (
+                      <p className="font-['Gaegu'] text-[16px] md:text-[18px] lg:text-[20px] text-[#8c8fa6] leading-relaxed line-clamp-3">
+                        {project.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -132,68 +129,96 @@ export function ProjectsSection() {
         </div>
       </section>
 
-      {/* Project Detail Modal */}
+      {/* Project Detail Page */}
       {selectedProject && !selectedProject.link && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-white z-40 overflow-y-auto"
-          onClick={() => setSelectedProject(null)}
+          style={{
+            backgroundImage: 'radial-gradient(circle, #d0d0d0 1px, transparent 1px)',
+            backgroundSize: '24px 24px'
+          }}
         >
-          <div className="min-h-screen py-16 px-8" onClick={(e) => e.stopPropagation()}>
-            <div className="max-w-3xl mx-auto">
-              <div className="flex items-center justify-between mb-8">
-                <div className="font-['Gaegu'] text-[16px] text-[#8c8fa6]">Projects / {selectedProject.title}</div>
+          <div className="min-h-screen py-8 md:py-16 px-4 md:px-8">
+            <div className="max-w-3xl mx-auto bg-white">
+              {/* Header with Breadcrumb */}
+              <div className="flex items-center justify-between mb-8 md:mb-12">
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="flex items-center gap-2 text-[14px] md:text-[16px] font-['Gaegu'] text-[#8c8fa6] hover:text-[#474747] transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back / Projects</span>
+                </button>
                 <button
                   onClick={() => setSelectedProject(null)}
                   className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 >
-                  <X className="w-6 h-6 text-[#474747]" />
+                  <X className="w-5 h-5 md:w-6 md:h-6 text-[#474747]" />
                 </button>
               </div>
 
-              <h1 className="text-[42px] font-['Solway'] text-[#474747] mb-4">{selectedProject.title}</h1>
-              <p className="font-['Gaegu'] text-[20px] text-[#8c8fa6] mb-12 leading-[24px]">{selectedProject.description}</p>
+              {/* Hero Section */}
+              <div className="mb-12 md:mb-16">
+                <h1 className="text-[36px] md:text-[48px] lg:text-[56px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-tight">
+                  {selectedProject.title}
+                </h1>
+                <p className="font-['Gaegu'] text-[16px] md:text-[18px] lg:text-[20px] text-[#8c8fa6] leading-relaxed max-w-2xl">
+                  {selectedProject.description}
+                </p>
+              </div>
 
+              {/* Hero Image with Tags */}
               {selectedProject.image && (
-                <div className="mb-12 rounded-xl overflow-hidden border-[3px] border-[#474747]">
-                  <ImageWithFallback
-                    src={selectedProject.image}
-                    alt={selectedProject.title}
-                    className="w-full aspect-video object-cover"
-                  />
-                </div>
-              )}
-
-              {selectedProject.tags && selectedProject.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-12">
-                  {selectedProject.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="px-4 py-2 bg-[#f8f9fc] border-2 border-[#e5e7f0] rounded-lg text-[16px] font-['Gaegu'] text-[#474747]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <div className="mb-12 md:mb-16">
+                  <div className="relative rounded-2xl overflow-hidden border-[3px] border-[#474747] shadow-lg">
+                    <ImageWithFallback
+                      src={selectedProject.image}
+                      alt={selectedProject.title}
+                      className="w-full aspect-video object-cover"
+                    />
+                  </div>
+                  
+                  {/* Tags Below Image */}
+                  {selectedProject.tags && selectedProject.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-6">
+                      {selectedProject.tags.map((tag, i) => (
+                        <span
+                          key={i}
+                          className="px-3 md:px-4 py-1.5 md:py-2 bg-white border-2 border-[#474747] rounded-full text-[13px] md:text-[14px] font-['Gaegu'] text-[#474747] uppercase tracking-wide"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
               {/* Project Content Blocks */}
               {selectedProject.blocks && selectedProject.blocks.length > 0 && (
-                <div className="space-y-6 mb-12">
+                <div className="space-y-12 md:space-y-16 mb-16">
                   {selectedProject.blocks
                     .sort((a, b) => a.order - b.order)
-                    .map((block) => (
-                      <div key={block.id}>
+                    .map((block, idx) => (
+                      <motion.div
+                        key={block.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                      >
                         {block.type === 'text' ? (
-                          <div
-                            className="font-['Gaegu'] text-[18px] text-[#474747] leading-[1.65] prose prose-lg max-w-none"
-                            dangerouslySetInnerHTML={{ __html: block.content }}
-                          />
+                          <div className="prose prose-lg max-w-none">
+                            <div
+                              className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-relaxed"
+                              dangerouslySetInnerHTML={{ __html: block.content }}
+                            />
+                          </div>
                         ) : (
                           block.content && (
-                            <div className="rounded-lg overflow-hidden">
+                            <div className="rounded-xl overflow-hidden border-[3px] border-[#474747] shadow-md">
                               <ImageWithFallback
                                 src={block.content}
                                 alt="Project content"
@@ -202,17 +227,19 @@ export function ProjectsSection() {
                             </div>
                           )
                         )}
-                      </div>
+                      </motion.div>
                     ))}
                 </div>
               )}
 
-              <div className="mt-16 pt-8 border-t-2 border-[#474747]">
+              {/* Footer Navigation */}
+              <div className="mt-16 md:mt-20 pt-8 border-t-2 border-[#474747]">
                 <button
                   onClick={() => setSelectedProject(null)}
-                  className="font-['Gaegu'] text-[20px] text-[#474747] hover:underline"
+                  className="inline-flex items-center gap-2 font-['Gaegu'] text-[18px] md:text-[20px] text-[#474747] hover:text-[#8774ff] transition-colors"
                 >
-                  ← Back to all projects
+                  <ArrowLeft className="w-5 h-5" />
+                  Back to all projects
                 </button>
               </div>
             </div>
