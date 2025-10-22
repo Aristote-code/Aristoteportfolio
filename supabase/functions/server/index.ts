@@ -8,9 +8,26 @@ import { decode } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
 
 const app = new Hono();
 
-// Middleware
-app.use('*', cors());
+// Middleware - Allow multiple origins for development and production
+app.use('*', cors({ 
+  origin: [
+    'https://aristoteportfolio-fq729pf8n-aristote-codes-projects.vercel.app',
+    'https://aristoteportfolio.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173',
+    /https:\/\/.*\.vercel\.app$/,  // Allow any Vercel preview deployments
+  ],
+  credentials: true
+}));
 app.use('*', logger(console.log));
+
+app.options('*', (c) => {
+  return c.text('', 204, {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  });
+});
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,

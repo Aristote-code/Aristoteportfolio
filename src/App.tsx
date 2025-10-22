@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FigJamBackground } from './components/FigJamBackground';
 import { IconNavigation } from './components/IconNavigation';
 import { HomeSection } from './components/HomeSection';
@@ -157,6 +157,7 @@ export default function App() {
         setIsCommentMode(false);
       } else {
         console.error('Server error:', data);
+        console.error('Server response status:', response.status);
         alert(data.error || 'Failed to post comment');
       }
     } catch (error) {

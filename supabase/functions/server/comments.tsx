@@ -1,5 +1,5 @@
 import { Hono } from 'npm:hono';
-import * as kv from './kv_store.tsx';
+import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const ADMIN_EMAIL = 'gahimaaristote1@gmail.com';
 
@@ -22,7 +22,7 @@ interface Comment {
   normalizedX: number;
   normalizedY: number;
   text: string;
-  author: string;
+  authorName: string;
   userId: string;
   timestamp: string;
   pagePath: string;
@@ -33,12 +33,16 @@ interface Comment {
 interface Reply {
   id: string;
   text: string;
-  author: string;
+  authorName: string;
   userId: string;
   timestamp: string;
 }
 
 const commentsRouter = new Hono();
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL')!,
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+);
 
 // Rate limiting map (IP -> array of timestamps)
 const rateLimitMap = new Map<string, number[]>();
@@ -84,7 +88,7 @@ async function sendEmailNotification(comment: Comment, isReply: boolean = false)
     ? `💬 New reply on your portfolio`
     : `📌 New comment on your portfolio`;
 
-  const authorInfo = `<p style="margin: 5px 0; font-weight: 600;">From: ${comment.author}</p>`;
+  const authorInfo = `<p style="margin: 5px 0; font-weight: 600;">From: ${comment.authorName}</p>`;
 
   const htmlBody = `
 <!DOCTYPE html>
@@ -137,7 +141,7 @@ async function sendEmailNotification(comment: Comment, isReply: boolean = false)
   const textBody = `
 ${isReply ? '💬 New Reply' : '📌 New Comment'} on your portfolio
 
-From: ${comment.author}
+From: ${comment.authorName}
 
 Message:
 "${sanitizeText(comment.text)}"
@@ -168,39 +172,20 @@ Page: ${comment.pagePath}
 
     if (!response.ok) {
       console.error('Failed to send email:', data);
-      // Log failure for retry
-      await kv.set(`notification_log:${comment.id}:${Date.now()}`, {
-        commentId: comment.id,
-        status: 'failed',
-        error: data,
-        timestamp: new Date().toISOString(),
-      });
     } else {
       console.log('Email sent successfully:', data.id);
-      // Log success
-      await kv.set(`notification_log:${comment.id}:sent`, {
-        commentId: comment.id,
-        status: 'sent',
-        messageId: data.id,
-        timestamp: new Date().toISOString(),
-      });
     }
   } catch (error) {
     console.error('Error sending email:', error);
-    await kv.set(`notification_log:${comment.id}:${Date.now()}`, {
-      commentId: comment.id,
-      status: 'error',
-      error: String(error),
-      timestamp: new Date().toISOString(),
-    });
   }
 }
 
 // Get all comments
 commentsRouter.get('/', async (c) => {
   try {
-    const comments = await kv.getByPrefix('comment:');
-    return c.json({ comments: comments || [] });
+    const { data, error } = await supabase.from('comments').select('*');
+    if (error) throw error;
+    return c.json({ comments: data || [] });
   } catch (error) {
     console.error('Error fetching comments:', error);
     return c.json({ error: 'Failed to fetch comments' }, 500);
@@ -238,30 +223,29 @@ commentsRouter.post('/', async (c) => {
       return c.json({ error: 'Invalid input' }, 400);
     }
 
-    const comment: Comment = {
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      x: Number(x),
-      y: Number(y),
-      normalizedX: Number(normalizedX),
-      normalizedY: Number(normalizedY),
-      text: sanitizedText,
-      author: sanitizedAuthorName,
-      userId: sanitizedUserId,
-      timestamp: new Date().toISOString(),
-      pagePath: sanitizeText(pagePath, 200),
-      status: 'open',
-      replies: [],
-    };
+    const { data, error } = await supabase
+      .from('comments')
+      .insert({
+        x: Number(x),
+        y: Number(y),
+        normalizedX: Number(normalizedX),
+        normalizedY: Number(normalizedY),
+        text: sanitizedText,
+        authorName: sanitizedAuthorName,
+        userId: sanitizedUserId,
+        pagePath: sanitizeText(pagePath, 200),
+      })
+      .select()
+      .single();
 
-    // Store in database
-    await kv.set(`comment:${comment.id}`, comment);
+    if (error) throw error;
 
     // Send email notification (async, don't wait)
-    sendEmailNotification(comment, false).catch(err => 
+    sendEmailNotification(data, false).catch(err => 
       console.error('Background email send failed:', err)
     );
 
-    return c.json({ comment, success: true });
+    return c.json({ comment: data, success: true });
   } catch (error) {
     console.error('Error creating comment:', error);
     return c.json({ error: 'Failed to create comment' }, 500);
@@ -286,8 +270,13 @@ commentsRouter.post('/:id/reply', async (c) => {
       return c.json({ error: 'Missing required fields' }, 400);
     }
 
-    const comment = await kv.get(`comment:${commentId}`);
-    if (!comment) {
+    const { data: comment, error: fetchError } = await supabase
+      .from('comments')
+      .select('*')
+      .eq('id', commentId)
+      .single();
+
+    if (fetchError || !comment) {
       return c.json({ error: 'Comment not found' }, 404);
     }
 
@@ -298,20 +287,28 @@ commentsRouter.post('/:id/reply', async (c) => {
     const reply: Reply = {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       text: sanitizedText,
-      author: sanitizedAuthorName,
+      authorName: sanitizedAuthorName,
       userId: sanitizedUserId,
       timestamp: new Date().toISOString(),
     };
 
-    comment.replies = [...(comment.replies || []), reply];
-    await kv.set(`comment:${commentId}`, comment);
+    const updatedReplies = [...(comment.replies || []), reply];
+
+    const { data, error } = await supabase
+      .from('comments')
+      .update({ replies: updatedReplies })
+      .eq('id', commentId)
+      .select()
+      .single();
+
+    if (error) throw error;
 
     // Send email notification for reply
-    sendEmailNotification(comment, true).catch(err => 
+    sendEmailNotification(data, true).catch(err => 
       console.error('Background email send failed:', err)
     );
 
-    return c.json({ comment, success: true });
+    return c.json({ comment: data, success: true });
   } catch (error) {
     console.error('Error adding reply:', error);
     return c.json({ error: 'Failed to add reply' }, 500);
@@ -331,20 +328,16 @@ commentsRouter.patch('/:id/position', async (c) => {
       return c.json({ error: 'Invalid coordinates' }, 400);
     }
 
-    const comment = await kv.get(`comment:${commentId}`);
-    if (!comment) {
-      return c.json({ error: 'Comment not found' }, 404);
-    }
+    const { data, error } = await supabase
+      .from('comments')
+      .update({ x, y, normalizedX, normalizedY })
+      .eq('id', commentId)
+      .select()
+      .single();
 
-    // Update position
-    comment.x = x;
-    comment.y = y;
-    comment.normalizedX = normalizedX;
-    comment.normalizedY = normalizedY;
+    if (error) throw error;
 
-    await kv.set(`comment:${commentId}`, comment);
-
-    return c.json({ comment, success: true });
+    return c.json({ comment: data, success: true });
   } catch (error) {
     console.error('Error updating comment position:', error);
     return c.json({ error: 'Failed to update comment position' }, 500);
@@ -363,28 +356,28 @@ commentsRouter.patch('/:id/resolve', async (c) => {
       return c.json({ error: 'Invalid status' }, 400);
     }
 
-    const comment = await kv.get(`comment:${commentId}`);
-    if (!comment) {
-      return c.json({ error: 'Comment not found' }, 404);
-    }
+    const { data, error } = await supabase
+      .from('comments')
+      .update({ status })
+      .eq('id', commentId)
+      .select()
+      .single();
 
-    // Update status
-    comment.status = status;
+    if (error) throw error;
 
-    await kv.set(`comment:${commentId}`, comment);
-
-    return c.json({ comment, success: true });
+    return c.json({ comment: data, success: true });
   } catch (error) {
     console.error('Error resolving comment:', error);
     return c.json({ error: 'Failed to resolve comment' }, 500);
   }
 });
 
-// Delete a comment (admin only - basic security, improve with proper auth)
+// Delete a comment
 commentsRouter.delete('/:id', async (c) => {
   try {
     const commentId = c.req.param('id');
-    await kv.del(`comment:${commentId}`);
+    const { error } = await supabase.from('comments').delete().eq('id', commentId);
+    if (error) throw error;
     return c.json({ success: true });
   } catch (error) {
     console.error('Error deleting comment:', error);
