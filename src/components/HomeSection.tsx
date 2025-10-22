@@ -31,7 +31,7 @@ export function HomeSection() {
             <div className="absolute" style={{ right: '-50px', bottom: '-120px' }}>
               <div className="pointer-events-auto">
                 <StickyNote
-                  text="How can&#10;I help you"
+                  text="How can&#10;I help you?"
                   color="green"
                   initialX={0}
                   initialY={0}

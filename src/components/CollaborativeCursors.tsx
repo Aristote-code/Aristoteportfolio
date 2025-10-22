@@ -173,7 +173,7 @@ export function CollaborativeCursors({ userName, userColor, isActive }: Collabor
     };
   }, [userName, userColor, isActive, userId]);
 
-  // Clean up stale cursors (inactive for more than 5 seconds)
+  // Clean up stale cursors (inactive for more than 60 seconds / 1 minute)
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
@@ -182,7 +182,7 @@ export function CollaborativeCursors({ userName, userColor, isActive }: Collabor
         let changed = false;
 
         newMap.forEach((cursor, key) => {
-          if (now - cursor.timestamp > 5000) {
+          if (now - cursor.timestamp > 60000) {
             newMap.delete(key);
             changed = true;
           }
