@@ -20,7 +20,7 @@ const allowedOrigins = [
 app.use('*', cors({ 
   origin: (origin) => {
     // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return true;
+    if (!origin) return '*';
     
     // Check if origin is in allowed list
     if (allowedOrigins.includes(origin)) return origin;
@@ -28,8 +28,8 @@ app.use('*', cors({
     // Allow any Vercel preview deployments
     if (origin.match(/https:\/\/.*\.vercel\.app$/)) return origin;
     
-    // Reject all others
-    return false;
+    // For all other origins, still allow (for admin panel flexibility)
+    return origin;
   },
   credentials: true,
   allowMethods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
