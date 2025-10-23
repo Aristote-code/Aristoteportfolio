@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { StickyNote } from './StickyNote';
-import { Linkedin, Github, Mail, Twitter } from 'lucide-react';
+import { Linkedin, Github, Mail, Twitter, Dribbble } from 'lucide-react';
 
 export function AboutSection() {
   const handleDownloadResume = () => {
@@ -119,6 +119,7 @@ export function AboutSection() {
                 {[
                   { icon: Linkedin, href: 'https://www.linkedin.com/in/gahima-aristote/' },
                   { icon: Github, href: 'https://github.com/Aristote-code' },
+                  { icon: Dribbble, href: 'https://dribbble.com/Aristote1' },
                   { icon: Mail, href: 'mailto:gahimaaristote1@gmail.com' },
                   { icon: Twitter, href: 'https://x.com/GAristote' }
                 ].map((link, i) => (
