@@ -317,6 +317,9 @@ export function AdminPanel() {
 
     setLoading(true);
     try {
+      console.log('🗑️ Deleting project:', projectToDelete.id);
+      console.log('🔑 Using admin key:', ADMIN_KEY.substring(0, 10) + '...');
+      
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/admin/projects/${projectToDelete.id}`,
         {
@@ -327,14 +330,19 @@ export function AdminPanel() {
         }
       );
 
+      console.log('📡 Delete response status:', response.status);
+      
       if (response.ok) {
+        console.log('✅ Project deleted successfully');
         setProjects(projects.filter(p => p.id !== projectToDelete.id));
         if (selectedProject?.id === projectToDelete.id) {
           setSelectedProject(null);
         }
+        alert('✅ Project deleted successfully!');
       } else {
         const data = await response.json();
-        alert('Failed to delete project: ' + (data.error || 'Unknown error'));
+        console.error('❌ Delete failed:', response.status, data);
+        alert('Failed to delete project: ' + (data.error || `Error ${response.status}`));
       }
     } catch (error) {
       console.error('Failed to delete project:', error);
