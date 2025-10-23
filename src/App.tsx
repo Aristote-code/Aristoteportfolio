@@ -11,8 +11,10 @@ import { AdminPanel } from './components/AdminPanel';
 import { NamePromptDialog } from './components/NamePromptDialog';
 import { CursorFollower, getUserCursorColor } from './components/CursorFollower';
 import { CollaborativeCursors } from './components/CollaborativeCursors';
+import { DrawingCanvas } from './components/DrawingCanvas';
 import { projectId, publicAnonKey } from './utils/supabase/info';
 import { getUserId } from './utils/avatarUtils';
+import { Pencil } from 'lucide-react';
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('home');
@@ -25,6 +27,7 @@ export default function App() {
   const [userName, setUserName] = useState<string | null>(null);
   const [showNamePrompt, setShowNamePrompt] = useState(false);
   const [userCursorColor, setUserCursorColor] = useState<string>('');
+  const [isDrawingMode, setIsDrawingMode] = useState(false);
 
   const sectionsRef = {
     home: useRef<HTMLDivElement>(null),
@@ -477,6 +480,11 @@ export default function App() {
         setIsCommentMode(prev => !prev);
         setPendingComment(null);
       }
+
+      // Toggle drawing mode when 'D' or 'd' is pressed
+      if (e.key === 'd' || e.key === 'D') {
+        setIsDrawingMode(prev => !prev);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -576,7 +584,12 @@ export default function App() {
         onNavigate={handleNavigate}
         isCommentMode={isCommentMode}
         onToggleCommentMode={handleToggleCommentMode}
+        isDrawingMode={isDrawingMode}
+        onToggleDrawingMode={() => setIsDrawingMode(!isDrawingMode)}
       />
+
+      {/* Drawing Canvas */}
+      <DrawingCanvas isOpen={isDrawingMode} onClose={() => setIsDrawingMode(false)} />
 
       {/* Admin Access Button - Hidden in bottom right corner */}
       <button

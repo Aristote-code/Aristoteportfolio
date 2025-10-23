@@ -1,4 +1,4 @@
-import { Home, Sparkles, User, Mail, MessageSquare } from 'lucide-react';
+import { Home, Sparkles, User, Mail, MessageSquare, Pencil } from 'lucide-react';
 import { useState } from 'react';
 
 interface IconNavigationProps {
@@ -6,9 +6,11 @@ interface IconNavigationProps {
   onNavigate: (section: string) => void;
   isCommentMode: boolean;
   onToggleCommentMode: () => void;
+  isDrawingMode?: boolean;
+  onToggleDrawingMode?: () => void;
 }
 
-export function IconNavigation({ activeSection, onNavigate, isCommentMode, onToggleCommentMode }: IconNavigationProps) {
+export function IconNavigation({ activeSection, onNavigate, isCommentMode, onToggleCommentMode, isDrawingMode, onToggleDrawingMode }: IconNavigationProps) {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const navItems = [
@@ -112,6 +114,45 @@ export function IconNavigation({ activeSection, onNavigate, isCommentMode, onTog
             </div>
           )}
         </div>
+
+        {/* Drawing Button - Desktop only */}
+        {onToggleDrawingMode && (
+          <div 
+            className="relative h-[56px] w-[56px] items-center justify-center hidden md:flex"
+            onMouseEnter={() => setHoveredItem('draw')}
+            onMouseLeave={() => setHoveredItem(null)}
+          >
+            <button
+              onClick={onToggleDrawingMode}
+              className={`w-full h-full rounded-[16px] flex items-center justify-center transition-all active:scale-95 group ${
+                isDrawingMode ? 'bg-[#8774ff]' : 'bg-white'
+              }`}
+              aria-label="Drawing mode"
+              style={{
+                boxShadow: '0px 0.637px 2.166px -1px rgba(114,98,218,0.18), 0px 1.932px 6.567px -2px rgba(114,98,218,0.18), 0px 5.106px 17.361px -3px rgba(114,98,218,0.14), 0px 16px 54.4px -4px rgba(114,98,218,0.05)',
+              }}
+            >
+              <div className="absolute inset-0 rounded-[16px] border-2 border-[rgba(184,187,210,0.1)] pointer-events-none" />
+              <Pencil 
+                className={`w-5 h-5 transition-colors ${
+                  isDrawingMode ? 'text-white' : 'text-[#B8BBD2]'
+                }`}
+                strokeWidth={2}
+              />
+            </button>
+
+            {/* Tooltip */}
+            {hoveredItem === 'draw' && (
+              <div className="absolute bottom-[68px] left-1/2 -translate-x-1/2 pointer-events-none z-[45]">
+                <div className="bg-[#1e1e1e] text-white px-3 py-1.5 rounded-lg whitespace-nowrap animate-in fade-in zoom-in-95 duration-200">
+                  <div className="font-['Gaegu'] text-[15px] leading-[18px]">Draw</div>
+                  {/* Tooltip arrow */}
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1e1e1e] rotate-45" />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );
