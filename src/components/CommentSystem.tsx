@@ -28,7 +28,7 @@ export interface Comment {
   normalizedX: number; // 0-1 relative to viewport width
   normalizedY: number; // 0-1 relative to page height
   text: string;
-  authorName: string;
+  author: string;
   userId?: string; // Optional for backward compatibility with old comments
   timestamp: Date;
   pagePath: string;
@@ -39,7 +39,7 @@ export interface Comment {
 interface Reply {
   id: string;
   text: string;
-  authorName: string;
+  author: string;
   userId?: string; // Optional for backward compatibility with old replies
   timestamp: Date;
 }
@@ -301,37 +301,38 @@ export function CommentSystem({
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-baseline gap-2 mb-1">
-                                                          <span className="text-[#474747] font-['Gaegu'] text-[15px]">
-                                                            {comment.authorName}
-                                                          </span>
-                                                          <span className="text-[#8c8fa6] font-['Gaegu'] text-[13px]">
-                                                            {getRelativeTime(comment.timestamp)}
-                                                          </span>
-                                                        </div>
-                                                        <p className="text-[#474747] font-['Gaegu'] text-[14px] leading-[1.5] break-words">
-                                                          {comment.text}
-                                                        </p>
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                            
-                                                {/* Replies */}
-                                                {comment.replies.map((reply) => (
-                                                  <div key={reply.id} className="px-4 py-3 border-t border-[#e5e7f0]">
-                                                    <div className="flex items-start gap-3">
-                                                      <div 
-                                                        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                                                        style={{ backgroundColor: getAvatarColor(reply.userId) }}
-                                                      >
-                                                        <span className="text-white font-['Gaegu'] text-[13px]">
-                                                          {getAvatarInitial(reply.userId)}
-                                                        </span>
-                                                      </div>
-                                                      <div className="flex-1 min-w-0">
-                                                        <div className="flex items-baseline gap-2 mb-1">
-                                                          <span className="text-[#474747] font-['Gaegu'] text-[15px]">
-                                                            {reply.authorName}
-                                                          </span>                              <span className="text-[#8c8fa6] font-['Gaegu'] text-[13px]">
+                            <span className="text-[#474747] font-['Gaegu'] text-[15px]">
+                              {comment.author}
+                            </span>
+                            <span className="text-[#8c8fa6] font-['Gaegu'] text-[13px]">
+                              {getRelativeTime(comment.timestamp)}
+                            </span>
+                          </div>
+                          <p className="text-[#474747] font-['Gaegu'] text-[14px] leading-[1.5] break-words">
+                            {comment.text}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Replies */}
+                    {comment.replies.map((reply) => (
+                      <div key={reply.id} className="px-4 py-3 border-t border-[#e5e7f0]">
+                        <div className="flex items-start gap-3">
+                          <div 
+                            className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ backgroundColor: getAvatarColor(reply.userId) }}
+                          >
+                            <span className="text-white font-['Gaegu'] text-[13px]">
+                              {getAvatarInitial(reply.userId)}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-baseline gap-2 mb-1">
+                              <span className="text-[#474747] font-['Gaegu'] text-[15px]">
+                                {reply.author}
+                              </span>
+                              <span className="text-[#8c8fa6] font-['Gaegu'] text-[13px]">
                                 {getRelativeTime(reply.timestamp)}
                               </span>
                             </div>

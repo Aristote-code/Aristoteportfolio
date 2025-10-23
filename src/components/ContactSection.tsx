@@ -23,30 +23,43 @@ export function ContactSection() {
     setSubmitStatus('idle');
 
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/contact`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const url = `https://${projectId}.supabase.co/functions/v1/server/contact`;
+      console.log('🔵 Sending contact form to:', url);
+      console.log('📦 Form data:', formData);
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${publicAnonKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-      const data = await response.json();
+      console.log('📬 Contact response:', response.status, response.statusText);
+      
+      let data;
+      try {
+        data = await response.json();
+        console.log('📄 Contact response data:', data);
+      } catch (parseError) {
+        console.error('❌ Failed to parse contact response:', parseError);
+        setSubmitStatus('error');
+        setIsSubmitting(false);
+        return;
+      }
 
       if (response.ok && data.success) {
+        console.log('✅ Contact form sent successfully');
         setSubmitStatus('success');
         setFormData({ name: '', email: '', message: '' });
         setTimeout(() => setSubmitStatus('idle'), 5000);
       } else {
+        console.error('❌ Failed to send message:', data.error);
         setSubmitStatus('error');
-        console.error('Failed to send message:', data.error);
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('❌ Error sending message:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

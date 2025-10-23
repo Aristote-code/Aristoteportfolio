@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Analytics } from '@vercel/analytics/react';
+import { useState, useRef, useEffect } from 'react';
 import { FigJamBackground } from './components/FigJamBackground';
 import { IconNavigation } from './components/IconNavigation';
 import { HomeSection } from './components/HomeSection';
@@ -130,23 +129,35 @@ export default function App() {
         pagePath: window.location.pathname || '/',
       };
 
-      console.log('Posting comment with payload:', payload);
+      const url = `https://${projectId}.supabase.co/functions/v1/server/comments`;
+      console.log('🔵 Posting comment to:', url);
+      console.log('📦 Payload:', payload);
 
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/comments`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${publicAnonKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-      const data = await response.json();
+      console.log('📬 Response status:', response.status, response.statusText);
+      
+      let data;
+      try {
+        data = await response.json();
+        console.log('📄 Response data:', data);
+      } catch (parseError) {
+        console.error('❌ Failed to parse response JSON:', parseError);
+        const text = await response.text();
+        console.error('📄 Response text:', text);
+        alert('Server returned invalid response. Check console for details.');
+        return;
+      }
       
       if (response.ok && data.comment) {
+        console.log('✅ Comment posted successfully');
         // Add to local state with parsed timestamp
         const newComment = {
           ...data.comment,
@@ -157,13 +168,12 @@ export default function App() {
         setPendingComment(null);
         setIsCommentMode(false);
       } else {
-        console.error('Server error:', data);
-        console.error('Server response status:', response.status);
-        alert(data.error || 'Failed to post comment');
+        console.error('❌ Server error:', data);
+        alert(data.error || 'Failed to post comment. Check console for details.');
       }
     } catch (error) {
-      console.error('Failed to add comment:', error);
-      alert('Failed to post comment. Please try again.');
+      console.error('❌ Failed to add comment:', error);
+      alert('Failed to post comment. Check console for details.');
     }
   };
 
@@ -368,22 +378,32 @@ export default function App() {
 
     // Send "user joined" notification email to admin
     try {
-      await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/user-joined`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userName: name,
-            timestamp: new Date().toISOString(),
-          }),
-        }
-      );
+      const url = `https://${projectId}.supabase.co/functions/v1/server/user-joined`;
+      console.log('🔵 Sending user-joined notification to:', url);
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${publicAnonKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userName: name,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+      
+      console.log('📬 User-joined response:', response.status, response.statusText);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ User-joined notification sent:', data);
+      } else {
+        const errorData = await response.json();
+        console.warn('⚠️ User-joined notification failed:', errorData);
+      }
     } catch (error) {
-      console.log('User joined notification not sent:', error);
+      console.log('❌ User joined notification error:', error);
       // Don't show error to user, this is a background operation
     }
   };
@@ -576,9 +596,6 @@ export default function App() {
           </div>
         </div>
       )}
-      
-      {/* Vercel Analytics */}
-      <Analytics />
     </div>
   );
 }

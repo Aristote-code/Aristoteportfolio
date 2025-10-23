@@ -15,7 +15,7 @@ export function HomeSection() {
           <p className="text-[#8c8fa6] text-[18px] md:text-[24px] font-['Gaegu'] leading-[28.8px]">A product designer at Health Connect.</p>
 
           {/* Decorative sticky notes - positioned relative to the centered content */}
-          <div className="absolute top-0 left-0 w-full h-full pointer-events-none hidden md:block">
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
             <div className="absolute" style={{ right: '-100px', top: '-50px' }}>
               <div className="pointer-events-auto">
                 <StickyNote
@@ -24,6 +24,7 @@ export function HomeSection() {
                   initialX={0}
                   initialY={0}
                   rotation={-6}
+                  size="large"
                 />
               </div>
             </div>
@@ -31,7 +32,7 @@ export function HomeSection() {
             <div className="absolute" style={{ right: '-50px', bottom: '-120px' }}>
               <div className="pointer-events-auto">
                 <StickyNote
-                  text="How can&#10;I help you?"
+                  text="How can&#10;I help you"
                   color="green"
                   initialX={0}
                   initialY={0}
@@ -39,24 +40,6 @@ export function HomeSection() {
                 />
               </div>
             </div>
-          </div>
-          
-          {/* Mobile version - simpler layout */}
-          <div className="flex justify-center gap-4 mt-8 md:hidden">
-            <StickyNote
-              text="👋"
-              color="yellow"
-              initialX={0}
-              initialY={0}
-              rotation={-6}
-            />
-            <StickyNote
-              text="How can&#10;I help you?"
-              color="green"
-              initialX={0}
-              initialY={0}
-              rotation={6}
-            />
           </div>
         </motion.div>
       </div>

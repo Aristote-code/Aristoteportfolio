@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { StickyNote } from './StickyNote';
 import { Linkedin, Github, Mail, Twitter } from 'lucide-react';
+import profileImage from 'figma:asset/ad92ed337531b9fe2db9165a108b0ea27479a71c.png';
 
 export function AboutSection() {
   const handleDownloadResume = () => {
@@ -101,7 +102,7 @@ export function AboutSection() {
                     <div className="flex-none" style={{ transform: 'rotate(357.518deg)' }}>
                       <div className="relative w-[205.142px] h-[281.213px]">
                         <img 
-                          src="/profile.jpg" 
+                          src={profileImage} 
                           alt="Gahima Aristote" 
                           className="absolute inset-0 w-full h-full object-cover max-w-none pointer-events-none"
                           style={{ objectPosition: '50% 50%' }}

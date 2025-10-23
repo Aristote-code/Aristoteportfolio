@@ -63,50 +63,13 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   };
 
   const execCommand = (command: string, value?: string) => {
-    // Save selection before command
-    const selection = window.getSelection();
-    const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-    
     document.execCommand(command, false, value);
-    
-    // Restore selection and focus
-    if (range && editorRef.current) {
-      editorRef.current.focus();
-      const newSelection = window.getSelection();
-      if (newSelection) {
-        try {
-          newSelection.removeAllRanges();
-          newSelection.addRange(range);
-        } catch (e) {
-          // Selection restoration failed, just focus
-          console.warn('Selection restore failed:', e);
-        }
-      }
-    }
+    editorRef.current?.focus();
   };
 
   const formatBlock = (tag: string) => {
-    // Save selection before command
-    const selection = window.getSelection();
-    const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-    
     document.execCommand('formatBlock', false, tag);
-    
-    // Restore focus
-    if (editorRef.current) {
-      editorRef.current.focus();
-      if (range) {
-        const newSelection = window.getSelection();
-        if (newSelection) {
-          try {
-            newSelection.removeAllRanges();
-            newSelection.addRange(range);
-          } catch (e) {
-            console.warn('Selection restore failed:', e);
-          }
-        }
-      }
-    }
+    editorRef.current?.focus();
   };
 
   const insertLink = () => {
@@ -150,9 +113,6 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   }) => (
     <button
       type="button"
-      onMouseDown={(e) => {
-        e.preventDefault(); // Prevent losing selection
-      }}
       onClick={(e) => {
         e.preventDefault();
         onClick();
@@ -274,35 +234,28 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         }
         
         [contenteditable] h1 {
-          font-size: 36px;
-          font-weight: 700;
-          margin: 24px 0 16px 0;
-          line-height: 1.2;
-          font-family: 'Solway', serif;
-          color: #474747;
+          font-size: 28px;
+          font-weight: 600;
+          margin: 12px 0 8px 0;
+          line-height: 1.3;
         }
         
         [contenteditable] h2 {
-          font-size: 28px;
+          font-size: 24px;
           font-weight: 600;
-          margin: 20px 0 12px 0;
+          margin: 10px 0 6px 0;
           line-height: 1.3;
-          font-family: 'Solway', serif;
-          color: #474747;
         }
         
         [contenteditable] h3 {
-          font-size: 22px;
+          font-size: 20px;
           font-weight: 600;
-          margin: 16px 0 8px 0;
+          margin: 8px 0 4px 0;
           line-height: 1.3;
-          font-family: 'Solway', serif;
-          color: #474747;
         }
         
         [contenteditable] p {
-          margin: 10px 0;
-          line-height: 1.7;
+          margin: 6px 0;
         }
         
         [contenteditable] ul,

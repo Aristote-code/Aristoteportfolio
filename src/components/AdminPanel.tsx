@@ -137,23 +137,16 @@ export function AdminPanel() {
 
   const checkServerAndFetchProjects = async () => {
     try {
-      // Check if server is available - use anon key for authorization
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpYWljaHBwZWhkemZoeXZuZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NDYzNDAsImV4cCI6MjA3NjMyMjM0MH0.YVROD96sRl1Hs_ng8D01vwCiod4FTx4MRnCvb1-HIAA';
+      // Check if server is available
       const healthCheck = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/health`,
-        { 
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${ANON_KEY}`
-          }
-        }
+        { method: 'GET' }
       );
       
       if (healthCheck.ok) {
         setIsServerAvailable(true);
         await fetchProjects();
       } else {
-        console.error('Health check failed:', healthCheck.status, await healthCheck.text());
         setIsServerAvailable(false);
         // Load from localStorage as fallback
         const localProjects = localStorage.getItem('admin_projects');
@@ -200,14 +193,8 @@ export function AdminPanel() {
 
   const fetchProjects = async () => {
     try {
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpYWljaHBwZWhkemZoeXZuZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NDYzNDAsImV4cCI6MjA3NjMyMjM0MH0.YVROD96sRl1Hs_ng8D01vwCiod4FTx4MRnCvb1-HIAA';
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/projects`,
-        {
-          headers: {
-            'Authorization': `Bearer ${ANON_KEY}`
-          }
-        }
+        `https://${projectId}.supabase.co/functions/v1/server/projects`
       );
 
       const data = await response.json();
@@ -249,13 +236,11 @@ export function AdminPanel() {
         console.log('Using admin key:', ADMIN_KEY);
         console.log('Project data:', selectedProject);
 
-        const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpYWljaHBwZWhkemZoeXZuZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NDYzNDAsImV4cCI6MjA3NjMyMjM0MH0.YVROD96sRl1Hs_ng8D01vwCiod4FTx4MRnCvb1-HIAA';
         const response = await fetch(url, {
           method: selectedProject.id ? 'PUT' : 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${ANON_KEY}`,
-            'X-Admin-Key': ADMIN_KEY,
+            'Authorization': `Bearer ${ADMIN_KEY}`,
           },
           body: JSON.stringify(selectedProject),
         });
@@ -322,14 +307,12 @@ export function AdminPanel() {
 
     setLoading(true);
     try {
-      const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpYWljaHBwZWhkemZoeXZuZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3NDYzNDAsImV4cCI6MjA3NjMyMjM0MH0.YVROD96sRl1Hs_ng8D01vwCiod4FTx4MRnCvb1-HIAA';
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/admin/projects/${projectToDelete.id}`,
         {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${ANON_KEY}`,
-            'X-Admin-Key': ADMIN_KEY,
+            'Authorization': `Bearer ${ADMIN_KEY}`,
           },
         }
       );
@@ -516,32 +499,16 @@ export function AdminPanel() {
 
               {/* Project Description */}
               <div className="mb-6">
-                <div className="flex items-center justify-between mb-3">
-                  <label className="block font-['Gaegu'] text-[18px] text-[#474747]">
-                    Short Description *
-                  </label>
-                  <span className={`font-['Gaegu'] text-[14px] ${
-                    selectedProject.description.length > 180 ? 'text-red-500' : 'text-[#8c8fa6]'
-                  }`}>
-                    {selectedProject.description.length}/180
-                  </span>
-                </div>
+                <label className="block font-['Gaegu'] text-[18px] text-[#474747] mb-3">
+                  Short Description *
+                </label>
                 <textarea
                   value={selectedProject.description}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value.length <= 180) {
-                      setSelectedProject({ ...selectedProject, description: value });
-                    }
-                  }}
-                  placeholder="Brief description of the project (max 180 characters)..."
+                  onChange={(e) => setSelectedProject({ ...selectedProject, description: e.target.value })}
+                  placeholder="Brief description of the project..."
                   rows={3}
-                  maxLength={180}
                   className="w-full px-4 py-3 border border-[#e5e7f0] rounded-lg font-['Gaegu'] text-[18px] text-[#474747] placeholder:text-[#d0d0d0] focus:outline-none focus:border-[#8774ff] focus:ring-2 focus:ring-[#8774ff]/20 transition-all resize-none"
                 />
-                <p className="mt-2 font-['Gaegu'] text-[14px] text-[#8c8fa6]">
-                  💡 Keep it concise - this appears on the project card
-                </p>
               </div>
 
               {/* Project Cover Image */}
@@ -551,14 +518,8 @@ export function AdminPanel() {
                   value={selectedProject.image}
                   onChange={(url) => setSelectedProject({ ...selectedProject, image: url })}
                   onRemove={() => setSelectedProject({ ...selectedProject, image: '' })}
-                  aspectRatio="aspect-square"
+                  aspectRatio="aspect-video"
                 />
-                <p className="mt-2 font-['Gaegu'] text-[14px] text-[#8c8fa6]">
-                  📐 Recommended: 600x600px or 800x800px (Square/1:1 ratio) • Max 5MB
-                </p>
-                <p className="mt-1 font-['Gaegu'] text-[13px] text-[#8c8fa6]">
-                  💡 Images will be cropped to fill the card (150x150px display)
-                </p>
               </div>
 
               {/* Tags */}

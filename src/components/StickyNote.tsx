@@ -8,6 +8,7 @@ interface StickyNoteProps {
   initialY?: number;
   rotation?: number;
   draggable?: boolean;
+  size?: 'normal' | 'large';
 }
 
 const colorClasses = {
@@ -27,6 +28,7 @@ export function StickyNote({
   initialY = 0,
   rotation = 0,
   draggable = true,
+  size = 'normal',
 }: StickyNoteProps) {
   const [position, setPosition] = useState({ x: initialX, y: initialY });
 
@@ -53,7 +55,7 @@ export function StickyNote({
           boxShadow: '0px 20px 10px -14px rgba(64, 49, 160, 0.28)',
         }}
       >
-        <p className="text-[20px] leading-[24px] whitespace-pre-line text-[#474747]">{text}</p>
+        <p className={`${size === 'large' ? 'text-[52px] leading-[62.4px]' : 'text-[20px] leading-[24px]'} whitespace-pre-line text-[#474747] text-center`}>{text}</p>
       </div>
     </motion.div>
   );

@@ -1,8 +1,9 @@
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
-import { X, ArrowLeft } from 'lucide-react';
+import { X } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
+import svgPaths from '../imports/svg-6g023zi4pn';
 
 interface ContentBlock {
   id: string;
@@ -20,6 +21,52 @@ interface Project {
   link: string;
   color: string;
   blocks?: ContentBlock[];
+}
+
+function ProjectCard({ project }: { project: Project }) {
+  return (
+    <div className="bg-white box-border content-stretch flex gap-[64px] items-center pl-[8px] pr-[64px] py-[8px] relative rounded-[16px] shrink-0 w-[700px]">
+      {/* Image Container */}
+      <div className="relative shrink-0 size-[268px]">
+        <div className="absolute inset-0 overflow-clip rounded-[8px]">
+          <div className="absolute left-0 overflow-clip size-[268px] top-0">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <ImageWithFallback
+                src={project.image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400'}
+                alt={project.title}
+                className="absolute h-full left-[-25.07%] max-w-none top-0 w-[150.15%] object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="basis-0 box-border content-stretch flex flex-col gap-[24px] grow h-[252px] items-start min-h-px min-w-px pb-[42.4px] pt-[31px] px-0 relative shrink-0">
+        {/* Heading */}
+        <div className="box-border content-stretch flex flex-col items-start pb-[0.6px] pt-0 px-0 relative shrink-0 w-full">
+          <div className="flex flex-col font-['Solway',_sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#474747] text-[28px] w-full">
+            <p className="leading-[33.6px]">{project.title}</p>
+          </div>
+        </div>
+        {/* Description */}
+        <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
+          <div className="flex flex-col font-['Gaegu',_sans-serif] justify-center leading-[24px] not-italic relative shrink-0 text-[#8c8fa6] text-[20px] w-full">
+            <p>{project.description || 'No description available.'}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Hand-drawn Border SVG */}
+      <div className="absolute inset-[-9px_-5px_-9px_-11px]">
+        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 716 302">
+          <g id="svg1435461913_528">
+            <path d={svgPaths.p151fe80} id="Vector" stroke="#474747" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3.09506" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  );
 }
 
 export function ProjectsSection() {
@@ -55,62 +102,6 @@ export function ProjectsSection() {
 
   return (
     <>
-      <style>{`
-        .project-content-block h1 {
-          font-size: 36px;
-          font-weight: 700;
-          margin: 24px 0 16px 0;
-          line-height: 1.2;
-          font-family: 'Solway', serif;
-          color: #474747;
-        }
-        
-        .project-content-block h2 {
-          font-size: 28px;
-          font-weight: 600;
-          margin: 20px 0 12px 0;
-          line-height: 1.3;
-          font-family: 'Solway', serif;
-          color: #474747;
-        }
-        
-        .project-content-block h3 {
-          font-size: 22px;
-          font-weight: 600;
-          margin: 16px 0 8px 0;
-          line-height: 1.3;
-          font-family: 'Solway', serif;
-          color: #474747;
-        }
-        
-        .project-content-block p {
-          margin: 10px 0;
-          line-height: 1.8;
-        }
-        
-        .project-content-block ul,
-        .project-content-block ol {
-          margin: 12px 0;
-          padding-left: 24px;
-        }
-        
-        .project-content-block li {
-          margin: 6px 0;
-        }
-        
-        .project-content-block blockquote {
-          border-left: 3px solid #e5e7f0;
-          padding-left: 16px;
-          margin: 16px 0;
-          color: #8c8fa6;
-          font-style: italic;
-        }
-        
-        .project-content-block a {
-          color: #8774ff;
-          text-decoration: underline;
-        }
-      `}</style>
       <section className="min-h-screen py-16 md:py-32 px-4 md:px-8">
         <div className="w-full max-w-[720px] mx-auto">
           {/* Title */}
@@ -134,8 +125,8 @@ export function ProjectsSection() {
             </div>
           )}
 
-          {/* Projects List - Compact Card Layout */}
-          <div className="space-y-6">
+          {/* Projects List */}
+          <div className="space-y-12 flex flex-col items-center">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
@@ -144,142 +135,77 @@ export function ProjectsSection() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => project.link ? window.open(project.link, '_blank') : setSelectedProject(project)}
-                className="group bg-white border-[2px] border-[#474747] rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300 h-[140px] sm:h-[150px]"
+                className="cursor-pointer hover:scale-[1.02] transition-transform"
               >
-                <div className="flex h-full">
-                  {/* Project Image - Small Square */}
-                  <div className="relative w-[140px] sm:w-[150px] h-full flex-shrink-0 bg-gray-100">
-                    {project.image ? (
-                      <ImageWithFallback
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                        <span className="text-[#8c8fa6] font-['Gaegu'] text-[14px]">No image</span>
-                      </div>
-                    )}
-                    {/* Tag Badge */}
-                    {project.tags && project.tags.length > 0 && (
-                      <div className="absolute bottom-2 left-2 px-2 py-1 bg-white/95 backdrop-blur-sm rounded shadow-sm">
-                        <span className="text-[10px] sm:text-[11px] font-['Gaegu'] text-[#474747] uppercase tracking-wider font-semibold">
-                          {project.tags[0]}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Project Info - Compact */}
-                  <div className="flex-1 p-4 sm:p-5 flex flex-col justify-center overflow-hidden">
-                    <h3 className="text-[20px] sm:text-[22px] md:text-[24px] font-['Solway'] text-[#474747] mb-1.5 sm:mb-2 leading-tight line-clamp-1">
-                      {project.title || 'Untitled Project'}
-                    </h3>
-                    
-                    <p className="font-['Gaegu'] text-[14px] sm:text-[15px] md:text-[16px] text-[#8c8fa6] leading-relaxed line-clamp-3">
-                      {project.description || 'No description available'}
-                    </p>
-                  </div>
-                </div>
+                <ProjectCard project={project} />
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Project Detail Page */}
+      {/* Project Detail Modal */}
       {selectedProject && !selectedProject.link && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-white z-40 overflow-y-auto"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #d0d0d0 1px, transparent 1px)',
-            backgroundSize: '24px 24px'
-          }}
+          onClick={() => setSelectedProject(null)}
         >
-          <div className="min-h-screen py-8 md:py-16 px-4 md:px-8">
-            <div className="max-w-3xl mx-auto bg-white">
-              {/* Header with Breadcrumb */}
-              <div className="flex items-center justify-between mb-8 md:mb-12">
-                <button
-                  onClick={() => setSelectedProject(null)}
-                  className="flex items-center gap-2 text-[14px] md:text-[16px] font-['Gaegu'] text-[#8c8fa6] hover:text-[#474747] transition-colors"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  <span>Back / Projects</span>
-                </button>
+          <div className="min-h-screen py-16 px-8" onClick={(e) => e.stopPropagation()}>
+            <div className="max-w-3xl mx-auto">
+              <div className="flex items-center justify-between mb-8">
+                <div className="font-['Gaegu'] text-[16px] text-[#8c8fa6]">Projects / {selectedProject.title}</div>
                 <button
                   onClick={() => setSelectedProject(null)}
                   className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 >
-                  <X className="w-5 h-5 md:w-6 md:h-6 text-[#474747]" />
+                  <X className="w-6 h-6 text-[#474747]" />
                 </button>
               </div>
 
-              {/* Hero Section */}
-              <div className="mb-12 md:mb-16">
-                <h1 className="text-[36px] md:text-[48px] lg:text-[56px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-tight">
-                  {selectedProject.title}
-                </h1>
-                <p className="font-['Gaegu'] text-[16px] md:text-[18px] lg:text-[20px] text-[#8c8fa6] leading-relaxed max-w-2xl">
-                  {selectedProject.description}
-                </p>
-              </div>
+              <h1 className="text-[42px] font-['Solway'] text-[#474747] mb-4">{selectedProject.title}</h1>
+              <p className="font-['Gaegu'] text-[20px] text-[#8c8fa6] mb-12 leading-[24px]">{selectedProject.description}</p>
 
-              {/* Hero Image with Tags */}
               {selectedProject.image && (
-                <div className="mb-12 md:mb-16">
-                  <div className="relative rounded-2xl overflow-hidden border-[3px] border-[#474747] shadow-lg">
-                    <ImageWithFallback
-                      src={selectedProject.image}
-                      alt={selectedProject.title}
-                      className="w-full aspect-video object-cover"
-                    />
-                  </div>
-                  
-                  {/* Tags Below Image */}
-                  {selectedProject.tags && selectedProject.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-6">
-                      {selectedProject.tags.map((tag, i) => (
-                        <span
-                          key={i}
-                          className="px-3 md:px-4 py-1.5 md:py-2 bg-white border-2 border-[#474747] rounded-full text-[13px] md:text-[14px] font-['Gaegu'] text-[#474747] uppercase tracking-wide"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                <div className="mb-12 rounded-xl overflow-hidden border-[3px] border-[#474747]">
+                  <ImageWithFallback
+                    src={selectedProject.image}
+                    alt={selectedProject.title}
+                    className="w-full aspect-video object-cover"
+                  />
+                </div>
+              )}
+
+              {selectedProject.tags && selectedProject.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-12">
+                  {selectedProject.tags.map((tag, i) => (
+                    <span
+                      key={i}
+                      className="px-4 py-2 bg-[#f8f9fc] border-2 border-[#e5e7f0] rounded-lg text-[16px] font-['Gaegu'] text-[#474747]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               )}
 
               {/* Project Content Blocks */}
               {selectedProject.blocks && selectedProject.blocks.length > 0 && (
-                <div className="space-y-16 md:space-y-20 mb-16">
+                <div className="space-y-6 mb-12">
                   {selectedProject.blocks
                     .sort((a, b) => a.order - b.order)
-                    .map((block, idx) => (
-                      <motion.div
-                        key={block.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                      >
+                    .map((block) => (
+                      <div key={block.id}>
                         {block.type === 'text' ? (
-                          <div className="prose prose-lg max-w-none project-content-block">
-                            <div
-                              className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-relaxed"
-                              style={{
-                                lineHeight: '1.8'
-                              }}
-                              dangerouslySetInnerHTML={{ __html: block.content }}
-                            />
-                          </div>
+                          <div
+                            className="font-['Gaegu'] text-[18px] text-[#474747] leading-[1.65] prose prose-lg max-w-none"
+                            dangerouslySetInnerHTML={{ __html: block.content }}
+                          />
                         ) : (
                           block.content && (
-                            <div className="rounded-xl overflow-hidden border-[3px] border-[#474747] shadow-md">
+                            <div className="rounded-lg overflow-hidden">
                               <ImageWithFallback
                                 src={block.content}
                                 alt="Project content"
@@ -288,19 +214,17 @@ export function ProjectsSection() {
                             </div>
                           )
                         )}
-                      </motion.div>
+                      </div>
                     ))}
                 </div>
               )}
 
-              {/* Footer Navigation */}
-              <div className="mt-16 md:mt-20 pt-8 border-t-2 border-[#474747]">
+              <div className="mt-16 pt-8 border-t-2 border-[#474747]">
                 <button
                   onClick={() => setSelectedProject(null)}
-                  className="inline-flex items-center gap-2 font-['Gaegu'] text-[18px] md:text-[20px] text-[#474747] hover:text-[#8774ff] transition-colors"
+                  className="font-['Gaegu'] text-[20px] text-[#474747] hover:underline"
                 >
-                  <ArrowLeft className="w-5 h-5" />
-                  Back to all projects
+                  ← Back to all projects
                 </button>
               </div>
             </div>
