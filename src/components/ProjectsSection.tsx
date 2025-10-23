@@ -144,39 +144,41 @@ export function ProjectsSection() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => project.link ? window.open(project.link, '_blank') : setSelectedProject(project)}
-                className="group bg-white border-[2px] border-[#474747] rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
+                className="group bg-white border-[2px] border-[#474747] rounded-lg cursor-pointer hover:shadow-lg transition-all duration-300"
               >
-                <div className="flex flex-col md:flex-row">
+                <div className="flex flex-col sm:flex-row">
                   {/* Project Image */}
-                  {project.image && (
-                    <div className="relative w-full md:w-[240px] lg:w-[280px] h-[200px] md:h-[220px] flex-shrink-0 overflow-hidden bg-gray-100">
+                  <div className="relative w-full sm:w-[200px] md:w-[240px] lg:w-[280px] h-[180px] sm:h-[200px] md:h-[220px] flex-shrink-0 overflow-hidden bg-gray-100">
+                    {project.image ? (
                       <ImageWithFallback
                         src={project.image}
                         alt={project.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
-                      {/* Tag Badge */}
-                      {project.tags && project.tags.length > 0 && (
-                        <div className="absolute bottom-3 left-3 px-3 py-1 bg-white border-[1.5px] border-[#474747] rounded-md">
-                          <span className="text-[11px] md:text-[12px] font-['Gaegu'] text-[#474747] uppercase tracking-wider font-medium">
-                            {project.tags[0]}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                        <span className="text-[#8c8fa6] font-['Gaegu'] text-[16px]">No image</span>
+                      </div>
+                    )}
+                    {/* Tag Badge */}
+                    {project.tags && project.tags.length > 0 && (
+                      <div className="absolute bottom-3 left-3 px-3 py-1 bg-white border-[1.5px] border-[#474747] rounded-md shadow-sm">
+                        <span className="text-[11px] md:text-[12px] font-['Gaegu'] text-[#474747] uppercase tracking-wider font-medium">
+                          {project.tags[0]}
+                        </span>
+                      </div>
+                    )}
+                  </div>
 
-                  {/* Project Info */}
-                  <div className="flex-1 p-6 md:p-8">
-                    <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-3 leading-tight">
-                      {project.title}
+                  {/* Project Info - Always visible */}
+                  <div className="flex-1 p-5 sm:p-6 md:p-8 flex flex-col justify-center">
+                    <h3 className="text-[22px] sm:text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-2 md:mb-3 leading-tight">
+                      {project.title || 'Untitled Project'}
                     </h3>
                     
-                    {project.description && (
-                      <p className="font-['Gaegu'] text-[15px] md:text-[17px] text-[#8c8fa6] leading-relaxed line-clamp-4">
-                        {project.description}
-                      </p>
-                    )}
+                    <p className="font-['Gaegu'] text-[14px] sm:text-[15px] md:text-[17px] text-[#8c8fa6] leading-relaxed line-clamp-4">
+                      {project.description || 'No description available'}
+                    </p>
                   </div>
                 </div>
               </motion.div>
