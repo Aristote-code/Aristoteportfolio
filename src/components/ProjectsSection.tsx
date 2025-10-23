@@ -25,40 +25,38 @@ interface Project {
 
 function ProjectCard({ project }: { project: Project }) {
   return (
-    <div className="bg-white box-border content-stretch flex gap-[64px] items-center pl-[8px] pr-[64px] py-[8px] relative rounded-[16px] shrink-0 w-[700px]">
+    <div className="bg-white box-border content-stretch flex flex-col md:flex-row gap-[16px] md:gap-[64px] items-center md:items-center p-[12px] md:pl-[8px] md:pr-[64px] md:py-[8px] relative rounded-[16px] shrink-0 w-[280px] md:w-[700px]">
       {/* Image Container */}
-      <div className="relative shrink-0 size-[268px]">
+      <div className="relative shrink-0 w-full md:w-[268px] h-[180px] md:h-[268px]">
         <div className="absolute inset-0 overflow-clip rounded-[8px]">
-          <div className="absolute left-0 overflow-clip size-[268px] top-0">
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <ImageWithFallback
-                src={project.image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400'}
-                alt={project.title}
-                className="absolute h-full left-[-25.07%] max-w-none top-0 w-[150.15%] object-cover"
-              />
-            </div>
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <ImageWithFallback
+              src={project.image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400'}
+              alt={project.title}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="basis-0 box-border content-stretch flex flex-col gap-[24px] grow h-[252px] items-start min-h-px min-w-px pb-[42.4px] pt-[31px] px-0 relative shrink-0">
+      <div className="box-border content-stretch flex flex-col gap-[12px] md:gap-[24px] grow items-start md:items-start min-h-px min-w-px pb-[12px] md:pb-[42.4px] pt-[4px] md:pt-[31px] px-[4px] md:px-0 relative shrink-0 w-full text-center md:text-left">
         {/* Heading */}
-        <div className="box-border content-stretch flex flex-col items-start pb-[0.6px] pt-0 px-0 relative shrink-0 w-full">
-          <div className="flex flex-col font-['Solway',_sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#474747] text-[28px] w-full">
-            <p className="leading-[33.6px]">{project.title}</p>
+        <div className="box-border content-stretch flex flex-col items-center md:items-start relative shrink-0 w-full">
+          <div className="flex flex-col font-['Solway',_sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#474747] text-[20px] md:text-[28px] w-full">
+            <p className="leading-[24px] md:leading-[33.6px]">{project.title}</p>
           </div>
         </div>
         {/* Description */}
-        <div className="content-stretch flex flex-col items-start relative shrink-0 w-full">
-          <div className="flex flex-col font-['Gaegu',_sans-serif] justify-center leading-[24px] not-italic relative shrink-0 text-[#8c8fa6] text-[20px] w-full">
+        <div className="content-stretch flex flex-col items-center md:items-start relative shrink-0 w-full">
+          <div className="flex flex-col font-['Gaegu',_sans-serif] justify-center leading-[19.2px] md:leading-[24px] not-italic relative shrink-0 text-[#8c8fa6] text-[16px] md:text-[20px] w-full">
             <p>{project.description || 'No description available.'}</p>
           </div>
         </div>
       </div>
 
       {/* Hand-drawn Border SVG */}
-      <div className="absolute inset-[-9px_-5px_-9px_-11px]">
+      <div className="absolute inset-[-6px] md:inset-[-9px_-5px_-9px_-11px]">
         <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 716 302">
           <g id="svg1435461913_528">
             <path d={svgPaths.p151fe80} id="Vector" stroke="#474747" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3.09506" />

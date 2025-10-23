@@ -113,9 +113,6 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   }) => (
     <button
       type="button"
-      onMouseDown={(e) => {
-        e.preventDefault(); // Prevent losing selection
-      }}
       onClick={(e) => {
         e.preventDefault();
         onClick();

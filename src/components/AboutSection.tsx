@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { StickyNote } from './StickyNote';
-import { Linkedin, Github, Mail, Twitter, Dribbble } from 'lucide-react';
+import { Linkedin, Github, Mail, Twitter } from 'lucide-react';
+import profileImage from 'figma:asset/ad92ed337531b9fe2db9165a108b0ea27479a71c.png';
 
 export function AboutSection() {
   const handleDownloadResume = () => {
@@ -29,78 +30,174 @@ export function AboutSection() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative h-[500px] md:h-[888px] mx-auto w-full max-w-[328px]"
+            className="relative md:h-[888px] mx-auto w-full max-w-[328px]"
           >
-            {/* Sticky notes */}
-            <div className="absolute top-[286px] left-[45px]">
-              <StickyNote
-                text="5+ years&#10;in startups"
-                color="green"
-                rotation={0}
-                draggable={true}
-              />
-            </div>
-
-            <div className="absolute bottom-[253px] left-[138px]">
-              <StickyNote
-                text="Kigali"
-                color="cyan"
-                rotation={0}
-                draggable={true}
-              />
-            </div>
-
-            <div className="absolute top-[323px] left-[182px]">
-              <StickyNote
-                text="versatile&#10;skill pool"
-                color="pink"
-                rotation={0}
-                draggable={true}
-              />
-            </div>
-
-            <div className="absolute bottom-[311px] left-[24px]">
-              <StickyNote
-                text="Over five&#10;years of&#10;experience&#10;in the&#10;industry"
-                color="yellow"
-                rotation={0}
-                draggable={true}
-              />
-            </div>
-
-            <div className="absolute bottom-[106px] left-[89px]">
-              <StickyNote
-                text="Digital&#10;Product&#10;Innovator"
-                color="purple"
-                rotation={0}
-                draggable={true}
-              />
-            </div>
-
-            <div className="absolute bottom-[7px] left-[177px]">
-              <StickyNote
-                text="vibe&#10;coder"
-                color="yellow"
-                rotation={0}
-                draggable={true}
-              />
-            </div>
-
-            {/* Profile card */}
-            <div className="absolute top-[17px] left-[61px] w-[233px] h-[231px]">
-              <div className="absolute left-[35px] top-[28px] w-[119px] h-[119px]">
-                {/* Image container - simplified */}
-                <div className="relative w-[119px] h-[119px] rounded-full overflow-hidden bg-[#e7e7e7] border-[3px] border-solid border-[#474747]">
-                  <img 
-                    src="/Profile image1.png" 
-                    alt="Gahima Aristote" 
-                    className="w-full h-full object-cover"
-                    style={{ objectPosition: '50% 35%', transform: 'scale(0.85)' }}
-                  />
+            {/* Mobile layout: Profile first, then stickers in grid */}
+            <div className="md:hidden flex flex-col items-center">
+              {/* Profile card */}
+              <div className="mb-8">
+                <div className="flex flex-col items-center">
+                  {/* Image container with Figma styling */}
+                  <div className="relative w-[119px] h-[119px] rounded-full overflow-hidden bg-[#e7e7e7] mb-4">
+                    <div 
+                      className="absolute flex items-center justify-center left-[-48.44px] top-[-118.49px]"
+                      style={{
+                        width: 'calc(1px * ((281.203125 * 0.04331187903881073) + (205.140625 * 0.9990615844726562)))',
+                        height: 'calc(1px * ((205.140625 * 0.04331187903881073) + (281.203125 * 0.9990615844726562)))'
+                      }}
+                    >
+                      <div className="flex-none" style={{ transform: 'rotate(357.518deg)' }}>
+                        <div className="relative w-[205.142px] h-[281.213px]">
+                          <img 
+                            src={profileImage} 
+                            alt="Gahima Aristote" 
+                            className="absolute inset-0 w-full h-full object-cover max-w-none pointer-events-none"
+                            style={{ objectPosition: '50% 50%' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Border overlay */}
+                    <div 
+                      aria-hidden="true" 
+                      className="absolute inset-0 border-[3px] border-solid border-[#474747] rounded-full pointer-events-none"
+                    />
+                  </div>
+                  <p className="text-[32px] font-['Gaegu'] text-[#474747] text-center leading-[38.4px]">Yours Truly</p>
                 </div>
               </div>
-              <div className="absolute bottom-0 right-[7px]">
-                <p className="text-[32px] font-['Gaegu'] text-[#474747] text-center leading-[38.4px]">Yours Truly</p>
+
+              {/* Sticky notes in grid */}
+              <div className="grid grid-cols-2 gap-4 mb-12">
+                <StickyNote
+                  text="5+ years&#10;in startups"
+                  color="green"
+                  rotation={0}
+                  draggable={true}
+                />
+                <StickyNote
+                  text="Kigali"
+                  color="cyan"
+                  rotation={0}
+                  draggable={true}
+                />
+                <StickyNote
+                  text="versatile&#10;skill pool"
+                  color="pink"
+                  rotation={0}
+                  draggable={true}
+                />
+                <StickyNote
+                  text="Over five&#10;years of&#10;experience&#10;in the&#10;industry"
+                  color="yellow"
+                  rotation={0}
+                  draggable={true}
+                />
+                <StickyNote
+                  text="Digital&#10;Product&#10;Innovator"
+                  color="purple"
+                  rotation={0}
+                  draggable={true}
+                />
+                <StickyNote
+                  text="vibe&#10;coder"
+                  color="yellow"
+                  rotation={0}
+                  draggable={true}
+                />
+              </div>
+            </div>
+
+            {/* Desktop layout: Absolute positioned as before */}
+            <div className="hidden md:block relative h-[888px]">
+              {/* Sticky notes */}
+              <div className="absolute top-[286px] left-[45px]">
+                <StickyNote
+                  text="5+ years&#10;in startups"
+                  color="green"
+                  rotation={0}
+                  draggable={true}
+                />
+              </div>
+
+              <div className="absolute bottom-[253px] left-[138px]">
+                <StickyNote
+                  text="Kigali"
+                  color="cyan"
+                  rotation={0}
+                  draggable={true}
+                />
+              </div>
+
+              <div className="absolute top-[323px] left-[182px]">
+                <StickyNote
+                  text="versatile&#10;skill pool"
+                  color="pink"
+                  rotation={0}
+                  draggable={true}
+                />
+              </div>
+
+              <div className="absolute bottom-[311px] left-[24px]">
+                <StickyNote
+                  text="Over five&#10;years of&#10;experience&#10;in the&#10;industry"
+                  color="yellow"
+                  rotation={0}
+                  draggable={true}
+                />
+              </div>
+
+              <div className="absolute bottom-[106px] left-[89px]">
+                <StickyNote
+                  text="Digital&#10;Product&#10;Innovator"
+                  color="purple"
+                  rotation={0}
+                  draggable={true}
+                />
+              </div>
+
+              <div className="absolute bottom-[7px] left-[177px]">
+                <StickyNote
+                  text="vibe&#10;coder"
+                  color="yellow"
+                  rotation={0}
+                  draggable={true}
+                />
+              </div>
+
+              {/* Profile card */}
+              <div className="absolute top-[17px] left-[61px] w-[233px] h-[231px]">
+                <div className="absolute left-[35px] top-[28px] w-[119px] h-[119px]">
+                  {/* Image container with Figma styling */}
+                  <div className="relative w-[119px] h-[119px] rounded-full overflow-hidden bg-[#e7e7e7]">
+                    <div 
+                      className="absolute flex items-center justify-center left-[-48.44px] top-[-118.49px]"
+                      style={{
+                        width: 'calc(1px * ((281.203125 * 0.04331187903881073) + (205.140625 * 0.9990615844726562)))',
+                        height: 'calc(1px * ((205.140625 * 0.04331187903881073) + (281.203125 * 0.9990615844726562)))'
+                      }}
+                    >
+                      <div className="flex-none" style={{ transform: 'rotate(357.518deg)' }}>
+                        <div className="relative w-[205.142px] h-[281.213px]">
+                          <img 
+                            src={profileImage} 
+                            alt="Gahima Aristote" 
+                            className="absolute inset-0 w-full h-full object-cover max-w-none pointer-events-none"
+                            style={{ objectPosition: '50% 50%' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Border overlay */}
+                    <div 
+                      aria-hidden="true" 
+                      className="absolute inset-0 border-[3px] border-solid border-[#474747] rounded-full pointer-events-none"
+                    />
+                  </div>
+                </div>
+                <div className="absolute bottom-0 right-[7px]">
+                  <p className="text-[32px] font-['Gaegu'] text-[#474747] text-center leading-[38.4px]">Yours Truly</p>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -119,7 +216,6 @@ export function AboutSection() {
                 {[
                   { icon: Linkedin, href: 'https://www.linkedin.com/in/gahima-aristote/' },
                   { icon: Github, href: 'https://github.com/Aristote-code' },
-                  { icon: Dribbble, href: 'https://dribbble.com/Aristote1' },
                   { icon: Mail, href: 'mailto:gahimaaristote1@gmail.com' },
                   { icon: Twitter, href: 'https://x.com/GAristote' }
                 ].map((link, i) => (
