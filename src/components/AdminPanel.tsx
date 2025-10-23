@@ -199,7 +199,12 @@ export function AdminPanel() {
   const fetchProjects = async () => {
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/projects`
+        `https://${projectId}.supabase.co/functions/v1/server/projects`,
+        {
+          headers: {
+            'Authorization': `Bearer ${publicAnonKey}`,
+          },
+        }
       );
 
       const data = await response.json();
