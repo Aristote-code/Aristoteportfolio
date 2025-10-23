@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { StickyNote } from './StickyNote';
 import { Linkedin, Github, Mail, Twitter } from 'lucide-react';
-import profileImage from 'figma:asset/ad92ed337531b9fe2db9165a108b0ea27479a71c.png';
+import profileImage from '../assets/ad92ed337531b9fe2db9165a108b0ea27479a71c.png';
 
 export function AboutSection() {
   const handleDownloadResume = () => {
