@@ -551,10 +551,13 @@ export function AdminPanel() {
                   value={selectedProject.image}
                   onChange={(url) => setSelectedProject({ ...selectedProject, image: url })}
                   onRemove={() => setSelectedProject({ ...selectedProject, image: '' })}
-                  aspectRatio="aspect-video"
+                  aspectRatio="aspect-[4/3]"
                 />
                 <p className="mt-2 font-['Gaegu'] text-[14px] text-[#8c8fa6]">
-                  📐 Recommended: 1200x675px (16:9 ratio) • Max 5MB
+                  📐 Recommended: 800x600px or 1000x750px (4:3 ratio) • Max 5MB
+                </p>
+                <p className="mt-1 font-['Gaegu'] text-[13px] text-[#8c8fa6]">
+                  💡 Images will be cropped to fill the card (320x260px display)
                 </p>
               </div>
 

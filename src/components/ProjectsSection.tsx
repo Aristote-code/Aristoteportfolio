@@ -144,16 +144,16 @@ export function ProjectsSection() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => project.link ? window.open(project.link, '_blank') : setSelectedProject(project)}
-                className="group bg-white border-[3px] border-[#474747] rounded-2xl p-6 md:p-8 cursor-pointer hover:shadow-xl transition-all duration-300"
+                className="group bg-white border-[3px] border-[#474747] rounded-2xl p-6 md:p-8 cursor-pointer hover:shadow-xl transition-all duration-300 min-h-[320px] md:min-h-[300px]"
               >
-                <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+                <div className="flex flex-col md:flex-row gap-6 md:gap-8 h-full">
                   {/* Project Image */}
                   <div className="relative w-full md:w-[320px] lg:w-[380px] h-[240px] md:h-[260px] flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
                     {project.image ? (
                       <ImageWithFallback
                         src={project.image}
                         alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-200">
@@ -171,12 +171,12 @@ export function ProjectsSection() {
                   </div>
 
                   {/* Project Info */}
-                  <div className="flex-1 flex flex-col justify-center">
-                    <h3 className="text-[32px] md:text-[36px] lg:text-[42px] font-['Solway'] text-[#474747] mb-4 leading-[1.1]">
+                  <div className="flex-1 flex flex-col justify-center min-h-0">
+                    <h3 className="text-[32px] md:text-[36px] lg:text-[42px] font-['Solway'] text-[#474747] mb-4 leading-[1.1] line-clamp-2">
                       {project.title || 'Untitled Project'}
                     </h3>
                     
-                    <p className="font-['Gaegu'] text-[17px] md:text-[19px] lg:text-[20px] text-[#8c8fa6] leading-[1.6]">
+                    <p className="font-['Gaegu'] text-[17px] md:text-[19px] lg:text-[20px] text-[#8c8fa6] leading-[1.6] line-clamp-4">
                       {project.description || 'No description available'}
                     </p>
                   </div>
