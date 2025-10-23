@@ -135,7 +135,7 @@ export function ProjectsSection() {
           )}
 
           {/* Projects List - Horizontal Card Layout */}
-          <div className="space-y-6 md:space-y-8">
+          <div className="space-y-8 md:space-y-10">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
@@ -144,12 +144,12 @@ export function ProjectsSection() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => project.link ? window.open(project.link, '_blank') : setSelectedProject(project)}
-                className="group bg-white border-[3px] border-[#474747] rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                className="group bg-white border-[2px] border-[#474747] rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
               >
-                <div className="flex flex-col md:flex-row md:items-center">
+                <div className="flex flex-col md:flex-row">
                   {/* Project Image */}
                   {project.image && (
-                    <div className="relative w-full md:w-[45%] lg:w-[40%] h-[240px] md:h-[280px] flex-shrink-0 overflow-hidden bg-gray-100">
+                    <div className="relative w-full md:w-[240px] lg:w-[280px] h-[200px] md:h-[220px] flex-shrink-0 overflow-hidden bg-gray-100">
                       <ImageWithFallback
                         src={project.image}
                         alt={project.title}
@@ -157,8 +157,8 @@ export function ProjectsSection() {
                       />
                       {/* Tag Badge */}
                       {project.tags && project.tags.length > 0 && (
-                        <div className="absolute bottom-4 left-4 px-3 py-1.5 bg-white/95 backdrop-blur-sm border-2 border-[#474747] rounded-full">
-                          <span className="text-[12px] md:text-[13px] font-['Gaegu'] text-[#474747] uppercase tracking-wide font-medium">
+                        <div className="absolute bottom-3 left-3 px-3 py-1 bg-white border-[1.5px] border-[#474747] rounded-md">
+                          <span className="text-[11px] md:text-[12px] font-['Gaegu'] text-[#474747] uppercase tracking-wider font-medium">
                             {project.tags[0]}
                           </span>
                         </div>
@@ -167,13 +167,13 @@ export function ProjectsSection() {
                   )}
 
                   {/* Project Info */}
-                  <div className="flex-1 p-6 md:p-8 lg:p-10">
-                    <h3 className="text-[28px] md:text-[32px] lg:text-[36px] font-['Solway'] text-[#474747] mb-3 md:mb-4 leading-tight">
+                  <div className="flex-1 p-6 md:p-8">
+                    <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-3 leading-tight">
                       {project.title}
                     </h3>
                     
                     {project.description && (
-                      <p className="font-['Gaegu'] text-[16px] md:text-[18px] lg:text-[20px] text-[#8c8fa6] leading-relaxed line-clamp-3">
+                      <p className="font-['Gaegu'] text-[15px] md:text-[17px] text-[#8c8fa6] leading-relaxed line-clamp-4">
                         {project.description}
                       </p>
                     )}
