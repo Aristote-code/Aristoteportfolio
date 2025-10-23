@@ -55,6 +55,62 @@ export function ProjectsSection() {
 
   return (
     <>
+      <style>{`
+        .project-content-block h1 {
+          font-size: 36px;
+          font-weight: 700;
+          margin: 24px 0 16px 0;
+          line-height: 1.2;
+          font-family: 'Solway', serif;
+          color: #474747;
+        }
+        
+        .project-content-block h2 {
+          font-size: 28px;
+          font-weight: 600;
+          margin: 20px 0 12px 0;
+          line-height: 1.3;
+          font-family: 'Solway', serif;
+          color: #474747;
+        }
+        
+        .project-content-block h3 {
+          font-size: 22px;
+          font-weight: 600;
+          margin: 16px 0 8px 0;
+          line-height: 1.3;
+          font-family: 'Solway', serif;
+          color: #474747;
+        }
+        
+        .project-content-block p {
+          margin: 10px 0;
+          line-height: 1.8;
+        }
+        
+        .project-content-block ul,
+        .project-content-block ol {
+          margin: 12px 0;
+          padding-left: 24px;
+        }
+        
+        .project-content-block li {
+          margin: 6px 0;
+        }
+        
+        .project-content-block blockquote {
+          border-left: 3px solid #e5e7f0;
+          padding-left: 16px;
+          margin: 16px 0;
+          color: #8c8fa6;
+          font-style: italic;
+        }
+        
+        .project-content-block a {
+          color: #8774ff;
+          text-decoration: underline;
+        }
+      `}</style>
       <section className="min-h-screen py-16 md:py-32 px-4 md:px-8">
         <div className="w-full max-w-[720px] mx-auto">
           {/* Title */}
@@ -199,7 +255,7 @@ export function ProjectsSection() {
 
               {/* Project Content Blocks */}
               {selectedProject.blocks && selectedProject.blocks.length > 0 && (
-                <div className="space-y-12 md:space-y-16 mb-16">
+                <div className="space-y-16 md:space-y-20 mb-16">
                   {selectedProject.blocks
                     .sort((a, b) => a.order - b.order)
                     .map((block, idx) => (
@@ -210,9 +266,12 @@ export function ProjectsSection() {
                         transition={{ delay: idx * 0.1 }}
                       >
                         {block.type === 'text' ? (
-                          <div className="prose prose-lg max-w-none">
+                          <div className="prose prose-lg max-w-none project-content-block">
                             <div
                               className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-relaxed"
+                              style={{
+                                lineHeight: '1.8'
+                              }}
                               dangerouslySetInnerHTML={{ __html: block.content }}
                             />
                           </div>

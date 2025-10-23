@@ -516,16 +516,32 @@ export function AdminPanel() {
 
               {/* Project Description */}
               <div className="mb-6">
-                <label className="block font-['Gaegu'] text-[18px] text-[#474747] mb-3">
-                  Short Description *
-                </label>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block font-['Gaegu'] text-[18px] text-[#474747]">
+                    Short Description *
+                  </label>
+                  <span className={`font-['Gaegu'] text-[14px] ${
+                    selectedProject.description.length > 180 ? 'text-red-500' : 'text-[#8c8fa6]'
+                  }`}>
+                    {selectedProject.description.length}/180
+                  </span>
+                </div>
                 <textarea
                   value={selectedProject.description}
-                  onChange={(e) => setSelectedProject({ ...selectedProject, description: e.target.value })}
-                  placeholder="Brief description of the project..."
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value.length <= 180) {
+                      setSelectedProject({ ...selectedProject, description: value });
+                    }
+                  }}
+                  placeholder="Brief description of the project (max 180 characters)..."
                   rows={3}
+                  maxLength={180}
                   className="w-full px-4 py-3 border border-[#e5e7f0] rounded-lg font-['Gaegu'] text-[18px] text-[#474747] placeholder:text-[#d0d0d0] focus:outline-none focus:border-[#8774ff] focus:ring-2 focus:ring-[#8774ff]/20 transition-all resize-none"
                 />
+                <p className="mt-2 font-['Gaegu'] text-[14px] text-[#8c8fa6]">
+                  💡 Keep it concise - this appears on the project card
+                </p>
               </div>
 
               {/* Project Cover Image */}
@@ -537,6 +553,9 @@ export function AdminPanel() {
                   onRemove={() => setSelectedProject({ ...selectedProject, image: '' })}
                   aspectRatio="aspect-video"
                 />
+                <p className="mt-2 font-['Gaegu'] text-[14px] text-[#8c8fa6]">
+                  📐 Recommended: 1200x675px (16:9 ratio) • Max 5MB
+                </p>
               </div>
 
               {/* Tags */}

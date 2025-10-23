@@ -274,28 +274,35 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         }
         
         [contenteditable] h1 {
-          font-size: 28px;
-          font-weight: 600;
-          margin: 12px 0 8px 0;
-          line-height: 1.3;
+          font-size: 36px;
+          font-weight: 700;
+          margin: 24px 0 16px 0;
+          line-height: 1.2;
+          font-family: 'Solway', serif;
+          color: #474747;
         }
         
         [contenteditable] h2 {
-          font-size: 24px;
+          font-size: 28px;
           font-weight: 600;
-          margin: 10px 0 6px 0;
+          margin: 20px 0 12px 0;
           line-height: 1.3;
+          font-family: 'Solway', serif;
+          color: #474747;
         }
         
         [contenteditable] h3 {
-          font-size: 20px;
+          font-size: 22px;
           font-weight: 600;
-          margin: 8px 0 4px 0;
+          margin: 16px 0 8px 0;
           line-height: 1.3;
+          font-family: 'Solway', serif;
+          color: #474747;
         }
         
         [contenteditable] p {
-          margin: 6px 0;
+          margin: 10px 0;
+          line-height: 1.7;
         }
         
         [contenteditable] ul,
