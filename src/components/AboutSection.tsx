@@ -95,7 +95,7 @@ export function AboutSection() {
                     src="/Profile image.png" 
                     alt="Gahima Aristote" 
                     className="w-full h-full object-cover"
-                    style={{ objectPosition: '50% 20%' }}
+                    style={{ objectPosition: '50% 35%', transform: 'scale(0.85)' }}
                   />
                 </div>
               </div>
