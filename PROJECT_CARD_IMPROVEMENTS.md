@@ -40,12 +40,19 @@
   - H3: 16px top, 8px bottom
 - ✅ Consistent spacing between paragraphs and images
 
-### 7. **Project Card Design Enhancements**
-- ✅ Cards display: Image (left) + Title + Description (right)
-- ✅ Tag badge overlays on image (bottom-left corner)
-- ✅ Proper text truncation with `line-clamp-3` for descriptions
-- ✅ Hover effects with smooth transitions
-- ✅ Responsive design for mobile and desktop
+### 7. **Project Listing Card Design** (Updated!)
+- ✅ **Cleaner borders**: 2px instead of 3px for refined look
+- ✅ **Fixed image width**: 240-280px (left side)
+- ✅ **Image height**: 200-220px for consistent proportions
+- ✅ **Tag badge**: Positioned bottom-left on image with "USE CASE" style
+- ✅ **Border style**: Rounded corners (rounded-lg) with solid border
+- ✅ **Title**: 24-28px Solway font
+- ✅ **Description**: 15-17px with 4-line truncation
+- ✅ **Spacing**: 8-10 units between cards
+- ✅ **Hover effect**: Subtle shadow lift (no transform)
+- ✅ **Layout**: Image (left) + Title & Description (right)
+- ✅ **Background**: Clean white
+- ✅ **Responsive**: Stacks vertically on mobile
 
 ## How to Use
 
