@@ -47,6 +47,8 @@ const supabase = createClient(
 // Helper function to verify admin authentication
 async function verifyAdmin(authHeader: string | null, adminKeyHeader: string | null) {
   // Check for admin key in X-Admin-Key header first
+  // ⚠️ SECURITY WARNING: The default fallback key is weak!
+  // Set a strong ADMIN_KEY in Supabase secrets: supabase secrets set ADMIN_KEY=your_secure_key
   const adminKey = Deno.env.get('ADMIN_KEY') || 'admin_key_aristote_2025';
   if (adminKeyHeader === adminKey) {
     return true;
@@ -297,6 +299,7 @@ Time: ${new Date(timestamp).toLocaleString()}
       },
       body: JSON.stringify({
         from: 'Portfolio Notifications <onboarding@resend.dev>',
+        // ⚠️ SECURITY NOTE: Replace with your email or use environment variable
         to: ['gahimaaristote1@gmail.com'],
         subject: `👋 ${userName} just joined your portfolio`,
         html: htmlBody,
@@ -438,6 +441,7 @@ Reply to: ${sanitizedEmail}
       },
       body: JSON.stringify({
         from: 'Portfolio Contact <onboarding@resend.dev>',
+        // ⚠️ SECURITY NOTE: Replace with your email or use environment variable
         to: ['gahimaaristote1@gmail.com'],
         reply_to: sanitizedEmail,
         subject: `New message from ${sanitizedName}`,
