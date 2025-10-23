@@ -7,7 +7,7 @@ import { ImageUpload } from './ImageUpload';
 // Hardcoded admin credentials
 const ADMIN_EMAIL = 'gahimaaristote1@gmail.com';
 const ADMIN_PASSWORD = 'Ari#toteprince1960';
-const ADMIN_KEY = 'VEL2wqPf65Kdi7D7c+ApJIZsm7OBzCXPLR3Y16XgFTE=';
+const ADMIN_KEY = 'wH/KrBmVC3jJX2+tAPrVbIO+L0hxfJQ0qOozmvxBEy4=';
 
 interface ContentBlock {
   id: string;
