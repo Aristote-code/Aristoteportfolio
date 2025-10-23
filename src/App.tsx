@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { FigJamBackground } from './components/FigJamBackground';
 import { IconNavigation } from './components/IconNavigation';
 import { HomeSection } from './components/HomeSection';
@@ -575,6 +576,9 @@ export default function App() {
           </div>
         </div>
       )}
+      
+      {/* Vercel Analytics */}
+      <Analytics />
     </div>
   );
 }

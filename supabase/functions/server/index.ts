@@ -33,7 +33,7 @@ app.use('*', cors({
   },
   credentials: true,
   allowMethods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-Admin-Key'],
   exposeHeaders: ['Content-Length', 'X-Request-Id'],
   maxAge: 600, // 10 minutes
 }));
