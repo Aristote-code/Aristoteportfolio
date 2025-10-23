@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Plus, Trash2, GripVertical, Image as ImageIcon, Type, LogOut, MoreHorizontal, X } from 'lucide-react';
-import { projectId } from '../utils/supabase/info';
+import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { RichTextEditor } from './RichTextEditor';
 import { ImageUpload } from './ImageUpload';
 
@@ -140,7 +140,12 @@ export function AdminPanel() {
       // Check if server is available
       const healthCheck = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/health`,
-        { method: 'GET' }
+        { 
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${publicAnonKey}`
+          }
+        }
       );
       
       if (healthCheck.ok) {
