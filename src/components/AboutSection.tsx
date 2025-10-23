@@ -101,7 +101,7 @@ export function AboutSection() {
                     <div className="flex-none" style={{ transform: 'rotate(357.518deg)' }}>
                       <div className="relative w-[205.142px] h-[281.213px]">
                         <img 
-                          src="/profile.png" 
+                          src="/Profile image.png" 
                           alt="Gahima Aristote" 
                           className="absolute inset-0 w-full h-full object-cover max-w-none pointer-events-none"
                           style={{ objectPosition: '50% 50%' }}
