@@ -92,7 +92,7 @@ export function AboutSection() {
                 {/* Image container - simplified */}
                 <div className="relative w-[119px] h-[119px] rounded-full overflow-hidden bg-[#e7e7e7] border-[3px] border-solid border-[#474747]">
                   <img 
-                    src="/Profile image.png" 
+                    src="/Profile image1.png" 
                     alt="Gahima Aristote" 
                     className="w-full h-full object-cover"
                     style={{ objectPosition: '50% 35%', transform: 'scale(0.85)' }}
