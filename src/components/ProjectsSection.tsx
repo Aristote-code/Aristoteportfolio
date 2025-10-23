@@ -135,7 +135,7 @@ export function ProjectsSection() {
           )}
 
           {/* Projects List - Horizontal Card Layout */}
-          <div className="space-y-8 md:space-y-10">
+          <div className="space-y-10 md:space-y-12">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
@@ -144,11 +144,11 @@ export function ProjectsSection() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => project.link ? window.open(project.link, '_blank') : setSelectedProject(project)}
-                className="group bg-white border-[2px] border-[#474747] rounded-lg cursor-pointer hover:shadow-lg transition-all duration-300"
+                className="group bg-white border-[3px] border-[#474747] rounded-2xl p-6 md:p-8 cursor-pointer hover:shadow-xl transition-all duration-300"
               >
-                <div className="flex flex-col sm:flex-row">
+                <div className="flex flex-col md:flex-row gap-6 md:gap-8">
                   {/* Project Image */}
-                  <div className="relative w-full sm:w-[200px] md:w-[240px] lg:w-[280px] h-[180px] sm:h-[200px] md:h-[220px] flex-shrink-0 overflow-hidden bg-gray-100">
+                  <div className="relative w-full md:w-[320px] lg:w-[380px] h-[240px] md:h-[260px] flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
                     {project.image ? (
                       <ImageWithFallback
                         src={project.image}
@@ -162,21 +162,21 @@ export function ProjectsSection() {
                     )}
                     {/* Tag Badge */}
                     {project.tags && project.tags.length > 0 && (
-                      <div className="absolute bottom-3 left-3 px-3 py-1 bg-white border-[1.5px] border-[#474747] rounded-md shadow-sm">
-                        <span className="text-[11px] md:text-[12px] font-['Gaegu'] text-[#474747] uppercase tracking-wider font-medium">
+                      <div className="absolute bottom-4 left-4 px-4 py-2 bg-white/95 backdrop-blur-sm rounded-lg shadow-md">
+                        <span className="text-[13px] md:text-[14px] font-['Gaegu'] text-[#474747] uppercase tracking-[0.1em] font-semibold">
                           {project.tags[0]}
                         </span>
                       </div>
                     )}
                   </div>
 
-                  {/* Project Info - Always visible */}
-                  <div className="flex-1 p-5 sm:p-6 md:p-8 flex flex-col justify-center">
-                    <h3 className="text-[22px] sm:text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-2 md:mb-3 leading-tight">
+                  {/* Project Info */}
+                  <div className="flex-1 flex flex-col justify-center">
+                    <h3 className="text-[32px] md:text-[36px] lg:text-[42px] font-['Solway'] text-[#474747] mb-4 leading-[1.1]">
                       {project.title || 'Untitled Project'}
                     </h3>
                     
-                    <p className="font-['Gaegu'] text-[14px] sm:text-[15px] md:text-[17px] text-[#8c8fa6] leading-relaxed line-clamp-4">
+                    <p className="font-['Gaegu'] text-[17px] md:text-[19px] lg:text-[20px] text-[#8c8fa6] leading-[1.6]">
                       {project.description || 'No description available'}
                     </p>
                   </div>
