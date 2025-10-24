@@ -525,6 +525,10 @@
     top: 323px;
   }
 
+  .top-full {
+    top: 100%;
+  }
+
   .right-2 {
     right: calc(var(--spacing) * 2);
   }
@@ -802,6 +806,10 @@
     display: block;
   }
 
+  .contents {
+    display: contents;
+  }
+
   .flex {
     display: flex;
   }
@@ -812,6 +820,10 @@
 
   .hidden {
     display: none;
+  }
+
+  .inline {
+    display: inline;
   }
 
   .inline-block {
@@ -933,6 +945,10 @@
 
   .h-full {
     height: 100%;
+  }
+
+  .max-h-\[200px\] {
+    max-height: 200px;
   }
 
   .max-h-\[300px\] {

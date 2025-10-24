@@ -1,16 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { 
   Bold, 
   Italic, 
   Underline, 
   Strikethrough, 
   Link as LinkIcon, 
-  Heading1,
-  Heading2,
-  Heading3,
   List,
   ListOrdered,
   Quote,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Type,
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -19,14 +20,50 @@ interface RichTextEditorProps {
   placeholder?: string;
 }
 
+const FONT_SIZES = [12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 42, 48, 52, 60, 72];
+
 export function RichTextEditor({ value, onChange, placeholder = 'Start writing...' }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const [currentFontSize, setCurrentFontSize] = useState<number>(20);
+  const [showFontSizes, setShowFontSizes] = useState(false);
 
   // Initialize content
   useEffect(() => {
     if (editorRef.current && !editorRef.current.innerHTML && value) {
       editorRef.current.innerHTML = value;
     }
+  }, [value]);
+
+  // Track font size of current selection
+  useEffect(() => {
+    const updateFontSize = () => {
+      const selection = window.getSelection();
+      if (selection && selection.anchorNode && editorRef.current?.contains(selection.anchorNode)) {
+        let node = selection.anchorNode as HTMLElement;
+        if (node.nodeType === 3) { // Text node
+          node = node.parentElement as HTMLElement;
+        }
+        if (node && node.style) {
+          const fontSize = window.getComputedStyle(node).fontSize;
+          const size = parseInt(fontSize);
+          if (!isNaN(size)) {
+            setCurrentFontSize(size);
+          }
+        }
+      }
+    };
+
+    const handleSelectionChange = () => {
+      updateFontSize();
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    editorRef.current?.addEventListener('click', updateFontSize);
+    
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+      editorRef.current?.removeEventListener('click', updateFontSize);
+    };
   }, []);
 
   const handleInput = () => {
@@ -38,14 +75,58 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   const execCommand = (command: string, value?: string) => {
     document.execCommand(command, false, value);
     editorRef.current?.focus();
+    if (editorRef.current) {
+      onChange(editorRef.current.innerHTML);
+    }
   };
 
-  const formatBlock = (tag: string) => {
-    document.execCommand('formatBlock', false, tag);
+  const setFontSize = (size: number) => {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed) {
+      // If no selection, just set the current font size
+      setCurrentFontSize(size);
+      setShowFontSizes(false);
+      return;
+    }
+
+    // Save the selection
+    const range = selection.getRangeAt(0);
+    
+    // Create a span with the font size
+    const span = document.createElement('span');
+    span.style.fontSize = `${size}px`;
+    
+    try {
+      // Extract the contents and wrap them
+      const contents = range.extractContents();
+      span.appendChild(contents);
+      range.insertNode(span);
+      
+      // Restore selection
+      selection.removeAllRanges();
+      const newRange = document.createRange();
+      newRange.selectNodeContents(span);
+      selection.addRange(newRange);
+      
+      setCurrentFontSize(size);
+      if (editorRef.current) {
+        onChange(editorRef.current.innerHTML);
+      }
+    } catch (e) {
+      console.error('Error setting font size:', e);
+    }
+    
+    setShowFontSizes(false);
     editorRef.current?.focus();
   };
 
   const insertLink = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed) {
+      alert('Please select some text first');
+      return;
+    }
+
     const url = prompt('Enter URL:');
     if (url) {
       execCommand('createLink', url);
@@ -53,24 +134,11 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   };
 
   const isActive = (command: string): boolean => {
-    return document.queryCommandState(command);
-  };
-
-  const getBlockType = (): string => {
-    const selection = window.getSelection();
-    if (!selection || !selection.anchorNode) return 'p';
-    
-    let node = selection.anchorNode as HTMLElement;
-    while (node && node !== editorRef.current) {
-      if (node.tagName) {
-        const tag = node.tagName.toLowerCase();
-        if (['h1', 'h2', 'h3', 'p', 'blockquote'].includes(tag)) {
-          return tag;
-        }
-      }
-      node = node.parentElement as HTMLElement;
+    try {
+      return document.queryCommandState(command);
+    } catch (e) {
+      return false;
     }
-    return 'p';
   };
 
   const ToolbarButton = ({ 
@@ -86,6 +154,9 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   }) => (
     <button
       type="button"
+      onMouseDown={(e) => {
+        e.preventDefault(); // Prevent losing selection
+      }}
       onClick={(e) => {
         e.preventDefault();
         onClick();
@@ -102,7 +173,48 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   return (
     <div className="relative border border-[#e5e7f0] rounded-lg overflow-hidden">
       {/* Fixed Toolbar at Top */}
-      <div className="bg-[#f8f9fc] border-b border-[#e5e7f0] flex items-center gap-1 px-3 py-2">
+      <div className="bg-[#f8f9fc] border-b border-[#e5e7f0] flex items-center gap-1 px-3 py-2 flex-wrap">
+        {/* Font Size Selector */}
+        <div className="relative">
+          <button
+            type="button"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={(e) => {
+              e.preventDefault();
+              setShowFontSizes(!showFontSizes);
+            }}
+            className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 transition-colors border border-[#e5e7f0] bg-white"
+            title="Font size"
+          >
+            <Type className="w-4 h-4 text-[#474747]" />
+            <span className="text-[14px] text-[#474747] font-['Gaegu']">{currentFontSize}px</span>
+          </button>
+          
+          {showFontSizes && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#e5e7f0] rounded-lg shadow-lg z-50 max-h-[200px] overflow-y-auto">
+              {FONT_SIZES.map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setFontSize(size);
+                  }}
+                  className={`w-full px-4 py-2 text-left hover:bg-gray-100 transition-colors font-['Gaegu'] ${
+                    currentFontSize === size ? 'bg-gray-100' : ''
+                  }`}
+                  style={{ fontSize: `${Math.min(size, 20)}px` }}
+                >
+                  {size}px
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="w-px h-6 bg-[#e5e7f0] mx-1" />
+        
         <ToolbarButton
           icon={Bold}
           onClick={() => execCommand('bold')}
@@ -131,22 +243,22 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         <div className="w-px h-6 bg-[#e5e7f0] mx-1" />
         
         <ToolbarButton
-          icon={Heading1}
-          onClick={() => formatBlock('h1')}
-          active={getBlockType() === 'h1'}
-          title="Heading 1"
+          icon={AlignLeft}
+          onClick={() => execCommand('justifyLeft')}
+          active={isActive('justifyLeft')}
+          title="Align Left"
         />
         <ToolbarButton
-          icon={Heading2}
-          onClick={() => formatBlock('h2')}
-          active={getBlockType() === 'h2'}
-          title="Heading 2"
+          icon={AlignCenter}
+          onClick={() => execCommand('justifyCenter')}
+          active={isActive('justifyCenter')}
+          title="Align Center"
         />
         <ToolbarButton
-          icon={Heading3}
-          onClick={() => formatBlock('h3')}
-          active={getBlockType() === 'h3'}
-          title="Heading 3"
+          icon={AlignRight}
+          onClick={() => execCommand('justifyRight')}
+          active={isActive('justifyRight')}
+          title="Align Right"
         />
         
         <div className="w-px h-6 bg-[#e5e7f0] mx-1" />
@@ -174,8 +286,9 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         />
         <ToolbarButton
           icon={Quote}
-          onClick={() => formatBlock('blockquote')}
-          active={getBlockType() === 'blockquote'}
+          onClick={() => {
+            execCommand('formatBlock', 'blockquote');
+          }}
           title="Quote"
         />
       </div>
@@ -185,6 +298,10 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         ref={editorRef}
         contentEditable
         onInput={handleInput}
+        onClick={() => {
+          // Close font size dropdown when clicking in editor
+          setShowFontSizes(false);
+        }}
         className="w-full min-h-[200px] px-4 py-3 bg-white font-['Gaegu'] text-[20px] text-[#8c8fa6] outline-none"
         style={{ lineHeight: '24px', fontWeight: 400, fontStyle: 'normal' }}
         data-placeholder={placeholder}
@@ -197,28 +314,8 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           pointer-events: none;
         }
         
-        [contenteditable] h1 {
-          font-size: 28px;
-          font-weight: 600;
-          margin: 12px 0 8px 0;
-          line-height: 1.3;
-          color: #474747;
-        }
-        
-        [contenteditable] h2 {
-          font-size: 24px;
-          font-weight: 600;
-          margin: 10px 0 6px 0;
-          line-height: 1.3;
-          color: #474747;
-        }
-        
-        [contenteditable] h3 {
-          font-size: 20px;
-          font-weight: 600;
-          margin: 8px 0 4px 0;
-          line-height: 1.3;
-          color: #474747;
+        [contenteditable] * {
+          font-family: 'Gaegu', sans-serif;
         }
         
         [contenteditable] p {
@@ -227,6 +324,10 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           font-size: 20px;
           line-height: 24px;
           font-weight: 400;
+        }
+        
+        [contenteditable] span {
+          color: #8c8fa6;
         }
         
         [contenteditable] ul,
@@ -240,6 +341,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         
         [contenteditable] li {
           margin: 4px 0;
+          color: #8c8fa6;
         }
         
         [contenteditable] blockquote {
@@ -261,9 +363,28 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           outline: none;
         }
 
-        [contenteditable] strong, [contenteditable] b {
-          color: #474747;
+        [contenteditable] strong, 
+        [contenteditable] b {
           font-weight: 600;
+        }
+
+        [contenteditable] em,
+        [contenteditable] i {
+          font-style: italic;
+        }
+
+        [contenteditable] u {
+          text-decoration: underline;
+        }
+
+        [contenteditable] div,
+        [contenteditable] span {
+          display: inline;
+        }
+
+        [contenteditable] div:after {
+          content: '';
+          display: block;
         }
       `}</style>
     </div>
