@@ -37,7 +37,9 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   useEffect(() => {
     const handleSelection = () => {
       const selection = window.getSelection();
-      if (!selection || selection.isCollapsed || !editorRef.current?.contains(selection.anchorNode)) {
+      const selectedText = selection?.toString().trim();
+      
+      if (!selection || !selectedText || selection.isCollapsed || !editorRef.current?.contains(selection.anchorNode)) {
         setShowToolbar(false);
         return;
       }
@@ -45,15 +47,29 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
       const range = selection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
       
+      // Position toolbar above the selection
       setToolbarPosition({
-        top: rect.top - 50 + window.scrollY,
+        top: rect.top - 60 + window.scrollY,
         left: rect.left + rect.width / 2,
       });
       setShowToolbar(true);
     };
 
-    document.addEventListener('selectionchange', handleSelection);
-    return () => document.removeEventListener('selectionchange', handleSelection);
+    // Add a small delay to prevent toolbar from flickering
+    let timeout: NodeJS.Timeout;
+    const debouncedHandler = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(handleSelection, 50);
+    };
+
+    document.addEventListener('selectionchange', debouncedHandler);
+    document.addEventListener('mouseup', debouncedHandler);
+    
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener('selectionchange', debouncedHandler);
+      document.removeEventListener('mouseup', debouncedHandler);
+    };
   }, []);
 
   const handleInput = () => {
@@ -131,12 +147,14 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
       {/* Floating Toolbar */}
       {showToolbar && (
         <div
-          className="fixed z-50 bg-white rounded-lg shadow-lg border border-[#e5e7f0] flex items-center gap-1 px-2 py-1.5 animate-in fade-in slide-in-from-top-2"
+          className="fixed z-50 bg-white rounded-lg shadow-xl border-2 border-[#474747] flex items-center gap-1 px-2 py-1.5"
           style={{
             top: `${toolbarPosition.top}px`,
             left: `${toolbarPosition.left}px`,
             transform: 'translateX(-50%)',
+            animation: 'fadeIn 0.15s ease-out',
           }}
+          onMouseDown={(e) => e.preventDefault()}
         >
           <ToolbarButton
             icon={Bold}
@@ -227,6 +245,17 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
       />
 
       <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-5px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
+        }
+
         [contenteditable]:empty:before {
           content: attr(data-placeholder);
           color: #d0d0d0;
@@ -238,6 +267,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           font-weight: 600;
           margin: 12px 0 8px 0;
           line-height: 1.3;
+          color: #474747;
         }
         
         [contenteditable] h2 {
@@ -245,6 +275,7 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           font-weight: 600;
           margin: 10px 0 6px 0;
           line-height: 1.3;
+          color: #474747;
         }
         
         [contenteditable] h3 {
@@ -252,16 +283,19 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           font-weight: 600;
           margin: 8px 0 4px 0;
           line-height: 1.3;
+          color: #474747;
         }
         
         [contenteditable] p {
           margin: 6px 0;
+          color: #8c8fa6;
         }
         
         [contenteditable] ul,
         [contenteditable] ol {
           margin: 8px 0;
           padding-left: 24px;
+          color: #8c8fa6;
         }
         
         [contenteditable] li {
@@ -283,6 +317,11 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         
         [contenteditable]:focus {
           outline: none;
+        }
+
+        [contenteditable] strong, [contenteditable] b {
+          color: #474747;
+          font-weight: 600;
         }
       `}</style>
     </div>

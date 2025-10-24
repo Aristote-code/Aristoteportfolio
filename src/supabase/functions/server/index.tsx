@@ -49,7 +49,6 @@ app.get('/projects', async (c) => {
     // Sort by order or creation date
     const sortedProjects = projects
       .map(p => p.value)
-      .filter(p => p !== null && p !== undefined) // Filter out null/undefined values
       .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
     
     return c.json({ projects: sortedProjects });

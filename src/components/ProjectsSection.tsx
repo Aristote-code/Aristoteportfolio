@@ -43,8 +43,8 @@ function ProjectCard({ project }: { project: Project }) {
       <div className="box-border content-stretch flex flex-col gap-[12px] md:gap-[16px] grow items-start md:items-start min-h-px min-w-0 pb-[12px] md:pb-[24px] pt-[4px] md:pt-[24px] px-[4px] md:px-0 relative w-full text-center md:text-left overflow-hidden">
         {/* Heading */}
         <div className="box-border content-stretch flex flex-col items-center md:items-start relative shrink-0 w-full">
-          <div className="flex flex-col font-['Solway',_sans-serif] justify-center not-italic relative shrink-0 text-[#474747] text-[20px] md:text-[28px] w-full">
-            <p className="leading-[24px] md:leading-[33.6px] truncate">{project.title}</p>
+          <div className="flex flex-col font-['Solway',_sans-serif] font-bold justify-center not-italic relative shrink-0 text-[#474747] text-[24px] md:text-[52px] w-full">
+            <p className="leading-[28px] md:leading-[62px] truncate">{project.title}</p>
           </div>
         </div>
         {/* Description */}
@@ -163,18 +163,8 @@ export function ProjectsSection() {
                 </button>
               </div>
 
-              <h1 className="text-[42px] font-['Solway'] text-[#474747] mb-4">{selectedProject.title}</h1>
+              <h1 className="text-[52px] font-['Solway'] font-bold text-[#474747] mb-4 leading-[62px]">{selectedProject.title}</h1>
               <p className="font-['Gaegu'] text-[20px] text-[#8c8fa6] mb-12 leading-[24px]">{selectedProject.description}</p>
-
-              {selectedProject.image && (
-                <div className="mb-12 rounded-xl overflow-hidden border-[3px] border-[#474747]">
-                  <ImageWithFallback
-                    src={selectedProject.image}
-                    alt={selectedProject.title}
-                    className="w-full aspect-video object-cover"
-                  />
-                </div>
-              )}
 
               {selectedProject.tags && selectedProject.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-12">
@@ -198,7 +188,7 @@ export function ProjectsSection() {
                       <div key={block.id}>
                         {block.type === 'text' ? (
                           <div
-                            className="font-['Gaegu'] text-[18px] text-[#474747] leading-[1.65] prose prose-lg max-w-none"
+                            className="font-['Gaegu'] text-[20px] text-[#8c8fa6] leading-[24px] prose prose-lg max-w-none"
                             dangerouslySetInnerHTML={{ __html: block.content }}
                           />
                         ) : (

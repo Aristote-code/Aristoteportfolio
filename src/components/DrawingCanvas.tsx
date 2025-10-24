@@ -1043,7 +1043,7 @@ export function DrawingCanvas({ isOpen, onClose }: DrawingCanvasProps) {
               <div className="absolute bottom-full mb-2 left-0 bg-white rounded-lg shadow-lg border border-[#e5e7f0] p-3 color-picker-popup">
                 <div className="flex flex-col gap-2">
                   <span className="text-[12px] text-[#8c8fa6] font-['Gaegu']">Fill Color</span>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="flex gap-2">
                     <button
                       onClick={() => {
                         setFillColor('transparent');

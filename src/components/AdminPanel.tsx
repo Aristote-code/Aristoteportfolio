@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Plus, Trash2, GripVertical, Image as ImageIcon, Type, LogOut, MoreHorizontal, X } from 'lucide-react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { projectId } from '../utils/supabase/info';
 import { RichTextEditor } from './RichTextEditor';
 import { ImageUpload } from './ImageUpload';
 
 // Hardcoded admin credentials
 const ADMIN_EMAIL = 'gahimaaristote1@gmail.com';
 const ADMIN_PASSWORD = 'Ari#toteprince1960';
-const ADMIN_KEY = 'wH/KrBmVC3jJX2+tAPrVbIO+L0hxfJQ0qOozmvxBEy4=';
+const ADMIN_KEY = 'admin_key_aristote_2025';
 
 interface ContentBlock {
   id: string;
@@ -140,12 +140,7 @@ export function AdminPanel() {
       // Check if server is available
       const healthCheck = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/health`,
-        { 
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`
-          }
-        }
+        { method: 'GET' }
       );
       
       if (healthCheck.ok) {
@@ -199,12 +194,7 @@ export function AdminPanel() {
   const fetchProjects = async () => {
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/projects`,
-        {
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`,
-          },
-        }
+        `https://${projectId}.supabase.co/functions/v1/server/projects`
       );
 
       const data = await response.json();
@@ -250,7 +240,7 @@ export function AdminPanel() {
           method: selectedProject.id ? 'PUT' : 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Admin-Key': ADMIN_KEY,
+            'Authorization': `Bearer ${ADMIN_KEY}`,
           },
           body: JSON.stringify(selectedProject),
         });
@@ -317,32 +307,24 @@ export function AdminPanel() {
 
     setLoading(true);
     try {
-      console.log('🗑️ Deleting project:', projectToDelete.id);
-      console.log('🔑 Using admin key:', ADMIN_KEY.substring(0, 10) + '...');
-      
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/admin/projects/${projectToDelete.id}`,
         {
           method: 'DELETE',
           headers: {
-            'X-Admin-Key': ADMIN_KEY,
+            'Authorization': `Bearer ${ADMIN_KEY}`,
           },
         }
       );
 
-      console.log('📡 Delete response status:', response.status);
-      
       if (response.ok) {
-        console.log('✅ Project deleted successfully');
         setProjects(projects.filter(p => p.id !== projectToDelete.id));
         if (selectedProject?.id === projectToDelete.id) {
           setSelectedProject(null);
         }
-        alert('✅ Project deleted successfully!');
       } else {
         const data = await response.json();
-        console.error('❌ Delete failed:', response.status, data);
-        alert('Failed to delete project: ' + (data.error || `Error ${response.status}`));
+        alert('Failed to delete project: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
       console.error('Failed to delete project:', error);
