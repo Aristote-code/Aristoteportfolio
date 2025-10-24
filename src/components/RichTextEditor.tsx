@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { 
   Bold, 
   Italic, 
@@ -10,9 +10,7 @@ import {
   Heading3,
   List,
   ListOrdered,
-  Code,
   Quote,
-  Minus
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -23,53 +21,12 @@ interface RichTextEditorProps {
 
 export function RichTextEditor({ value, onChange, placeholder = 'Start writing...' }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
-  const [showToolbar, setShowToolbar] = useState(false);
-  const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
 
   // Initialize content
   useEffect(() => {
     if (editorRef.current && !editorRef.current.innerHTML && value) {
       editorRef.current.innerHTML = value;
     }
-  }, []);
-
-  // Handle text selection to show toolbar
-  useEffect(() => {
-    const handleSelection = () => {
-      const selection = window.getSelection();
-      const selectedText = selection?.toString().trim();
-      
-      if (!selection || !selectedText || selection.isCollapsed || !editorRef.current?.contains(selection.anchorNode)) {
-        setShowToolbar(false);
-        return;
-      }
-
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      
-      // Position toolbar above the selection
-      setToolbarPosition({
-        top: rect.top - 60 + window.scrollY,
-        left: rect.left + rect.width / 2,
-      });
-      setShowToolbar(true);
-    };
-
-    // Add a small delay to prevent toolbar from flickering
-    let timeout: NodeJS.Timeout;
-    const debouncedHandler = () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(handleSelection, 50);
-    };
-
-    document.addEventListener('selectionchange', debouncedHandler);
-    document.addEventListener('mouseup', debouncedHandler);
-    
-    return () => {
-      clearTimeout(timeout);
-      document.removeEventListener('selectionchange', debouncedHandler);
-      document.removeEventListener('mouseup', debouncedHandler);
-    };
   }, []);
 
   const handleInput = () => {
@@ -143,119 +100,97 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
   );
 
   return (
-    <div className="relative">
-      {/* Floating Toolbar */}
-      {showToolbar && (
-        <div
-          className="fixed z-50 bg-white rounded-lg shadow-xl border-2 border-[#474747] flex items-center gap-1 px-2 py-1.5"
-          style={{
-            top: `${toolbarPosition.top}px`,
-            left: `${toolbarPosition.left}px`,
-            transform: 'translateX(-50%)',
-            animation: 'fadeIn 0.15s ease-out',
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-        >
-          <ToolbarButton
-            icon={Bold}
-            onClick={() => execCommand('bold')}
-            active={isActive('bold')}
-            title="Bold (Ctrl+B)"
-          />
-          <ToolbarButton
-            icon={Italic}
-            onClick={() => execCommand('italic')}
-            active={isActive('italic')}
-            title="Italic (Ctrl+I)"
-          />
-          <ToolbarButton
-            icon={Underline}
-            onClick={() => execCommand('underline')}
-            active={isActive('underline')}
-            title="Underline (Ctrl+U)"
-          />
-          <ToolbarButton
-            icon={Strikethrough}
-            onClick={() => execCommand('strikeThrough')}
-            active={isActive('strikeThrough')}
-            title="Strikethrough"
-          />
-          
-          <div className="w-px h-6 bg-[#e5e7f0] mx-1" />
-          
-          <ToolbarButton
-            icon={Heading1}
-            onClick={() => formatBlock('h1')}
-            active={getBlockType() === 'h1'}
-            title="Heading 1"
-          />
-          <ToolbarButton
-            icon={Heading2}
-            onClick={() => formatBlock('h2')}
-            active={getBlockType() === 'h2'}
-            title="Heading 2"
-          />
-          <ToolbarButton
-            icon={Heading3}
-            onClick={() => formatBlock('h3')}
-            active={getBlockType() === 'h3'}
-            title="Heading 3"
-          />
-          
-          <div className="w-px h-6 bg-[#e5e7f0] mx-1" />
-          
-          <ToolbarButton
-            icon={List}
-            onClick={() => execCommand('insertUnorderedList')}
-            active={isActive('insertUnorderedList')}
-            title="Bullet List"
-          />
-          <ToolbarButton
-            icon={ListOrdered}
-            onClick={() => execCommand('insertOrderedList')}
-            active={isActive('insertOrderedList')}
-            title="Numbered List"
-          />
-          
-          <div className="w-px h-6 bg-[#e5e7f0] mx-1" />
-          
-          <ToolbarButton
-            icon={LinkIcon}
-            onClick={insertLink}
-            active={isActive('createLink')}
-            title="Insert Link"
-          />
-          <ToolbarButton
-            icon={Quote}
-            onClick={() => formatBlock('blockquote')}
-            active={getBlockType() === 'blockquote'}
-            title="Quote"
-          />
-        </div>
-      )}
+    <div className="relative border border-[#e5e7f0] rounded-lg overflow-hidden">
+      {/* Fixed Toolbar at Top */}
+      <div className="bg-[#f8f9fc] border-b border-[#e5e7f0] flex items-center gap-1 px-3 py-2">
+        <ToolbarButton
+          icon={Bold}
+          onClick={() => execCommand('bold')}
+          active={isActive('bold')}
+          title="Bold (Ctrl+B)"
+        />
+        <ToolbarButton
+          icon={Italic}
+          onClick={() => execCommand('italic')}
+          active={isActive('italic')}
+          title="Italic (Ctrl+I)"
+        />
+        <ToolbarButton
+          icon={Underline}
+          onClick={() => execCommand('underline')}
+          active={isActive('underline')}
+          title="Underline (Ctrl+U)"
+        />
+        <ToolbarButton
+          icon={Strikethrough}
+          onClick={() => execCommand('strikeThrough')}
+          active={isActive('strikeThrough')}
+          title="Strikethrough"
+        />
+        
+        <div className="w-px h-6 bg-[#e5e7f0] mx-1" />
+        
+        <ToolbarButton
+          icon={Heading1}
+          onClick={() => formatBlock('h1')}
+          active={getBlockType() === 'h1'}
+          title="Heading 1"
+        />
+        <ToolbarButton
+          icon={Heading2}
+          onClick={() => formatBlock('h2')}
+          active={getBlockType() === 'h2'}
+          title="Heading 2"
+        />
+        <ToolbarButton
+          icon={Heading3}
+          onClick={() => formatBlock('h3')}
+          active={getBlockType() === 'h3'}
+          title="Heading 3"
+        />
+        
+        <div className="w-px h-6 bg-[#e5e7f0] mx-1" />
+        
+        <ToolbarButton
+          icon={List}
+          onClick={() => execCommand('insertUnorderedList')}
+          active={isActive('insertUnorderedList')}
+          title="Bullet List"
+        />
+        <ToolbarButton
+          icon={ListOrdered}
+          onClick={() => execCommand('insertOrderedList')}
+          active={isActive('insertOrderedList')}
+          title="Numbered List"
+        />
+        
+        <div className="w-px h-6 bg-[#e5e7f0] mx-1" />
+        
+        <ToolbarButton
+          icon={LinkIcon}
+          onClick={insertLink}
+          active={isActive('createLink')}
+          title="Insert Link"
+        />
+        <ToolbarButton
+          icon={Quote}
+          onClick={() => formatBlock('blockquote')}
+          active={getBlockType() === 'blockquote'}
+          title="Quote"
+        />
+      </div>
 
       {/* Editor */}
       <div
         ref={editorRef}
         contentEditable
         onInput={handleInput}
-        className="w-full min-h-[120px] px-4 py-3 border border-transparent hover:bg-gray-50/30 focus:bg-white focus:border-[#e5e7f0] rounded-md font-['Gaegu'] text-[17px] text-[#474747] outline-none transition-all"
-        style={{ lineHeight: '1.65' }}
+        className="w-full min-h-[200px] px-4 py-3 bg-white font-['Gaegu'] text-[20px] text-[#8c8fa6] outline-none"
+        style={{ lineHeight: '24px', fontWeight: 400, fontStyle: 'normal' }}
         data-placeholder={placeholder}
       />
 
       <style>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-5px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-          }
-        }
-
         [contenteditable]:empty:before {
           content: attr(data-placeholder);
           color: #d0d0d0;
@@ -289,6 +224,9 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
         [contenteditable] p {
           margin: 6px 0;
           color: #8c8fa6;
+          font-size: 20px;
+          line-height: 24px;
+          font-weight: 400;
         }
         
         [contenteditable] ul,
@@ -296,6 +234,8 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           margin: 8px 0;
           padding-left: 24px;
           color: #8c8fa6;
+          font-size: 20px;
+          line-height: 24px;
         }
         
         [contenteditable] li {
@@ -308,6 +248,8 @@ export function RichTextEditor({ value, onChange, placeholder = 'Start writing..
           margin: 12px 0;
           color: #8c8fa6;
           font-style: italic;
+          font-size: 20px;
+          line-height: 24px;
         }
         
         [contenteditable] a {
