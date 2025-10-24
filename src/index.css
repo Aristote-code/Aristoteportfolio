@@ -1837,11 +1837,6 @@
     line-height: 18px;
   }
 
-  .leading-\[19\.2px\] {
-    --tw-leading: 19.2px;
-    line-height: 19.2px;
-  }
-
   .leading-\[21\.6px\] {
     --tw-leading: 21.6px;
     line-height: 21.6px;
@@ -2732,20 +2727,6 @@
   @media (width >= 48rem) {
     .md\:text-\[52px\] {
       font-size: 52px;
-    }
-  }
-
-  @media (width >= 48rem) {
-    .md\:leading-\[24px\] {
-      --tw-leading: 24px;
-      line-height: 24px;
-    }
-  }
-
-  @media (width >= 48rem) {
-    .md\:leading-\[62px\] {
-      --tw-leading: 62px;
-      line-height: 62px;
     }
   }
 }

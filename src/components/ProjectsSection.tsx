@@ -43,13 +43,13 @@ function ProjectCard({ project }: { project: Project }) {
       <div className="box-border content-stretch flex flex-col gap-[12px] md:gap-[16px] grow items-start md:items-start min-h-px min-w-0 pb-[12px] md:pb-[24px] pt-[4px] md:pt-[24px] px-[4px] md:px-0 relative w-full text-center md:text-left overflow-hidden">
         {/* Heading */}
         <div className="box-border content-stretch flex flex-col items-center md:items-start relative shrink-0 w-full">
-          <div className="flex flex-col font-['Solway',_sans-serif] font-bold justify-center not-italic relative shrink-0 text-[#474747] text-[24px] md:text-[52px] w-full">
-            <p className="leading-[28px] md:leading-[62px] truncate">{project.title}</p>
+          <div className="flex flex-col font-['Solway',_sans-serif] font-bold justify-center not-italic relative shrink-0 text-[#474747] text-[28px] w-full">
+            <p className="leading-[33.6px] truncate">{project.title}</p>
           </div>
         </div>
         {/* Description */}
         <div className="content-stretch flex flex-col items-center md:items-start relative shrink-0 w-full overflow-hidden">
-          <div className="flex flex-col font-['Gaegu',_sans-serif] justify-center leading-[19.2px] md:leading-[24px] not-italic relative shrink-0 text-[#8c8fa6] text-[16px] md:text-[20px] w-full overflow-hidden">
+          <div className="flex flex-col font-['Gaegu',_sans-serif] justify-center leading-[24px] not-italic relative shrink-0 text-[#8c8fa6] text-[20px] w-full overflow-hidden">
             <p className="line-clamp-3 break-words">{project.description || 'No description available.'}</p>
           </div>
         </div>
