@@ -240,6 +240,7 @@ export function AdminPanel() {
           method: selectedProject.id ? 'PUT' : 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'X-Admin-Key': ADMIN_KEY,
             'Authorization': `Bearer ${ADMIN_KEY}`,
           },
           body: JSON.stringify(selectedProject),
@@ -312,6 +313,7 @@ export function AdminPanel() {
         {
           method: 'DELETE',
           headers: {
+            'X-Admin-Key': ADMIN_KEY,
             'Authorization': `Bearer ${ADMIN_KEY}`,
           },
         }
