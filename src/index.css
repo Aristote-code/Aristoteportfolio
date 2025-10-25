@@ -400,31 +400,31 @@
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h1 {
     font-size: var(--text-2xl);
     font-weight: var(--font-weight-medium);
-    line-height: 1.2;
+    line-height: 1.5;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h2 {
     font-size: var(--text-xl);
     font-weight: var(--font-weight-medium);
-    line-height: 1.2;
+    line-height: 1.5;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h3 {
     font-size: var(--text-lg);
     font-weight: var(--font-weight-medium);
-    line-height: 1.3;
+    line-height: 1.5;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) h4 {
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
-    line-height: 1.3;
+    line-height: 1.5;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) p {
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
-    line-height: 1.7;
+    line-height: 1.5;
   }
 
   :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) label, :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) button {
@@ -3303,83 +3303,4 @@ html {
     opacity: var(--tw-enter-opacity, 1);
     transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0));
   }
-}
-
-/* Project Content Block Styling - For RichTextEditor content in project view */
-.project-content-block {
-  font-family: 'Gaegu', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  color: rgb(140, 143, 166);
-  font-size: 20px;
-  line-height: 24px;
-}
-
-.project-content-block * {
-  font-family: 'Gaegu', sans-serif;
-  color: rgb(140, 143, 166);
-}
-
-.project-content-block p {
-  margin: 6px 0;
-  font-size: 20px;
-  line-height: 24px;
-  font-weight: 400;
-}
-
-.project-content-block span {
-  font-size: inherit;
-  line-height: inherit;
-}
-
-.project-content-block strong,
-.project-content-block b {
-  font-weight: 600;
-}
-
-.project-content-block em,
-.project-content-block i {
-  font-style: italic;
-}
-
-.project-content-block u {
-  text-decoration: underline;
-}
-
-.project-content-block ul,
-.project-content-block ol {
-  margin: 8px 0;
-  padding-left: 24px;
-  font-size: 20px;
-  line-height: 24px;
-}
-
-.project-content-block li {
-  margin: 4px 0;
-  font-size: 20px;
-  line-height: 24px;
-}
-
-.project-content-block blockquote {
-  border-left: 3px solid #e5e7f0;
-  padding-left: 16px;
-  margin: 12px 0;
-  font-style: italic;
-  font-size: 20px;
-  line-height: 24px;
-}
-
-.project-content-block a {
-  color: #8774ff;
-  text-decoration: underline;
-}
-
-.project-content-block div,
-.project-content-block span {
-  display: inline;
-}
-
-.project-content-block div:after {
-  content: '';
-  display: block;
 }

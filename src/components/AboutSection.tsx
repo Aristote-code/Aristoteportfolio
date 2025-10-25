@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { StickyNote } from './StickyNote';
 import { Linkedin, Github, Mail, Twitter } from 'lucide-react';
-import profileImage from '../assets/ad92ed337531b9fe2db9165a108b0ea27479a71c.png';
+import profileImage from 'figma:asset/ad92ed337531b9fe2db9165a108b0ea27479a71c.png';
 
 export function AboutSection() {
   const handleDownloadResume = () => {
@@ -15,13 +15,13 @@ export function AboutSection() {
   };
 
   return (
-    <section className="min-h-screen py-16 md:py-24 px-4 md:px-8">
+    <section className="min-h-screen py-16 md:py-32 px-4 md:px-8">
       <div className="w-full max-w-[720px] mx-auto">
         {/* Title */}
-        <div className="flex items-center justify-center gap-4 md:gap-6 mb-12 md:mb-20">
-          <div className="h-[2px] w-[40px] bg-[#474747] rounded-full"></div>
-          <h2 className="text-[28px] md:text-[36px] font-['Solway'] text-[#474747] whitespace-nowrap">About</h2>
-          <div className="h-[2px] w-[40px] bg-[#474747] rounded-full"></div>
+        <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
+          <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
+          <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">About</h2>
+          <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-[328px_1fr] gap-8 md:gap-16">
@@ -207,11 +207,11 @@ export function AboutSection() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="space-y-8 md:space-y-12"
+            className="space-y-8 md:space-y-16"
           >
             {/* Links */}
             <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[1.2]">Links</h3>
+              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">Links</h3>
               <div className="flex gap-4">
                 {[
                   { icon: Linkedin, href: 'https://www.linkedin.com/in/gahima-aristote/' },
@@ -234,7 +234,7 @@ export function AboutSection() {
 
             {/* Skills */}
             <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[1.2]">Skills</h3>
+              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">Skills</h3>
               <div className="flex flex-wrap gap-3 md:gap-4">
                 {['Framer', 'UI design', 'UX research', 'Animation', 'Prototyping', 'Branding'].map((skill) => (
                   <span
@@ -249,29 +249,29 @@ export function AboutSection() {
 
             {/* Experience */}
             <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[1.2]">Experience</h3>
+              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">Experience</h3>
               
-              <div className="space-y-6 md:space-y-8">
+              <div className="space-y-6">
                 {/* Health Connect */}
                 <div>
-                  <h4 className="text-[18px] md:text-[20px] font-['Solway'] text-[#474747] mb-3 leading-[1.3]">Health Connect</h4>
-                  <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mb-3">
-                    <span className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-[1.5]">Senior Product Designer</span>
-                    <span className="font-['Gaegu'] text-[14px] md:text-[16px] text-[#8c8fa6] leading-[1.5]">Aug 2025 – Present</span>
+                  <h4 className="text-[18px] md:text-[20px] font-['Solway'] text-[#474747] mb-2 leading-[28px]">Health Connect</h4>
+                  <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mb-2">
+                    <span className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-[21.6px]">Senior Product Designer</span>
+                    <span className="font-['Gaegu'] text-[14px] md:text-[16px] text-[#8c8fa6] leading-[21.6px]">Aug 2025 – Present</span>
                   </div>
-                  <p className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#8c8fa6] leading-[1.7]">
+                  <p className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#8c8fa6] leading-[21.6px]">
                     Designed AI-driven healthcare tools — from voice-to-text notes to patient portals — improving usability and engagement.
                   </p>
                 </div>
 
                 {/* BAG Technologies */}
                 <div>
-                  <h4 className="text-[18px] md:text-[20px] font-['Solway'] text-[#474747] mb-3 leading-[1.3]">BAG Technologies</h4>
-                  <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mb-3">
-                    <span className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-[1.5]">Lead Product Designer</span>
-                    <span className="font-['Gaegu'] text-[14px] md:text-[16px] text-[#8c8fa6] leading-[1.5]">Feb 2023 – Jul 2025</span>
+                  <h4 className="text-[18px] md:text-[20px] font-['Solway'] text-[#474747] mb-2 leading-[28px]">BAG Technologies</h4>
+                  <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mb-2">
+                    <span className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-[21.6px]">Lead Product Designer</span>
+                    <span className="font-['Gaegu'] text-[14px] md:text-[16px] text-[#8c8fa6] leading-[21.6px]">Feb 2023 – Jul 2025</span>
                   </div>
-                  <p className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#8c8fa6] leading-[1.7]">
+                  <p className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#8c8fa6] leading-[21.6px]">
                     Designed BAG's web platform and design system, creating smoother user journeys and cohesive visual experiences.
                   </p>
                 </div>
@@ -279,9 +279,9 @@ export function AboutSection() {
                 {/* Download Resume Button */}
                 <button 
                   onClick={handleDownloadResume}
-                  className="flex items-center gap-2 group mt-8 md:mt-10 px-6 py-3 border-2 border-[#474747] rounded-2xl hover:bg-[#474747] hover:text-white transition-all duration-300"
+                  className="flex items-center gap-2 group mt-6 px-6 py-3 border-2 border-[#474747] rounded-2xl hover:bg-[#474747] hover:text-white transition-all duration-300"
                 >
-                  <span className="font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] group-hover:text-white leading-[1.5] transition-colors">Download Resume</span>
+                  <span className="font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] group-hover:text-white leading-[28.8px] transition-colors">Download Resume</span>
                   <svg className="w-5 h-5 md:w-6 md:h-6 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M7 10l5 5 5-5M12 15V3" />
                   </svg>
