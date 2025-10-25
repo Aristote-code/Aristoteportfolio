@@ -50,24 +50,43 @@ async function verifyAdmin(authHeader: string | null, adminKeyHeader: string | n
   // ⚠️ SECURITY WARNING: The default fallback key is weak!
   // Set a strong ADMIN_KEY in Supabase secrets: supabase secrets set ADMIN_KEY=your_secure_key
   const adminKey = Deno.env.get('ADMIN_KEY') || 'admin_key_aristote_2025';
+  
+  console.log('🔐 Auth Debug:', {
+    adminKey,
+    adminKeyFromEnv: Deno.env.get('ADMIN_KEY'),
+    receivedAdminKeyHeader: adminKeyHeader,
+    receivedAuthHeader: authHeader,
+    adminKeyMatch: adminKeyHeader === adminKey,
+  });
+  
   if (adminKeyHeader === adminKey) {
+    console.log('✅ Admin authenticated via X-Admin-Key header');
     return true;
   }
   
   // Fallback: check Authorization header
-  if (!authHeader) return false;
+  if (!authHeader) {
+    console.log('❌ No Authorization header provided');
+    return false;
+  }
   
   const token = authHeader.split(' ')[1];
   if (token === adminKey) {
+    console.log('✅ Admin authenticated via Authorization header');
     return true;
   }
   
   // Also support Supabase auth tokens
   try {
     const { data: { user }, error } = await supabase.auth.getUser(token);
-    if (error || !user) return false;
+    if (error || !user) {
+      console.log('❌ Supabase auth failed:', error);
+      return false;
+    }
+    console.log('✅ Admin authenticated via Supabase auth token');
     return true;
-  } catch {
+  } catch (err) {
+    console.log('❌ Auth error:', err);
     return false;
   }
 }
