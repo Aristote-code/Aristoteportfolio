@@ -188,7 +188,7 @@ export function ProjectsSection() {
                       <div key={block.id}>
                         {block.type === 'text' ? (
                           <div
-                            className="font-['Gaegu'] text-[20px] text-[#8c8fa6] leading-[24px] prose prose-lg max-w-none"
+                            className="project-content-block"
                             dangerouslySetInnerHTML={{ __html: block.content }}
                           />
                         ) : (
