@@ -49,7 +49,7 @@ function ProjectCard({ project }: { project: Project }) {
         </div>
         {/* Description */}
         <div className="content-stretch flex flex-col items-center md:items-start relative shrink-0 w-full overflow-hidden">
-          <div className="flex flex-col font-['Gaegu',_sans-serif] justify-center leading-[24px] not-italic relative shrink-0 text-[#8c8fa6] text-[20px] w-full overflow-hidden">
+          <div className="flex flex-col font-['Gaegu',_sans-serif] justify-center leading-[1.6] not-italic relative shrink-0 text-[#8c8fa6] text-[20px] w-full overflow-hidden">
             <p className="line-clamp-3 break-words">{project.description || 'No description available.'}</p>
           </div>
         </div>
@@ -100,10 +100,10 @@ export function ProjectsSection() {
 
   return (
     <>
-      <section className="min-h-screen py-16 md:py-32 px-4 md:px-8">
+      <section className="min-h-screen py-24 md:py-40 px-4 md:px-8">
         <div className="w-full max-w-[720px] mx-auto">
           {/* Title */}
-          <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
+          <div className="flex items-center justify-center gap-4 md:gap-8 mb-16 md:mb-32">
             <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
             <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">Projects</h2>
             <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
@@ -124,7 +124,7 @@ export function ProjectsSection() {
           )}
 
           {/* Projects List */}
-          <div className="space-y-12 flex flex-col items-center">
+          <div className="space-y-16 md:space-y-24 flex flex-col items-center">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
@@ -163,11 +163,11 @@ export function ProjectsSection() {
                 </button>
               </div>
 
-              <h1 className="text-[52px] font-['Solway'] font-bold text-[#474747] mb-4 leading-[62px]">{selectedProject.title}</h1>
-              <p className="font-['Gaegu'] text-[20px] text-[#8c8fa6] mb-12 leading-[24px]">{selectedProject.description}</p>
+              <h1 className="text-[52px] font-['Solway'] font-bold text-[#474747] mb-6 leading-[1.2]">{selectedProject.title}</h1>
+              <p className="font-['Gaegu'] text-[20px] text-[#8c8fa6] mb-16 leading-[1.7]">{selectedProject.description}</p>
 
               {selectedProject.tags && selectedProject.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-12">
+                <div className="flex flex-wrap gap-2 mb-16">
                   {selectedProject.tags.map((tag, i) => (
                     <span
                       key={i}
@@ -181,7 +181,7 @@ export function ProjectsSection() {
 
               {/* Project Content Blocks */}
               {selectedProject.blocks && selectedProject.blocks.length > 0 && (
-                <div className="space-y-6 mb-12">
+                <div className="space-y-8 md:space-y-12 mb-16">
                   {selectedProject.blocks
                     .sort((a, b) => a.order - b.order)
                     .map((block) => (
@@ -207,7 +207,7 @@ export function ProjectsSection() {
                 </div>
               )}
 
-              <div className="mt-16 pt-8 border-t-2 border-[#474747]">
+              <div className="mt-20 md:mt-24 pt-8 border-t-2 border-[#474747]">
                 <button
                   onClick={() => setSelectedProject(null)}
                   className="font-['Gaegu'] text-[20px] text-[#474747] hover:underline"

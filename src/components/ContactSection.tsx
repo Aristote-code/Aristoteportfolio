@@ -67,10 +67,10 @@ export function ContactSection() {
   };
 
   return (
-    <section className="min-h-screen py-16 md:py-32 px-4 md:px-8 flex items-center justify-center">
+    <section className="min-h-screen py-24 md:py-40 px-4 md:px-8 flex items-center justify-center">
       <div className="w-full max-w-[720px]">
         {/* Title */}
-        <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
+        <div className="flex items-center justify-center gap-4 md:gap-8 mb-16 md:mb-32">
           <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
           <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">Let's talk</h2>
           <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
@@ -80,13 +80,13 @@ export function ContactSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="space-y-12 md:space-y-24"
+          className="space-y-16 md:space-y-28"
         >
           {/* Email and Socials */}
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-6">
             <a 
               href="mailto:gahimaaristote1@gmail.com"
-              className="font-['Gaegu'] text-[24px] md:text-[38px] text-[#474747] leading-[45.6px] hover:underline block break-all"
+              className="font-['Gaegu'] text-[24px] md:text-[38px] text-[#474747] leading-[1.5] hover:underline block break-all"
             >
               gahimaaristote1@gmail.com
             </a>
@@ -112,7 +112,7 @@ export function ContactSection() {
           </div>
 
           {/* Contact Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="relative">
                 <input
@@ -187,8 +187,8 @@ export function ContactSection() {
           </form>
 
           {/* Footer */}
-          <div className="text-center pt-8">
-            <p className="font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] leading-[48px]">
+          <div className="text-center pt-12 md:pt-16">
+            <p className="font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] leading-[1.6]">
               ©2025 <a href="#" className="text-[#8774ff] underline hover:text-[#6b5ce7] transition-colors">Aristote</a>
             </p>
           </div>

@@ -3,7 +3,7 @@ import { StickyNote } from './StickyNote';
 
 export function HomeSection() {
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 md:px-8 relative">
+    <section className="min-h-screen flex items-center justify-center px-4 md:px-8 py-20 md:py-32 relative">
       <div className="w-full max-w-[720px]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -11,8 +11,8 @@ export function HomeSection() {
           transition={{ duration: 0.6 }}
           className="text-center relative"
         >
-          <h1 className="text-[36px] md:text-[52px] font-['Solway'] mb-1 text-[#474747] leading-[1.2]">Hi, I'm Aristote</h1>
-          <p className="text-[#8c8fa6] text-[18px] md:text-[24px] font-['Gaegu'] leading-[28.8px]">A product designer at Health Connect.</p>
+          <h1 className="text-[36px] md:text-[52px] font-['Solway'] mb-4 md:mb-6 text-[#474747] leading-[1.2]">Hi, I'm Aristote</h1>
+          <p className="text-[#8c8fa6] text-[18px] md:text-[24px] font-['Gaegu'] leading-[1.6]">A product designer at Health Connect.</p>
 
           {/* Decorative sticky notes - positioned relative to the centered content */}
           <div className="hidden md:block absolute top-0 left-0 w-full h-full pointer-events-none">
