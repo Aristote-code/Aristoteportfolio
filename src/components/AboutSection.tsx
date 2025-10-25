@@ -15,16 +15,16 @@ export function AboutSection() {
   };
 
   return (
-    <section className="min-h-screen py-24 md:py-40 px-4 md:px-8">
+    <section className="min-h-screen py-16 md:py-24 px-4 md:px-8">
       <div className="w-full max-w-[720px] mx-auto">
         {/* Title */}
-        <div className="flex items-center justify-center gap-4 md:gap-8 mb-16 md:mb-32">
-          <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
-          <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">About</h2>
-          <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
+        <div className="flex items-center justify-center gap-4 md:gap-6 mb-12 md:mb-20">
+          <div className="h-[2px] w-[40px] bg-[#474747] rounded-full"></div>
+          <h2 className="text-[28px] md:text-[36px] font-['Solway'] text-[#474747] whitespace-nowrap">About</h2>
+          <div className="h-[2px] w-[40px] bg-[#474747] rounded-full"></div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-[328px_1fr] gap-12 md:gap-20">
+        <div className="grid grid-cols-1 md:grid-cols-[328px_1fr] gap-8 md:gap-16">
           {/* Left Column - Stickers and Profile */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -207,11 +207,11 @@ export function AboutSection() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="space-y-10 md:space-y-20"
+            className="space-y-8 md:space-y-12"
           >
             {/* Links */}
             <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-5 md:mb-8 leading-[1.2]">Links</h3>
+              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[1.2]">Links</h3>
               <div className="flex gap-4">
                 {[
                   { icon: Linkedin, href: 'https://www.linkedin.com/in/gahima-aristote/' },
@@ -234,7 +234,7 @@ export function AboutSection() {
 
             {/* Skills */}
             <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-5 md:mb-8 leading-[1.2]">Skills</h3>
+              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[1.2]">Skills</h3>
               <div className="flex flex-wrap gap-3 md:gap-4">
                 {['Framer', 'UI design', 'UX research', 'Animation', 'Prototyping', 'Branding'].map((skill) => (
                   <span
@@ -249,9 +249,9 @@ export function AboutSection() {
 
             {/* Experience */}
             <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-5 md:mb-8 leading-[1.2]">Experience</h3>
+              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[1.2]">Experience</h3>
               
-              <div className="space-y-8 md:space-y-10">
+              <div className="space-y-6 md:space-y-8">
                 {/* Health Connect */}
                 <div>
                   <h4 className="text-[18px] md:text-[20px] font-['Solway'] text-[#474747] mb-3 leading-[1.3]">Health Connect</h4>

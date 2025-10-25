@@ -3,8 +3,8 @@ import { StickyNote } from './StickyNote';
 
 export function HomeSection() {
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 md:px-8 py-20 md:py-32 relative">
-      <div className="w-full max-w-[720px]">
+    <section className="min-h-screen flex items-center justify-center px-4 md:px-8 py-16 md:py-24 relative">
+      <div className="text-center max-w-[640px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
