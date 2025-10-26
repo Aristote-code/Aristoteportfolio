@@ -1,7 +1,6 @@
 import { motion } from 'motion/react';
 import { StickyNote } from './StickyNote';
 import { Linkedin, Github, Mail, Twitter } from 'lucide-react';
-import profileImage from 'figma:asset/ad92ed337531b9fe2db9165a108b0ea27479a71c.png';
 
 export function AboutSection() {
   const handleDownloadResume = () => {
@@ -39,27 +38,14 @@ export function AboutSection() {
                 <div className="flex flex-col items-center">
                   {/* Image container with Figma styling */}
                   <div className="relative w-[119px] h-[119px] rounded-full overflow-hidden bg-[#e7e7e7] mb-4">
-                    <div 
-                      className="absolute flex items-center justify-center left-[-48.44px] top-[-118.49px]"
-                      style={{
-                        width: 'calc(1px * ((281.203125 * 0.04331187903881073) + (205.140625 * 0.9990615844726562)))',
-                        height: 'calc(1px * ((205.140625 * 0.04331187903881073) + (281.203125 * 0.9990615844726562)))'
-                      }}
-                    >
-                      <div className="flex-none" style={{ transform: 'rotate(357.518deg)' }}>
-                        <div className="relative w-[205.142px] h-[281.213px]">
-                          <img 
-                            src={profileImage} 
-                            alt="Gahima Aristote" 
-                            className="absolute inset-0 w-full h-full object-cover max-w-none pointer-events-none"
-                            style={{ objectPosition: '50% 50%' }}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    <img
+                      src="/Profile image1.png"
+                      alt="Gahima Aristote"
+                      className="w-full h-full object-cover rounded-full"
+                    />
                     {/* Border overlay */}
-                    <div 
-                      aria-hidden="true" 
+                    <div
+                      aria-hidden="true"
                       className="absolute inset-0 border-[3px] border-solid border-[#474747] rounded-full pointer-events-none"
                     />
                   </div>
@@ -170,27 +156,14 @@ export function AboutSection() {
                 <div className="absolute left-[35px] top-[28px] w-[119px] h-[119px]">
                   {/* Image container with Figma styling */}
                   <div className="relative w-[119px] h-[119px] rounded-full overflow-hidden bg-[#e7e7e7]">
-                    <div 
-                      className="absolute flex items-center justify-center left-[-48.44px] top-[-118.49px]"
-                      style={{
-                        width: 'calc(1px * ((281.203125 * 0.04331187903881073) + (205.140625 * 0.9990615844726562)))',
-                        height: 'calc(1px * ((205.140625 * 0.04331187903881073) + (281.203125 * 0.9990615844726562)))'
-                      }}
-                    >
-                      <div className="flex-none" style={{ transform: 'rotate(357.518deg)' }}>
-                        <div className="relative w-[205.142px] h-[281.213px]">
-                          <img 
-                            src={profileImage} 
-                            alt="Gahima Aristote" 
-                            className="absolute inset-0 w-full h-full object-cover max-w-none pointer-events-none"
-                            style={{ objectPosition: '50% 50%' }}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    <img
+                      src="/Profile image1.png"
+                      alt="Gahima Aristote"
+                      className="w-full h-full object-cover rounded-full"
+                    />
                     {/* Border overlay */}
-                    <div 
-                      aria-hidden="true" 
+                    <div
+                      aria-hidden="true"
                       className="absolute inset-0 border-[3px] border-solid border-[#474747] rounded-full pointer-events-none"
                     />
                   </div>
