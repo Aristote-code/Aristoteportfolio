@@ -24,7 +24,7 @@ export function NamePromptDialog({ onSubmit }: NamePromptDialogProps) {
   };
 
   const handleSkip = () => {
-    onSubmit('Anonymous');
+    onSubmit('Me');
     setIsVisible(false);
   };
 
