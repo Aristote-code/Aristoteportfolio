@@ -1,78 +1,83 @@
-import { motion } from 'motion/react';
-import { Linkedin, Github, Mail, Twitter } from 'lucide-react';
-import { useState } from 'react';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import React from "react";
+import { motion } from "motion/react";
+import { Linkedin, Github, Mail, Twitter } from "lucide-react";
+import { useState } from "react";
+import { projectId, publicAnonKey } from "../utils/supabase/info";
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
+    name: "",
+    email: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.message) {
       return;
     }
 
     setIsSubmitting(true);
-    setSubmitStatus('idle');
+    setSubmitStatus("idle");
 
     try {
       const url = `https://${projectId}.supabase.co/functions/v1/server/contact`;
-      console.log('🔵 Sending contact form to:', url);
-      console.log('📦 Form data:', formData);
-      
+      console.log("🔵 Sending contact form to:", url);
+      console.log("📦 Form data:", formData);
+
       const response = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${publicAnonKey}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
-      console.log('📬 Contact response:', response.status, response.statusText);
-      
+      console.log("📬 Contact response:", response.status, response.statusText);
+
       let data;
       try {
         data = await response.json();
-        console.log('📄 Contact response data:', data);
+        console.log("📄 Contact response data:", data);
       } catch (parseError) {
-        console.error('❌ Failed to parse contact response:', parseError);
-        setSubmitStatus('error');
+        console.error("❌ Failed to parse contact response:", parseError);
+        setSubmitStatus("error");
         setIsSubmitting(false);
         return;
       }
 
       if (response.ok && data.success) {
-        console.log('✅ Contact form sent successfully');
-        setSubmitStatus('success');
-        setFormData({ name: '', email: '', message: '' });
-        setTimeout(() => setSubmitStatus('idle'), 5000);
+        console.log("✅ Contact form sent successfully");
+        setSubmitStatus("success");
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setSubmitStatus("idle"), 5000);
       } else {
-        console.error('❌ Failed to send message:', data.error);
-        setSubmitStatus('error');
+        console.error("❌ Failed to send message:", data.error);
+        setSubmitStatus("error");
       }
     } catch (error) {
-      console.error('❌ Error sending message:', error);
-      setSubmitStatus('error');
+      console.error("❌ Error sending message:", error);
+      setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section className="min-h-screen py-16 md:py-32 px-4 md:px-8 flex items-center justify-center">
+    <section className="py-16 md:py-32 px-4 md:px-8 flex items-center justify-center">
       <div className="w-full max-w-[720px]">
         {/* Title */}
         <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
           <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
-          <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">Let's talk</h2>
+          <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">
+            Let's talk
+          </h2>
           <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
         </div>
 
@@ -84,19 +89,22 @@ export function ContactSection() {
         >
           {/* Email and Socials */}
           <div className="text-center space-y-4">
-            <a 
+            <a
               href="mailto:gahimaaristote1@gmail.com"
               className="font-['Gaegu'] text-[24px] md:text-[38px] text-[#474747] leading-[45.6px] hover:underline block break-all"
             >
               gahimaaristote1@gmail.com
             </a>
-            
+
             <div className="flex justify-center gap-4">
               {[
-                { icon: Linkedin, href: 'https://www.linkedin.com/in/gahima-aristote/' },
-                { icon: Github, href: 'https://github.com/Aristote-code' },
-                { icon: Mail, href: 'mailto:gahimaaristote1@gmail.com' },
-                { icon: Twitter, href: 'https://x.com/GAristote' }
+                {
+                  icon: Linkedin,
+                  href: "https://www.linkedin.com/in/gahima-aristote/",
+                },
+                { icon: Github, href: "https://github.com/Aristote-code" },
+                { icon: Mail, href: "mailto:gahimaaristote1@gmail.com" },
+                { icon: Twitter, href: "https://x.com/GAristote" },
               ].map((link, i) => (
                 <a
                   key={i}
@@ -119,7 +127,9 @@ export function ContactSection() {
                   type="text"
                   placeholder="Your Name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   maxLength={100}
                   required
                   className="w-full px-4 py-3 h-[50px] border-2 border-[#474747] rounded-2xl focus:outline-none focus:border-[#8774ff] font-['Gaegu'] text-[18px] md:text-[20px] text-[#474747] placeholder:text-[#b8bbd2] transition-colors"
@@ -130,28 +140,32 @@ export function ContactSection() {
                   type="email"
                   placeholder="Email Address"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   maxLength={100}
                   required
                   className="w-full px-4 py-3 h-[50px] border-2 border-[#474747] rounded-2xl focus:outline-none focus:border-[#8774ff] font-['Gaegu'] text-[18px] md:text-[20px] text-[#474747] placeholder:text-[#b8bbd2] transition-colors"
                 />
               </div>
             </div>
-            
+
             <div className="relative">
               <textarea
                 placeholder="Message"
                 rows={4}
                 value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, message: e.target.value })
+                }
                 maxLength={2000}
                 required
                 className="w-full px-4 py-3 border-2 border-[#474747] rounded-2xl focus:outline-none focus:border-[#8774ff] resize-none font-['Gaegu'] text-[18px] md:text-[20px] text-[#474747] placeholder:text-[#b8bbd2] transition-colors"
               ></textarea>
             </div>
-            
+
             {/* Status Messages */}
-            {submitStatus === 'success' && (
+            {submitStatus === "success" && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -163,33 +177,45 @@ export function ContactSection() {
               </motion.div>
             )}
 
-            {submitStatus === 'error' && (
+            {submitStatus === "error" && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-red-50 border-2 border-red-200 rounded-2xl px-4 py-3 text-center"
               >
                 <p className="font-['Gaegu'] text-[18px] text-red-700">
-                  ❌ Failed to send message. Please try again or email me directly.
+                  ❌ Failed to send message. Please try again or email me
+                  directly.
                 </p>
               </motion.div>
             )}
-            
+
             <div className="relative">
               <button
                 type="submit"
-                disabled={isSubmitting || !formData.name || !formData.email || !formData.message}
+                disabled={
+                  isSubmitting ||
+                  !formData.name ||
+                  !formData.email ||
+                  !formData.message
+                }
                 className="w-full bg-[#474747] text-white h-[40px] rounded-2xl hover:bg-[#5a5a5a] disabled:bg-[#d0d0d0] disabled:cursor-not-allowed transition-colors font-['Gaegu'] text-[18px] md:text-[20px] leading-[28px] flex items-center justify-center"
               >
-                {isSubmitting ? 'Sending...' : 'Send'}
+                {isSubmitting ? "Sending..." : "Send"}
               </button>
             </div>
           </form>
 
           {/* Footer */}
           <div className="text-center pt-8">
-            <p className="font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] leading-[48px]">
-              ©2025 <a href="#" className="text-[#8774ff] underline hover:text-[#6b5ce7] transition-colors">Aristote</a>
+            <p className="font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] leading-[28px] md:leading-[32px]">
+              ©2025{" "}
+              <a
+                href="#"
+                className="text-[#8774ff] underline hover:text-[#6b5ce7] transition-colors"
+              >
+                Aristote
+              </a>
             </p>
           </div>
         </motion.div>

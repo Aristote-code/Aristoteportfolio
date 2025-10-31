@@ -1,13 +1,13 @@
-import { motion } from 'motion/react';
-import { StickyNote } from './StickyNote';
-import { Linkedin, Github, Mail, Twitter } from 'lucide-react';
+import { motion } from "motion/react";
+import { StickyNote } from "./StickyNote";
+import { Linkedin, Github, Mail, Twitter } from "lucide-react";
 
 export function AboutSection() {
   const handleDownloadResume = () => {
     // Create a link element and trigger download
-    const link = document.createElement('a');
-    link.href = '/resume.pdf'; // You'll need to add your resume.pdf to the public folder
-    link.download = 'Gahima_Aristote_Resume.pdf';
+    const link = document.createElement("a");
+    link.href = "/resume.pdf"; // You'll need to add your resume.pdf to the public folder
+    link.download = "Gahima_Aristote_Resume.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -19,7 +19,9 @@ export function AboutSection() {
         {/* Title */}
         <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
           <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
-          <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">About</h2>
+          <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">
+            About
+          </h2>
           <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
         </div>
 
@@ -49,7 +51,9 @@ export function AboutSection() {
                       className="absolute inset-0 border-[3px] border-solid border-[#474747] rounded-full pointer-events-none"
                     />
                   </div>
-                  <p className="text-[32px] font-['Gaegu'] text-[#474747] text-center leading-[38.4px]">Yours Truly</p>
+                  <p className="text-[32px] font-['Gaegu'] text-[#474747] text-center leading-[38.4px]">
+                    Yours Truly
+                  </p>
                 </div>
               </div>
 
@@ -169,7 +173,9 @@ export function AboutSection() {
                   </div>
                 </div>
                 <div className="absolute bottom-0 right-[7px]">
-                  <p className="text-[32px] font-['Gaegu'] text-[#474747] text-center leading-[38.4px]">Yours Truly</p>
+                  <p className="text-[32px] font-['Gaegu'] text-[#474747] text-center leading-[38.4px]">
+                    Yours Truly
+                  </p>
                 </div>
               </div>
             </div>
@@ -184,13 +190,18 @@ export function AboutSection() {
           >
             {/* Links */}
             <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">Links</h3>
+              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">
+                Links
+              </h3>
               <div className="flex gap-4">
                 {[
-                  { icon: Linkedin, href: 'https://www.linkedin.com/in/gahima-aristote/' },
-                  { icon: Github, href: 'https://github.com/Aristote-code' },
-                  { icon: Mail, href: 'mailto:gahimaaristote1@gmail.com' },
-                  { icon: Twitter, href: 'https://x.com/GAristote' }
+                  {
+                    icon: Linkedin,
+                    href: "https://www.linkedin.com/in/gahima-aristote/",
+                  },
+                  { icon: Github, href: "https://github.com/Aristote-code" },
+                  { icon: Mail, href: "mailto:gahimaaristote1@gmail.com" },
+                  { icon: Twitter, href: "https://x.com/GAristote" },
                 ].map((link, i) => (
                   <a
                     key={i}
@@ -207,9 +218,18 @@ export function AboutSection() {
 
             {/* Skills */}
             <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">Skills</h3>
+              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">
+                Skills
+              </h3>
               <div className="flex flex-wrap gap-3 md:gap-4">
-                {['Framer', 'UI design', 'UX research', 'Animation', 'Prototyping', 'Branding'].map((skill) => (
+                {[
+                  "Framer",
+                  "UI design",
+                  "UX research",
+                  "Animation",
+                  "Prototyping",
+                  "Branding",
+                ].map((skill) => (
                   <span
                     key={skill}
                     className="px-3 md:px-4 py-2 border-2 border-[#474747] rounded-2xl font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] leading-[28.8px]"
@@ -222,40 +242,65 @@ export function AboutSection() {
 
             {/* Experience */}
             <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">Experience</h3>
-              
+              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">
+                Experience
+              </h3>
+
               <div className="space-y-6">
                 {/* Health Connect */}
                 <div>
-                  <h4 className="text-[18px] md:text-[20px] font-['Solway'] text-[#474747] mb-2 leading-[28px]">Health Connect</h4>
+                  <h4 className="text-[18px] md:text-[20px] font-['Solway'] text-[#474747] mb-2 leading-[28px]">
+                    Health Connect
+                  </h4>
                   <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mb-2">
-                    <span className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-[21.6px]">Senior Product Designer</span>
-                    <span className="font-['Gaegu'] text-[14px] md:text-[16px] text-[#8c8fa6] leading-[21.6px]">Aug 2025 – Present</span>
+                    <span className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-[21.6px]">
+                      Senior Product Designer
+                    </span>
+                    <span className="font-['Gaegu'] text-[14px] md:text-[16px] text-[#8c8fa6] leading-[21.6px]">
+                      Aug 2025 – Present
+                    </span>
                   </div>
                   <p className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#8c8fa6] leading-[21.6px]">
-                    Designed AI-driven healthcare tools — from voice-to-text notes to patient portals — improving usability and engagement.
+                    Designed AI-driven healthcare tools — from voice-to-text
+                    notes to patient portals — improving usability and
+                    engagement.
                   </p>
                 </div>
 
                 {/* BAG Technologies */}
                 <div>
-                  <h4 className="text-[18px] md:text-[20px] font-['Solway'] text-[#474747] mb-2 leading-[28px]">BAG Technologies</h4>
+                  <h4 className="text-[18px] md:text-[20px] font-['Solway'] text-[#474747] mb-2 leading-[28px]">
+                    BAG Technologies
+                  </h4>
                   <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mb-2">
-                    <span className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-[21.6px]">Lead Product Designer</span>
-                    <span className="font-['Gaegu'] text-[14px] md:text-[16px] text-[#8c8fa6] leading-[21.6px]">Feb 2023 – Jul 2025</span>
+                    <span className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#474747] leading-[21.6px]">
+                      Lead Product Designer
+                    </span>
+                    <span className="font-['Gaegu'] text-[14px] md:text-[16px] text-[#8c8fa6] leading-[21.6px]">
+                      Feb 2023 – Jul 2025
+                    </span>
                   </div>
                   <p className="font-['Gaegu'] text-[16px] md:text-[18px] text-[#8c8fa6] leading-[21.6px]">
-                    Designed BAG's web platform and design system, creating smoother user journeys and cohesive visual experiences.
+                    Designed BAG's web platform and design system, creating
+                    smoother user journeys and cohesive visual experiences.
                   </p>
                 </div>
 
                 {/* Download Resume Button */}
-                <button 
+                <button
                   onClick={handleDownloadResume}
                   className="flex items-center gap-2 group mt-6 px-6 py-3 border-2 border-[#474747] rounded-2xl hover:bg-[#474747] hover:text-white transition-all duration-300"
                 >
-                  <span className="font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] group-hover:text-white leading-[28.8px] transition-colors">Download Resume</span>
-                  <svg className="w-5 h-5 md:w-6 md:h-6 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <span className="font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] group-hover:text-white leading-[28.8px] transition-colors">
+                    Download Resume
+                  </span>
+                  <svg
+                    className="w-5 h-5 md:w-6 md:h-6 transition-colors"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M7 10l5 5 5-5M12 15V3" />
                   </svg>
                 </button>
