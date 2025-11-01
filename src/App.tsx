@@ -544,7 +544,7 @@ export default function App() {
           ? "custom-cursor-active"
           : ""
       }`}
-      style={{ maxHeight: '4830.63px', overflow: 'hidden' }}
+      style={{ maxHeight: "4830.63px", overflow: "hidden" }}
     >
       <FigJamBackground />
 
@@ -568,7 +568,11 @@ export default function App() {
       )}
 
       {/* Main content wrapper for comments to stick to */}
-      <main className="relative w-full" onClick={handlePageClick} style={{ maxHeight: '4830.63px' }}>
+      <main
+        className="relative w-full"
+        onClick={handlePageClick}
+        style={{ maxHeight: "4830.63px" }}
+      >
         {/* Comment System */}
         <CommentSystem
           comments={comments}

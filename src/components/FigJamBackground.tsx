@@ -1,6 +1,9 @@
 export function FigJamBackground() {
   return (
-    <div className="absolute top-0 left-0 -z-10 w-full pointer-events-none" style={{ height: '4830.63px' }}>
+    <div
+      className="absolute top-0 left-0 -z-10 w-full pointer-events-none"
+      style={{ height: "4830.63px" }}
+    >
       <svg
         width="100%"
         height="4830.63"

@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Solway:wght@300;400;500;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Solway:wght@300;400;500;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
@@ -133,7 +133,7 @@
 
   html {
     @apply bg-background text-foreground;
-    font-family: 'Solway', serif, system-ui, -apple-system, sans-serif;
+    font-family: "Solway", serif, system-ui, -apple-system, sans-serif;
     width: 100%;
     max-height: 4830.63px;
     overflow-x: hidden;
@@ -142,7 +142,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Solway', serif, system-ui, -apple-system, sans-serif;
+    font-family: "Solway", serif, system-ui, -apple-system, sans-serif;
     width: 100%;
     max-height: 4830.63px;
     overflow-x: hidden;
@@ -228,7 +228,7 @@ section[class*="min-h-screen"] {
 
 /* Ensure page ends at content, no extra scrolling */
 body:after {
-  content: '';
+  content: "";
   display: block;
   height: 0;
   clear: both;
@@ -307,7 +307,8 @@ body:after {
 
 /* Smooth dragging animation */
 @keyframes pulse-shadow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 4px 12px rgba(135, 116, 255, 0.2);
   }
   50% {
@@ -318,7 +319,7 @@ body:after {
 /* Rich text content styling */
 .prose {
   color: #474747;
-  font-family: 'Gaegu', cursive;
+  font-family: "Gaegu", cursive;
 }
 
 .prose h1 {
@@ -327,7 +328,7 @@ body:after {
   margin: 16px 0 12px 0;
   line-height: 1.3;
   color: #474747;
-  font-family: 'Solway', serif;
+  font-family: "Solway", serif;
 }
 
 .prose h2 {
@@ -336,7 +337,7 @@ body:after {
   margin: 14px 0 10px 0;
   line-height: 1.3;
   color: #474747;
-  font-family: 'Solway', serif;
+  font-family: "Solway", serif;
 }
 
 .prose h3 {
@@ -345,7 +346,7 @@ body:after {
   margin: 12px 0 8px 0;
   line-height: 1.3;
   color: #474747;
-  font-family: 'Solway', serif;
+  font-family: "Solway", serif;
 }
 
 .prose p {
@@ -395,7 +396,7 @@ body:after {
   background: #f3f3f5;
   padding: 2px 6px;
   border-radius: 4px;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.9em;
 }
 
@@ -404,5 +405,3 @@ body:after {
   border-top: 2px solid #e5e7f0;
   margin: 24px 0;
 }
-
-
