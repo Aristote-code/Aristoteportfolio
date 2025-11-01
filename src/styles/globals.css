@@ -126,11 +126,37 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    @apply bg-background text-foreground;
+    font-family: 'Solway', serif, system-ui, -apple-system, sans-serif;
+    width: 100%;
+    max-height: 4830.63px;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   body {
     @apply bg-background text-foreground;
     font-family: 'Solway', serif, system-ui, -apple-system, sans-serif;
+    width: 100%;
+    max-height: 4830.63px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  #root {
+    width: 100%;
+    max-height: 4830.63px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
   }
 }
 
@@ -191,6 +217,21 @@
 
 html {
   font-size: var(--font-size);
+}
+
+/* Override min-h-screen on all sections to prevent extra height */
+section.min-h-screen,
+section[class*="min-h-screen"] {
+  min-height: auto !important;
+  height: auto !important;
+}
+
+/* Ensure page ends at content, no extra scrolling */
+body:after {
+  content: '';
+  display: block;
+  height: 0;
+  clear: both;
 }
 
 /**

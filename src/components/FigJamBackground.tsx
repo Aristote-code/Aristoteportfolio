@@ -1,9 +1,9 @@
 export function FigJamBackground() {
   return (
-    <div className="fixed inset-0 -z-10 w-full h-full pointer-events-none">
+    <div className="absolute top-0 left-0 -z-10 w-full pointer-events-none" style={{ height: '4830.63px' }}>
       <svg
         width="100%"
-        height="100%"
+        height="4830.63"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="xMidYMid slice"
       >
@@ -19,8 +19,8 @@ export function FigJamBackground() {
             <circle cx="1" cy="1" r="0.9" fill="#cccccc" opacity="0.55" />
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="#fafafa" />
-        <rect width="100%" height="100%" fill="url(#dotPattern)" />
+        <rect width="100%" height="4830.63" fill="#fafafa" />
+        <rect width="100%" height="4830.63" fill="url(#dotPattern)" />
       </svg>
     </div>
   );
