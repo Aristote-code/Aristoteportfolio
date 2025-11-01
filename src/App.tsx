@@ -139,7 +139,8 @@ export default function App() {
         userId: userId,
         authorName: userName === "me" ? "anonymous" : userName || "anonymous",
         pagePath: window.location.pathname || "/",
-      };      const url = `https://${projectId}.supabase.co/functions/v1/server/comments`;
+      };
+      const url = `https://${projectId}.supabase.co/functions/v1/server/comments`;
       console.log("🔵 Posting comment to:", url);
       console.log("📦 Payload:", payload);
 
@@ -230,7 +231,8 @@ export default function App() {
           body: JSON.stringify({
             text,
             userId,
-            authorName: userName === "me" ? "anonymous" : userName || "anonymous",
+            authorName:
+              userName === "me" ? "anonymous" : userName || "anonymous",
           }),
         }
       );

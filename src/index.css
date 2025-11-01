@@ -439,8 +439,6 @@
     }
   }
 
-
-
   * {
     margin: 0;
     padding: 0;
@@ -523,8 +521,6 @@
   section {
     position: relative;
   }
-
-
 
   /* Custom height management for sections */
   .section-full-height {
