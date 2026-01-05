@@ -134,7 +134,6 @@ export default function App() {
       }
 
       const payload = {
-        commentId,
         text: text.trim(),
         userId: userId,
         authorName: userName === "me" ? "anonymous" : userName || "anonymous",
