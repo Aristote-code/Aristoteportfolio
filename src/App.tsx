@@ -15,9 +15,21 @@ import {
 } from "./components/CursorFollower";
 import { CollaborativeCursors } from "./components/CollaborativeCursors";
 import { DrawingCanvas } from "./components/DrawingCanvas";
-import { projectId, publicAnonKey } from "./utils/supabase/info";
+// Firebase imports
+import { db, auth } from "./utils/firebase/client";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+  orderBy,
+  query
+} from "firebase/firestore";
+import { signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { getUserId } from "./utils/avatarUtils";
-import { Pencil } from "lucide-react";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("home");
@@ -34,6 +46,8 @@ export default function App() {
   const [showNamePrompt, setShowNamePrompt] = useState(false);
   const [userCursorColor, setUserCursorColor] = useState<string>("");
   const [isDrawingMode, setIsDrawingMode] = useState(false);
+  // Authenticate anonymously for Firestore access & Handle Auth State
+  const [user, setUser] = useState<any>(null);
 
   const sectionsRef = {
     home: useRef<HTMLDivElement>(null),
@@ -71,144 +85,113 @@ export default function App() {
     setPendingComment({ x, y });
   };
 
-  // Load comments from database
-  const loadComments = async () => {
-    try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/comments`,
-        {
-          headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
-          },
-        }
-      );
-      const data = await response.json();
-      if (data.comments) {
-        // Convert timestamp strings to Date objects
-        const parsedComments = data.comments.map((c: any) => ({
-          ...c,
-          timestamp: new Date(c.timestamp),
-          replies:
-            c.replies?.map((r: any) => ({
-              ...r,
-              timestamp: new Date(r.timestamp),
-            })) || [],
-        }));
-        setComments(parsedComments);
+
+  useEffect(() => {
+    // Listen for auth state changes
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        console.log("User is authenticated:", currentUser.uid);
+        setUser(currentUser);
+      } else {
+        console.log("User is not authenticated, signing in...");
+        signInAnonymously(auth).catch((error) =>
+          console.error("Authentication failed:", error)
+        );
       }
-    } catch (error) {
-      console.error("Failed to load comments:", error);
-    } finally {
+    });
+
+    return () => unsubscribeAuth();
+  }, []);
+
+  // Real-time listener for comments - Only runs when user is authenticated
+  useEffect(() => {
+    if (!user) return;
+
+    setIsLoadingComments(true);
+    const q = query(collection(db, "comments"), orderBy("timestamp", "asc"));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const parsedComments = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Handle Firestore Timestamp
+          timestamp: data.timestamp?.toDate() || new Date(),
+          replies: (data.replies || []).map((r: any) => ({
+            ...r,
+            timestamp: r.timestamp?.toDate ? r.timestamp.toDate() : new Date(r.timestamp)
+          }))
+        } as Comment;
+      });
+      setComments(parsedComments);
       setIsLoadingComments(false);
-    }
-  };
+    }, (error) => {
+      console.error("Failed to subscribe to comments:", error);
+      setIsLoadingComments(false);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   const handleAddComment = async (x: number, y: number, text: string) => {
     try {
-      // Validate inputs before sending
+      // Validate inputs
       if (!text || !text.trim()) {
         alert("Please enter a comment");
         return;
       }
 
-      if (
-        typeof x !== "number" ||
-        typeof y !== "number" ||
-        isNaN(x) ||
-        isNaN(y)
-      ) {
+      if (typeof x !== "number" || typeof y !== "number" || isNaN(x) || isNaN(y)) {
         console.error("Invalid coordinates:", { x, y });
         alert("Invalid position. Please try again.");
         return;
       }
 
-      // Calculate normalized coordinates
       const normalizedX = x / window.innerWidth;
       const normalizedY = y / document.documentElement.scrollHeight;
       const userId = getUserId();
 
       if (!userId) {
-        console.error("Failed to get userId");
         alert("Failed to identify user. Please try again.");
         return;
       }
 
-      const payload = {
-        commentId,
+      const newComment = {
+        x,
+        y,
+        normalizedX,
+        normalizedY,
         text: text.trim(),
-        userId: userId,
-        authorName: userName === "me" ? "anonymous" : userName || "anonymous",
+        userId,
+        author: userName === "me" ? "anonymous" : userName || "anonymous",
         pagePath: window.location.pathname || "/",
+        timestamp: serverTimestamp(),
+        status: 'open',
+        replies: []
       };
-      const url = `https://${projectId}.supabase.co/functions/v1/server/comments`;
-      console.log("🔵 Posting comment to:", url);
-      console.log("📦 Payload:", payload);
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${publicAnonKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      console.log("Attempting to add comment:", newComment);
+      const docRef = await addDoc(collection(db, "comments"), newComment);
 
-      console.log("📬 Response status:", response.status, response.statusText);
+      console.log("✅ Comment posted successfully with ID:", docRef.id);
+      setPendingComment(null);
+      setIsCommentMode(false);
 
-      let data;
-      try {
-        data = await response.json();
-        console.log("📄 Response data:", data);
-      } catch (parseError) {
-        console.error("❌ Failed to parse response JSON:", parseError);
-        const text = await response.text();
-        console.error("📄 Response text:", text);
-        alert("Server returned invalid response. Check console for details.");
-        return;
-      }
-
-      if (response.ok && data.comment) {
-        console.log("✅ Comment posted successfully");
-        // Add to local state with parsed timestamp
-        const newComment = {
-          ...data.comment,
-          timestamp: new Date(data.comment.timestamp),
-          replies: [],
-        };
-        setComments([...comments, newComment]);
-        setPendingComment(null);
-        setIsCommentMode(false);
-      } else {
-        console.error("❌ Server error:", data);
-        alert(
-          data.error || "Failed to post comment. Check console for details."
-        );
-      }
     } catch (error) {
       console.error("❌ Failed to add comment:", error);
+      if (error instanceof Error) {
+        console.error("Error details:", error.message, error.stack);
+      }
       alert("Failed to post comment. Check console for details.");
     }
   };
 
   const handleDeleteComment = async (id: string) => {
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/comments/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        setComments(comments.filter((comment) => comment.id !== id));
-        if (activeCommentId === id) {
-          setActiveCommentId(null);
-        }
-      } else {
-        alert("Failed to delete comment");
+      await deleteDoc(doc(db, "comments", id));
+      if (activeCommentId === id) {
+        setActiveCommentId(null);
       }
     } catch (error) {
       console.error("Failed to delete comment:", error);
@@ -219,46 +202,34 @@ export default function App() {
   const handleAddReply = async (commentId: string, text: string) => {
     try {
       const userId = getUserId();
+      console.log("Attempting to add reply to comment:", commentId);
+      const commentRef = doc(db, "comments", commentId);
 
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/comments/${commentId}/reply`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            text,
-            userId,
-            authorName:
-              userName === "me" ? "anonymous" : userName || "anonymous",
-          }),
-        }
-      );
+      // We need to fetch the comment first to append to replies 
+      // or use arrayUnion if we structured it that way, but arrayUnion with objects is tricky if we want exact equality.
+      // Better to read-modify-write for complex objects or just push a new object with ID.
+      // Ideally replies should be a subcollection, but for now we keep the existing structure (array of objects).
 
-      const data = await response.json();
+      // Let's use a transaction or just simple update for MVP
+      const commentDoc = comments.find(c => c.id === commentId);
+      if (!commentDoc) return;
 
-      if (response.ok && data.comment) {
-        // Update local state with parsed timestamps
-        setComments(
-          comments.map((comment) => {
-            if (comment.id === commentId) {
-              return {
-                ...data.comment,
-                timestamp: new Date(data.comment.timestamp),
-                replies: data.comment.replies.map((r: any) => ({
-                  ...r,
-                  timestamp: new Date(r.timestamp),
-                })),
-              };
-            }
-            return comment;
-          })
-        );
-      } else {
-        alert(data.error || "Failed to post reply");
-      }
+      const newReply = {
+        id: crypto.randomUUID(),
+        text: text.trim(),
+        userId,
+        author: userName === "me" ? "anonymous" : userName || "anonymous",
+        timestamp: new Date() // We store as Date in local, but Firestore prefers Timestamps. 
+        // Ideally we should use Timestamp for consistency, but let's stick to what works for the UI.
+        // We will cast it to any to bypass the type check for the update, Firestore will convert Date to Timestamp automatically.
+      };
+
+      const updatedReplies = [...(commentDoc.replies || []), newReply];
+
+      await updateDoc(commentRef, {
+        replies: updatedReplies
+      });
+
     } catch (error) {
       console.error("Failed to add reply:", error);
       alert("Failed to post reply. Please try again.");
@@ -271,122 +242,44 @@ export default function App() {
     y: number
   ) => {
     try {
-      // Calculate normalized coordinates
       const normalizedX = x / window.innerWidth;
       const normalizedY = y / document.documentElement.scrollHeight;
 
-      // Optimistically update local state first
-      setComments(
-        comments.map((comment) => {
-          if (comment.id === commentId) {
-            return {
-              ...comment,
-              x,
-              y,
-              normalizedX,
-              normalizedY,
-            };
-          }
-          return comment;
-        })
-      );
+      const commentRef = doc(db, "comments", commentId);
+      await updateDoc(commentRef, {
+        x,
+        y,
+        normalizedX,
+        normalizedY
+      });
 
-      // Then update backend
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/comments/${commentId}/position`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            x,
-            y,
-            normalizedX,
-            normalizedY,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const data = await response.json();
-        console.error("Failed to update position:", data.error);
-        // Reload comments to revert optimistic update
-        loadComments();
-      }
     } catch (error) {
       console.error("Failed to update position:", error);
-      // Reload comments to revert optimistic update
-      loadComments();
+      // Real-time listener will handle revert automatically
     }
   };
 
   const handleResolveComment = async (commentId: string, resolved: boolean) => {
     try {
-      // Close the active comment if it's being resolved
       if (activeCommentId === commentId && resolved) {
         setActiveCommentId(null);
       }
 
-      // If resolving, permanently delete from local state immediately
-      if (resolved) {
-        setComments(comments.filter((comment) => comment.id !== commentId));
-      }
+      // If resolving, we just delete it based on previous logic? 
+      // The previous logic had a "resolve" endpoint AND a "delete" endpoint.
+      // But the UI only showed "Resolve" button which called onResolveComment -> calls DELETE endpoint.
+      // So effectively resolve == delete in the old code for the backend.
+      // But the old code also had a status 'resolved' in the interface.
+      // Let's implement true 'resolve' (hide) data-wise, or just delete if that's what the user wants.
+      // Looking at old code: onResolveComment called DELETE endpoint.
+      // So I will stick to DELETE for now to match behavior.
 
-      // Try to delete from backend
-      try {
-        const response = await fetch(
-          `https://${projectId}.supabase.co/functions/v1/server/comments/${commentId}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${publicAnonKey}`,
-            },
-          }
-        );
+      await deleteDoc(doc(db, "comments", commentId));
 
-        // If endpoint fails, that's ok - we already removed it from local state
-        if (
-          !response.ok &&
-          response.status !== 404 &&
-          response.status !== 403
-        ) {
-          const data = await response.json();
-          console.warn("Failed to delete comment from backend:", data.error);
-        }
-      } catch (fetchError) {
-        console.log("Comment deleted locally, backend may need manual cleanup");
-      }
     } catch (error) {
       console.error("Failed to resolve comment:", error);
     }
   };
-
-  // Load comments and check for deep link
-  useEffect(() => {
-    loadComments();
-
-    // Check for deep link to specific comment
-    const urlParams = new URLSearchParams(window.location.search);
-    const commentId = urlParams.get("comment");
-    if (commentId) {
-      // Wait for comments to load, then open the specific comment
-      setTimeout(() => {
-        setActiveCommentId(commentId);
-        // Find and scroll to the comment
-        const commentElement = document.querySelector(
-          `[data-comment-id="${commentId}"]`
-        );
-        if (commentElement) {
-          commentElement.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        }
-      }, 500);
-    }
-  }, []);
 
   // Check for existing user name and show prompt if needed
   useEffect(() => {
@@ -410,39 +303,16 @@ export default function App() {
     setUserCursorColor(getUserCursorColor());
     setShowNamePrompt(false);
 
-    // Send "user joined" notification email to admin
+    // TODO: Migrate user-joined notification to Firebase Functions or keep as simple log?
+    // For now we skip the backend call or we can create a 'visitors' collection in Firestore
     try {
-      const url = `https://${projectId}.supabase.co/functions/v1/server/user-joined`;
-      console.log("🔵 Sending user-joined notification to:", url);
-
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${publicAnonKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userName: name,
-          timestamp: new Date().toISOString(),
-        }),
+      await addDoc(collection(db, "visitors"), {
+        userName: name,
+        timestamp: serverTimestamp()
       });
-
-      console.log(
-        "📬 User-joined response:",
-        response.status,
-        response.statusText
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("✅ User-joined notification sent:", data);
-      } else {
-        const errorData = await response.json();
-        console.warn("⚠️ User-joined notification failed:", errorData);
-      }
+      console.log("✅ User-joined logged to Firestore");
     } catch (error) {
-      console.log("❌ User joined notification error:", error);
-      // Don't show error to user, this is a background operation
+      console.warn("⚠️ User-joined log failed:", error);
     }
   };
 
@@ -537,13 +407,12 @@ export default function App() {
 
   return (
     <div
-      className={`relative w-full flex flex-col ${
-        isCommentMode
-          ? "cursor-crosshair"
-          : userName && userCursorColor
+      className={`relative w-full flex flex-col ${isCommentMode
+        ? "cursor-crosshair"
+        : userName && userCursorColor
           ? "custom-cursor-active"
           : ""
-      }`}
+        }`}
       style={{ maxHeight: "4830.63px", overflow: "hidden" }}
     >
       <FigJamBackground />

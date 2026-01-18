@@ -19,7 +19,8 @@ export function CommentInput({ x, y, onSubmit, onCancel }: CommentInputProps) {
   const handleSubmit = () => {
     if (text.trim()) {
       onSubmit(text);
-      setText('');
+      // Don't clear text immediately, let parent unmount on success
+      // setText('');
     }
   };
 
@@ -38,7 +39,7 @@ export function CommentInput({ x, y, onSubmit, onCancel }: CommentInputProps) {
     if (adjustedX + boxWidth > viewportWidth - 20) {
       adjustedX = x - boxWidth - 40;
     }
-    
+
     // Adjust horizontal position if too close to left edge
     if (adjustedX < 20) {
       adjustedX = 20;
@@ -54,7 +55,7 @@ export function CommentInput({ x, y, onSubmit, onCancel }: CommentInputProps) {
     }
 
     setPosition({ x: adjustedX, y: adjustedY });
-    
+
     // Auto-focus input
     setTimeout(() => inputRef.current?.focus(), 100);
   }, [x, y]);
@@ -70,7 +71,7 @@ export function CommentInput({ x, y, onSubmit, onCancel }: CommentInputProps) {
         className="absolute pointer-events-auto z-50"
         style={{ left: x, top: y }}
       >
-        <div 
+        <div
           className="w-9 h-9 rounded-full flex items-center justify-center shadow-lg border-2 border-white"
           style={{ backgroundColor: getAvatarColor(userId) }}
         >
