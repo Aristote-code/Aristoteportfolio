@@ -1,0 +1,42 @@
+.drawing-canvas-excalidraw {
+  position: relative;
+  background-color: #fcfbf8;
+  background-image: radial-gradient(circle, rgba(184, 187, 210, 0.72) 1.15px, transparent 1.15px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+}
+
+.drawing-canvas-excalidraw .excalidraw {
+  --color-primary: #8774ff;
+  --color-primary-darker: #7663ec;
+  --color-primary-darkest: #5f4bcf;
+  --color-primary-light: rgba(135, 116, 255, 0.16);
+  --default-border-color: #e5e7f0;
+  --island-bg-color: rgba(255, 255, 255, 0.92);
+  --shadow-island: 0px 12px 36px rgba(35, 31, 32, 0.08);
+  --button-hover-bg: rgba(243, 244, 248, 0.94);
+  --button-hover-border: #d9ddea;
+  --button-active-border: #c9cfe4;
+}
+
+.drawing-canvas-excalidraw .excalidraw .layer-ui__wrapper__top-right {
+  padding: 0.75rem 0.75rem 0 0;
+}
+
+.drawing-canvas-excalidraw .excalidraw .help-icon {
+  display: none;
+}
+
+.drawing-canvas-excalidraw .excalidraw .Island,
+.drawing-canvas-excalidraw .excalidraw .sidebar-trigger,
+.drawing-canvas-excalidraw .excalidraw .help-icon {
+  backdrop-filter: blur(12px);
+}
+
+.drawing-canvas-excalidraw .excalidraw .App-menu_top {
+  padding: 0.85rem 1rem 0;
+}
+
+.drawing-canvas-excalidraw .excalidraw .App-menu__left {
+  width: 13.5rem;
+}

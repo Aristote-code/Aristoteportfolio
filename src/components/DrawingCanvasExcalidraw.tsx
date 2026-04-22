@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Excalidraw,
+  MainMenu,
   THEME,
-  WelcomeScreen,
   restore,
   restoreLibraryItems,
   serializeAsJSON,
   serializeLibraryAsJSON,
 } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
+import "./DrawingCanvasExcalidraw.css";
 import type {
   ExcalidrawImperativeAPI,
   ExcalidrawInitialDataState,
@@ -18,6 +19,7 @@ import { X } from "lucide-react";
 
 const SCENE_STORAGE_KEY = "portfolio.excalidraw.scene";
 const LIBRARY_STORAGE_KEY = "portfolio.excalidraw.library";
+const DEFAULT_CANVAS_BACKGROUND = "transparent";
 
 const EXCALIDRAW_UI_OPTIONS = {
   canvasActions: {
@@ -97,6 +99,7 @@ function getInitialSceneData(): ExcalidrawInitialDataState | null {
       ? {
           appState: {
             theme: THEME.LIGHT,
+            viewBackgroundColor: DEFAULT_CANVAS_BACKGROUND,
           },
           libraryItems: storedLibraryItems,
         }
@@ -112,6 +115,11 @@ function getInitialSceneData(): ExcalidrawInitialDataState | null {
       appState: {
         ...restoredScene.appState,
         theme: THEME.LIGHT,
+        viewBackgroundColor:
+          !restoredScene.appState.viewBackgroundColor ||
+          restoredScene.appState.viewBackgroundColor === "#ffffff"
+            ? DEFAULT_CANVAS_BACKGROUND
+            : restoredScene.appState.viewBackgroundColor,
       },
       libraryItems: storedLibraryItems,
       scrollToContent: false,
@@ -124,6 +132,7 @@ function getInitialSceneData(): ExcalidrawInitialDataState | null {
       ? {
           appState: {
             theme: THEME.LIGHT,
+            viewBackgroundColor: DEFAULT_CANVAS_BACKGROUND,
           },
           libraryItems: storedLibraryItems,
         }
@@ -205,7 +214,7 @@ export default function DrawingCanvasExcalidraw({
   }, [onClose]);
 
   return (
-    <div className="h-full w-full bg-white">
+    <div className="drawing-canvas-excalidraw h-full w-full">
       <Excalidraw
         autoFocus
         excalidrawAPI={setExcalidrawApi}
@@ -217,7 +226,14 @@ export default function DrawingCanvasExcalidraw({
         theme={THEME.LIGHT}
         UIOptions={EXCALIDRAW_UI_OPTIONS}
       >
-        <WelcomeScreen />
+        <MainMenu>
+          <MainMenu.Group title="Canvas">
+            <MainMenu.DefaultItems.LoadScene />
+            <MainMenu.DefaultItems.Export />
+            <MainMenu.DefaultItems.ChangeCanvasBackground />
+            <MainMenu.DefaultItems.ClearCanvas />
+          </MainMenu.Group>
+        </MainMenu>
       </Excalidraw>
     </div>
   );
