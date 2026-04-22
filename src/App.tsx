@@ -56,6 +56,23 @@ export default function App() {
     contact: useRef<HTMLDivElement>(null),
   };
 
+  const handleToggleDrawingMode = () => {
+    setIsDrawingMode((prev) => {
+      const next = !prev;
+
+      if (next) {
+        setPendingComment(null);
+        setIsCommentMode(false);
+      }
+
+      return next;
+    });
+  };
+
+  const handleCloseDrawingMode = () => {
+    setIsDrawingMode(false);
+  };
+
   const handleNavigate = (section: string) => {
     setActiveSection(section);
     const ref = sectionsRef[section as keyof typeof sectionsRef];
@@ -362,6 +379,10 @@ export default function App() {
       const isTyping =
         target.tagName === "INPUT" || target.tagName === "TEXTAREA";
 
+      if (isDrawingMode) {
+        return;
+      }
+
       // Ctrl+Shift+A to open admin panel (works even when typing)
       if (e.ctrlKey && e.shiftKey && e.key === "A") {
         e.preventDefault();
@@ -392,13 +413,13 @@ export default function App() {
 
       // Toggle drawing mode when 'D' or 'd' is pressed
       if (e.key === "d" || e.key === "D") {
-        setIsDrawingMode((prev) => !prev);
+        handleToggleDrawingMode();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isCommentMode, pendingComment]);
+  }, [handleToggleDrawingMode, isCommentMode, isDrawingMode, pendingComment]);
 
   // If admin mode is active, show admin panel only
   if (showAdmin) {
@@ -409,7 +430,7 @@ export default function App() {
     <div
       className={`relative w-full flex flex-col ${isCommentMode
         ? "cursor-crosshair"
-        : userName && userCursorColor
+        : !isDrawingMode && userName && userCursorColor
           ? "custom-cursor-active"
           : ""
         }`}
@@ -423,7 +444,7 @@ export default function App() {
       )}
 
       {/* Cursor Follower - hide when in comment mode or admin panel */}
-      {userName && userCursorColor && !showAdmin && !isCommentMode && (
+      {userName && userCursorColor && !showAdmin && !isCommentMode && !isDrawingMode && (
         <CursorFollower name={userName} color={userCursorColor} />
       )}
 
@@ -432,7 +453,7 @@ export default function App() {
         <CollaborativeCursors
           userName={userName}
           userColor={userCursorColor}
-          isActive={!showAdmin && !isCommentMode}
+          isActive={!showAdmin && !isCommentMode && !isDrawingMode}
         />
       )}
 
@@ -500,13 +521,13 @@ export default function App() {
         isCommentMode={isCommentMode}
         onToggleCommentMode={handleToggleCommentMode}
         isDrawingMode={isDrawingMode}
-        onToggleDrawingMode={() => setIsDrawingMode(!isDrawingMode)}
+        onToggleDrawingMode={handleToggleDrawingMode}
       />
 
       {/* Drawing Canvas */}
       <DrawingCanvas
         isOpen={isDrawingMode}
-        onClose={() => setIsDrawingMode(false)}
+        onClose={handleCloseDrawingMode}
       />
 
       {/* Admin Access Button - Hidden in bottom right corner */}
