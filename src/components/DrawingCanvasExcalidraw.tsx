@@ -4,16 +4,13 @@ import {
   MainMenu,
   THEME,
   restore,
-  restoreLibraryItems,
   serializeAsJSON,
-  serializeLibraryAsJSON,
 } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import "./DrawingCanvasExcalidraw.css";
 import type {
   ExcalidrawImperativeAPI,
   ExcalidrawInitialDataState,
-  LibraryItems,
 } from "@excalidraw/excalidraw/types";
 import { X } from "lucide-react";
 
@@ -58,43 +55,12 @@ function removeStorageValue(key: string) {
   }
 }
 
-function getStoredLibraryItems() {
-  const rawLibrary = readStorageValue(LIBRARY_STORAGE_KEY);
-
-  if (!rawLibrary) {
-    return undefined;
-  }
-
-  try {
-    const parsedLibrary = JSON.parse(rawLibrary) as unknown;
-
-    const normalizedLibrary =
-      parsedLibrary && typeof parsedLibrary === "object" && !Array.isArray(parsedLibrary)
-        ? "libraryItems" in parsedLibrary
-          ? (parsedLibrary as { libraryItems?: Parameters<typeof restoreLibraryItems>[0] }).libraryItems
-          : "library" in parsedLibrary
-            ? (parsedLibrary as { library?: Parameters<typeof restoreLibraryItems>[0] }).library
-            : undefined
-        : (parsedLibrary as Parameters<typeof restoreLibraryItems>[0]);
-
-    const restoredLibrary = restoreLibraryItems(
-      normalizedLibrary,
-      "unpublished",
-    );
-
-    return restoredLibrary.length > 0 ? restoredLibrary : undefined;
-  } catch (error) {
-    console.error("Failed to restore Excalidraw library from localStorage", error);
-    removeStorageValue(LIBRARY_STORAGE_KEY);
-    return undefined;
-  }
-}
-
 function getCanvasAppState(
   appState?: ExcalidrawInitialDataState["appState"] | Parameters<typeof serializeAsJSON>[1] | null,
 ) {
   return {
     ...(appState ?? {}),
+    openSidebar: null,
     theme: THEME.LIGHT,
     viewBackgroundColor: DEFAULT_CANVAS_BACKGROUND,
   };
@@ -102,15 +68,11 @@ function getCanvasAppState(
 
 function getInitialSceneData(): ExcalidrawInitialDataState | null {
   const rawScene = readStorageValue(SCENE_STORAGE_KEY);
-  const storedLibraryItems = getStoredLibraryItems();
 
   if (!rawScene) {
-    return storedLibraryItems
-      ? {
-          appState: getCanvasAppState(),
-          libraryItems: storedLibraryItems,
-        }
-      : null;
+    return {
+      appState: getCanvasAppState(),
+    };
   }
 
   try {
@@ -120,19 +82,15 @@ function getInitialSceneData(): ExcalidrawInitialDataState | null {
     return {
       ...restoredScene,
       appState: getCanvasAppState(restoredScene.appState),
-      libraryItems: storedLibraryItems,
       scrollToContent: false,
     };
   } catch (error) {
     console.error("Failed to restore Excalidraw scene from localStorage", error);
     removeStorageValue(SCENE_STORAGE_KEY);
 
-    return storedLibraryItems
-      ? {
-          appState: getCanvasAppState(),
-          libraryItems: storedLibraryItems,
-        }
-      : null;
+    return {
+      appState: getCanvasAppState(),
+    };
   }
 }
 
@@ -150,6 +108,10 @@ export default function DrawingCanvasExcalidraw({
         window.clearTimeout(persistTimeoutRef.current);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    removeStorageValue(LIBRARY_STORAGE_KEY);
   }, []);
 
   useEffect(() => {
@@ -207,27 +169,6 @@ export default function DrawingCanvasExcalidraw({
     [excalidrawApi],
   );
 
-  const persistLibrary = useCallback(
-    (libraryItems: LibraryItems) => {
-      try {
-        if (libraryItems.length === 0) {
-          window.localStorage.removeItem(LIBRARY_STORAGE_KEY);
-          return;
-        }
-
-        const serializedLibrary = serializeLibraryAsJSON(libraryItems);
-        window.localStorage.setItem(LIBRARY_STORAGE_KEY, serializedLibrary);
-      } catch (error) {
-        console.error("Failed to persist Excalidraw library locally", error);
-        excalidrawApi?.setToast({
-          message: "Couldn't save the canvas library locally.",
-          duration: 3000,
-        });
-      }
-    },
-    [excalidrawApi],
-  );
-
   const renderTopRightUI = useCallback(() => {
     return (
       <button
@@ -250,7 +191,6 @@ export default function DrawingCanvasExcalidraw({
         initialData={initialData}
         name="Aristote Portfolio Canvas"
         onChange={persistScene}
-        onLibraryChange={persistLibrary}
         renderTopRightUI={renderTopRightUI}
         theme={THEME.LIGHT}
         UIOptions={EXCALIDRAW_UI_OPTIONS}

@@ -27,6 +27,11 @@
   display: none;
 }
 
+.drawing-canvas-excalidraw .excalidraw .default-sidebar,
+.drawing-canvas-excalidraw .excalidraw .default-sidebar-trigger {
+  display: none;
+}
+
 .drawing-canvas-excalidraw .excalidraw .HintViewer,
 .drawing-canvas-excalidraw .excalidraw .ToolIcon__keybinding,
 .drawing-canvas-excalidraw .excalidraw .color-picker-keybinding,
@@ -48,4 +53,10 @@
 
 .drawing-canvas-excalidraw .excalidraw .App-menu__left {
   width: 13.5rem;
+}
+
+.drawing-canvas-excalidraw .excalidraw .App-toolbar__extra-tools-dropdown > div[style*="font-weight: 600"],
+.drawing-canvas-excalidraw .excalidraw .App-toolbar__extra-tools-dropdown > div[style*="font-weight: 600"] + .dropdown-menu-item,
+.drawing-canvas-excalidraw .excalidraw .App-toolbar__extra-tools-dropdown > div[style*="font-weight: 600"] + .dropdown-menu-item + .dropdown-menu-item {
+  display: none;
 }
