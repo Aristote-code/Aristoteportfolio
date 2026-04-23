@@ -27,6 +27,15 @@
   display: none;
 }
 
+.drawing-canvas-excalidraw .excalidraw .HintViewer,
+.drawing-canvas-excalidraw .excalidraw .ToolIcon__keybinding,
+.drawing-canvas-excalidraw .excalidraw .color-picker-keybinding,
+.drawing-canvas-excalidraw .excalidraw .picker-keybinding,
+.drawing-canvas-excalidraw .excalidraw .dropdown-menu-item__shortcut,
+.drawing-canvas-excalidraw .excalidraw .context-menu-item__shortcut {
+  display: none;
+}
+
 .drawing-canvas-excalidraw .excalidraw .Island,
 .drawing-canvas-excalidraw .excalidraw .sidebar-trigger,
 .drawing-canvas-excalidraw .excalidraw .help-icon {

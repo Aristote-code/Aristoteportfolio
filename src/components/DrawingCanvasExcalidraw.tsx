@@ -23,7 +23,7 @@ const DEFAULT_CANVAS_BACKGROUND = "transparent";
 
 const EXCALIDRAW_UI_OPTIONS = {
   canvasActions: {
-    changeViewBackgroundColor: true,
+    changeViewBackgroundColor: false,
     clearCanvas: true,
     export: {
       saveFileToDisk: true,
@@ -90,6 +90,16 @@ function getStoredLibraryItems() {
   }
 }
 
+function getCanvasAppState(
+  appState?: ExcalidrawInitialDataState["appState"] | Parameters<typeof serializeAsJSON>[1] | null,
+) {
+  return {
+    ...(appState ?? {}),
+    theme: THEME.LIGHT,
+    viewBackgroundColor: DEFAULT_CANVAS_BACKGROUND,
+  };
+}
+
 function getInitialSceneData(): ExcalidrawInitialDataState | null {
   const rawScene = readStorageValue(SCENE_STORAGE_KEY);
   const storedLibraryItems = getStoredLibraryItems();
@@ -97,10 +107,7 @@ function getInitialSceneData(): ExcalidrawInitialDataState | null {
   if (!rawScene) {
     return storedLibraryItems
       ? {
-          appState: {
-            theme: THEME.LIGHT,
-            viewBackgroundColor: DEFAULT_CANVAS_BACKGROUND,
-          },
+          appState: getCanvasAppState(),
           libraryItems: storedLibraryItems,
         }
       : null;
@@ -112,15 +119,7 @@ function getInitialSceneData(): ExcalidrawInitialDataState | null {
 
     return {
       ...restoredScene,
-      appState: {
-        ...restoredScene.appState,
-        theme: THEME.LIGHT,
-        viewBackgroundColor:
-          !restoredScene.appState.viewBackgroundColor ||
-          restoredScene.appState.viewBackgroundColor === "#ffffff"
-            ? DEFAULT_CANVAS_BACKGROUND
-            : restoredScene.appState.viewBackgroundColor,
-      },
+      appState: getCanvasAppState(restoredScene.appState),
       libraryItems: storedLibraryItems,
       scrollToContent: false,
     };
@@ -130,10 +129,7 @@ function getInitialSceneData(): ExcalidrawInitialDataState | null {
 
     return storedLibraryItems
       ? {
-          appState: {
-            theme: THEME.LIGHT,
-            viewBackgroundColor: DEFAULT_CANVAS_BACKGROUND,
-          },
+          appState: getCanvasAppState(),
           libraryItems: storedLibraryItems,
         }
       : null;
@@ -156,15 +152,48 @@ export default function DrawingCanvasExcalidraw({
     };
   }, []);
 
+  useEffect(() => {
+    if (!excalidrawApi) {
+      return;
+    }
+
+    const appState = excalidrawApi.getAppState();
+
+    if (
+      appState.theme !== THEME.LIGHT ||
+      appState.viewBackgroundColor !== DEFAULT_CANVAS_BACKGROUND
+    ) {
+      excalidrawApi.updateScene({
+        appState: getCanvasAppState(appState),
+      });
+    }
+  }, [excalidrawApi]);
+
   const persistScene = useCallback(
     (elements: Parameters<typeof serializeAsJSON>[0], appState: Parameters<typeof serializeAsJSON>[1], files: Parameters<typeof serializeAsJSON>[2]) => {
+      const normalizedAppState = getCanvasAppState(appState);
+
+      if (
+        appState.theme !== THEME.LIGHT ||
+        appState.viewBackgroundColor !== DEFAULT_CANVAS_BACKGROUND
+      ) {
+        excalidrawApi?.updateScene({
+          appState: normalizedAppState,
+        });
+      }
+
       if (persistTimeoutRef.current !== null) {
         window.clearTimeout(persistTimeoutRef.current);
       }
 
       persistTimeoutRef.current = window.setTimeout(() => {
         try {
-          const serializedScene = serializeAsJSON(elements, appState, files, "local");
+          const serializedScene = serializeAsJSON(
+            elements,
+            normalizedAppState,
+            files,
+            "local",
+          );
           window.localStorage.setItem(SCENE_STORAGE_KEY, serializedScene);
         } catch (error) {
           console.error("Failed to persist Excalidraw scene locally", error);
@@ -227,10 +256,9 @@ export default function DrawingCanvasExcalidraw({
         UIOptions={EXCALIDRAW_UI_OPTIONS}
       >
         <MainMenu>
-          <MainMenu.Group title="Canvas">
+          <MainMenu.Group title="Board">
             <MainMenu.DefaultItems.LoadScene />
             <MainMenu.DefaultItems.Export />
-            <MainMenu.DefaultItems.ChangeCanvasBackground />
             <MainMenu.DefaultItems.ClearCanvas />
           </MainMenu.Group>
         </MainMenu>
