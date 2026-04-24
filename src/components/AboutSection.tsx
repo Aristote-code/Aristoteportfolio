@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { StickyNote } from "./StickyNote";
 import { Linkedin, Github, Mail, Twitter } from "lucide-react";
+import { RiveIcon } from "./RiveIcon";
 
 export function AboutSection() {
   const handleDownloadResume = () => {
@@ -196,18 +197,38 @@ export function AboutSection() {
               <div className="flex gap-4">
                 {[
                   {
+                    label: "LinkedIn",
                     icon: Linkedin,
                     href: "https://www.linkedin.com/in/gahima-aristote/",
                   },
-                  { icon: Github, href: "https://github.com/Aristote-code" },
-                  { icon: Mail, href: "mailto:gahimaaristote1@gmail.com" },
-                  { icon: Twitter, href: "https://x.com/GAristote" },
-                ].map((link, i) => (
+                  {
+                    label: "GitHub",
+                    icon: Github,
+                    href: "https://github.com/Aristote-code",
+                  },
+                  {
+                    label: "Rive",
+                    icon: RiveIcon,
+                    href: "https://rive.app/@aristote/",
+                  },
+                  {
+                    label: "Email",
+                    icon: Mail,
+                    href: "mailto:gahimaaristote1@gmail.com",
+                  },
+                  {
+                    label: "Twitter",
+                    icon: Twitter,
+                    href: "https://x.com/GAristote",
+                  },
+                ].map((link) => (
                   <a
-                    key={i}
+                    key={link.label}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={link.label}
+                    title={link.label}
                     className="w-10 h-10 rounded-2xl border-2 border-[#474747] flex items-center justify-center hover:bg-[#474747] hover:text-white transition-all duration-300 group"
                   >
                     <link.icon className="w-5 h-5 text-[#474747] group-hover:text-white transition-colors" />
