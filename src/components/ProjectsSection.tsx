@@ -20,6 +20,7 @@ interface Project {
   tags: string[];
   link: string;
   color: string;
+  hidden?: boolean;
   blocks?: ContentBlock[];
 }
 
@@ -88,6 +89,7 @@ export function ProjectsSection() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const visibleProjects = projects.filter((project) => !project.hidden);
 
   useEffect(() => {
     fetchProjects();
@@ -138,7 +140,7 @@ export function ProjectsSection() {
           )}
 
           {/* Empty State */}
-          {!loading && projects.length === 0 && (
+          {!loading && visibleProjects.length === 0 && (
             <div className="text-center py-12">
               <p className="font-['Gaegu'] text-[20px] text-[#8c8fa6]">
                 No projects yet. Check back soon!
@@ -148,7 +150,7 @@ export function ProjectsSection() {
 
           {/* Projects List */}
           <div className="space-y-12 flex flex-col items-center">
-            {projects.map((project, index) => (
+            {visibleProjects.map((project, index) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
