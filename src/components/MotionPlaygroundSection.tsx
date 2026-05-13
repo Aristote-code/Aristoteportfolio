@@ -72,7 +72,7 @@ const motionProjects: MotionProject[] = [
     tags: ["Rive", "Loader", "Motion"],
     accent: "#8774ff",
     bgColor: "#0d0820",
-    fit: Fit.Fill,
+    fit: Fit.Contain,
   },
 ];
 
