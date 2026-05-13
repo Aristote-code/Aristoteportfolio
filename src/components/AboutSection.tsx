@@ -40,20 +40,6 @@ const experienceItems = [
     description:
       "Led web platform UX, design systems, and accessible product journeys that improved engagement, adoption, and task completion.",
   },
-  {
-    company: "Parentude",
-    role: "Product Designer",
-    period: "Apr 2021 - Jan 2023",
-    description:
-      "Designed mobile and web experiences for 5,000+ Rwandan families, including bilingual systems, onboarding flows, and gamified engagement.",
-  },
-  {
-    company: "Upwork",
-    role: "Freelance Designer",
-    period: "Jan 2018 - Jul 2021",
-    description:
-      "Delivered branding, web design, and production-ready creative assets for clients using Figma and Adobe tools.",
-  },
 ];
 
 export function AboutSection() {

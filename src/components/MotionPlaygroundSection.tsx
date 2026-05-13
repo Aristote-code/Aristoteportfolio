@@ -36,6 +36,8 @@ interface MotionProject {
   marketplaceUrl: string;
   tags: string[];
   accent: string;
+  bgColor: string;
+  fit: Fit;
   control?: NumberControl;
 }
 
@@ -49,6 +51,8 @@ const motionProjects: MotionProject[] = [
       "https://rive.app/marketplace/27337-51650-dynamic-streak-fire/",
     tags: ["Rive", "Data binding", "Interactive"],
     accent: "#ffb31a",
+    bgColor: "#1e1300",
+    fit: Fit.Contain,
     control: {
       label: "streak",
       path: "streak",
@@ -67,21 +71,23 @@ const motionProjects: MotionProject[] = [
       "https://rive.app/marketplace/27328-51630-loading-books/",
     tags: ["Rive", "Loader", "Motion"],
     accent: "#8774ff",
+    bgColor: "#0d0820",
+    fit: Fit.Fill,
   },
 ];
 
-const riveLayout = new Layout({
-  fit: Fit.Contain,
-  alignment: Alignment.Center,
-});
-
 function usePlayableRive(project: MotionProject) {
+  const layout = useMemo(
+    () => new Layout({ fit: project.fit, alignment: Alignment.Center }),
+    [project.fit]
+  );
+
   const { rive, setCanvasRef } = useRive(
     {
       src: project.src,
       autoplay: true,
       autoBind: true,
-      layout: riveLayout,
+      layout,
     },
     {
       useOffscreenRenderer: true,
@@ -249,15 +255,11 @@ function RiveStage({
   return (
     <div className="space-y-6">
       <div
-        className="relative overflow-hidden rounded-lg border-2 border-[#474747] bg-[#1e1e1e]"
+        className="relative overflow-hidden rounded-lg border-2 border-[#474747]"
         style={{
           height: "min(70vw, 420px)",
           minHeight: 300,
-          backgroundColor: "#1e1e1e",
-          backgroundImage:
-            "linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%), linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.05) 75%), linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.05) 75%)",
-          backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0",
-          backgroundSize: "20px 20px",
+          backgroundColor: project.bgColor,
         }}
       >
         <canvas
@@ -316,53 +318,14 @@ function RiveStage({
   );
 }
 
-function MotionProjectButton({
+function MotionProjectSection({
   project,
-  isSelected,
-  onSelect,
+  isFirst,
 }: {
   project: MotionProject;
-  isSelected: boolean;
-  onSelect: () => void;
+  isFirst: boolean;
 }) {
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={`w-full rounded-lg border-2 p-4 text-left transition-transform hover:scale-[1.02] ${
-        isSelected
-          ? "border-[#474747] bg-white"
-          : "border-[#e5e7f0] bg-[#f8f9fc]"
-      }`}
-      style={
-        isSelected
-          ? { boxShadow: "4px 4px 0 #474747" }
-          : { boxShadow: "none" }
-      }
-    >
-      <div className="flex items-center gap-3">
-        <span
-          className="h-4 w-4 shrink-0 rounded-full border-2 border-[#474747]"
-          style={{ backgroundColor: project.accent }}
-          aria-hidden="true"
-        />
-        <span className="font-['Solway'] font-bold text-[20px] leading-[24px] text-[#474747]">
-          {project.title}
-        </span>
-      </div>
-      <p className="mt-4 font-['Gaegu'] text-[18px] leading-[24px] text-[#8c8fa6]">
-        {project.description}
-      </p>
-    </button>
-  );
-}
-
-export function MotionPlaygroundSection() {
-  const [selectedId, setSelectedId] = useState(motionProjects[0].id);
   const [activeRive, setActiveRive] = useState<RiveInstance | null>(null);
-  const selectedProject =
-    motionProjects.find((project) => project.id === selectedId) ??
-    motionProjects[0];
 
   return (
     <section
@@ -370,27 +333,28 @@ export function MotionPlaygroundSection() {
       style={{ paddingBottom: "10rem" }}
     >
       <div className="w-full max-w-6xl mx-auto">
-        <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
-          <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
-          <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">
-            Motion
-          </h2>
-          <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
-        </div>
+        {isFirst && (
+          <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
+            <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
+            <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">
+              Motion
+            </h2>
+            <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
+          </div>
+        )}
 
         <motion.div
-          key={selectedProject.id}
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="grid md:grid-cols-2 gap-8"
         >
-          <RiveStage project={selectedProject} onRiveChange={setActiveRive} />
+          <RiveStage project={project} onRiveChange={setActiveRive} />
 
           <div className="space-y-6">
             <div className="rounded-lg border-2 border-[#474747] bg-white p-6">
               <div className="flex flex-wrap items-center gap-2 mb-4">
-                {selectedProject.tags.map((tag) => (
+                {project.tags.map((tag) => (
                   <span
                     key={tag}
                     className="rounded-lg border-2 border-[#e5e7f0] bg-[#f8f9fc] px-4 py-2 font-['Gaegu'] text-[16px] text-[#474747]"
@@ -401,34 +365,37 @@ export function MotionPlaygroundSection() {
               </div>
 
               <h3 className="font-['Solway'] font-bold text-[32px] leading-[38.4px] text-[#474747]">
-                {selectedProject.title}
+                {project.title}
               </h3>
               <p className="mt-4 font-['Gaegu'] text-[20px] leading-[24px] text-[#474747]">
-                {selectedProject.description}
+                {project.description}
               </p>
             </div>
 
-            {selectedProject.control && (
+            {project.control && (
               <NumberBindingControl
-                key={selectedProject.control.path}
-                control={selectedProject.control}
+                key={project.control.path}
+                control={project.control}
                 rive={activeRive}
               />
             )}
-
-            <div className="space-y-4">
-              {motionProjects.map((project) => (
-                <MotionProjectButton
-                  key={project.id}
-                  project={project}
-                  isSelected={project.id === selectedProject.id}
-                  onSelect={() => setSelectedId(project.id)}
-                />
-              ))}
-            </div>
           </div>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+export function MotionPlaygroundSection() {
+  return (
+    <>
+      {motionProjects.map((project, index) => (
+        <MotionProjectSection
+          key={project.id}
+          project={project}
+          isFirst={index === 0}
+        />
+      ))}
+    </>
   );
 }
