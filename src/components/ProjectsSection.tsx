@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { ExternalLink, X } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 import svgPaths from "../imports/svg-6g023zi4pn";
@@ -20,6 +20,7 @@ interface Project {
   tags: string[];
   link: string;
   color: string;
+  hidden?: boolean;
   blocks?: ContentBlock[];
 }
 
@@ -88,6 +89,7 @@ export function ProjectsSection() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const visibleProjects = projects.filter((project) => !project.hidden);
 
   useEffect(() => {
     fetchProjects();
@@ -138,7 +140,7 @@ export function ProjectsSection() {
           )}
 
           {/* Empty State */}
-          {!loading && projects.length === 0 && (
+          {!loading && visibleProjects.length === 0 && (
             <div className="text-center py-12">
               <p className="font-['Gaegu'] text-[20px] text-[#8c8fa6]">
                 No projects yet. Check back soon!
@@ -148,18 +150,14 @@ export function ProjectsSection() {
 
           {/* Projects List */}
           <div className="space-y-12 flex flex-col items-center">
-            {projects.map((project, index) => (
+            {visibleProjects.map((project, index) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                onClick={() =>
-                  project.link
-                    ? window.open(project.link, "_blank")
-                    : setSelectedProject(project)
-                }
+                onClick={() => setSelectedProject(project)}
                 className="cursor-pointer hover:scale-[1.02] transition-transform"
               >
                 <ProjectCard project={project} />
@@ -170,7 +168,7 @@ export function ProjectsSection() {
       </section>
 
       {/* Project Detail Modal */}
-      {selectedProject && !selectedProject.link && (
+      {selectedProject && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -201,6 +199,18 @@ export function ProjectsSection() {
               <p className="font-['Gaegu'] text-[20px] text-[#474747] mb-12 leading-[24px]">
                 {selectedProject.description}
               </p>
+
+              {selectedProject.link && (
+                <a
+                  href={selectedProject.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mb-12 inline-flex items-center gap-2 rounded-full border-2 border-[#474747] bg-white px-5 py-3 font-['Gaegu'] text-[20px] text-[#474747] transition-colors hover:bg-[#f8f9fc]"
+                >
+                  <ExternalLink className="h-5 w-5" />
+                  Visit live website
+                </a>
+              )}
 
               {selectedProject.tags && selectedProject.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-12">

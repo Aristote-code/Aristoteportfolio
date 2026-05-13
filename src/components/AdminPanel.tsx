@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Plus, Trash2, GripVertical, Image as ImageIcon, Type, LogOut, MoreHorizontal, X } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, Plus, Trash2, GripVertical, LogOut, X } from 'lucide-react';
 import { projectId } from '../utils/supabase/info';
 import { RichTextEditor } from './RichTextEditor';
 import { ImageUpload } from './ImageUpload';
@@ -113,7 +113,17 @@ interface Project {
   link: string;
   color: string;
   order: number;
+  hidden?: boolean;
   blocks?: ContentBlock[];
+}
+
+function normalizeProject(project: Project): Project {
+  return {
+    ...project,
+    tags: project.tags || [],
+    blocks: project.blocks || [],
+    hidden: Boolean(project.hidden),
+  };
 }
 
 export function AdminPanel() {
@@ -151,7 +161,7 @@ export function AdminPanel() {
         // Load from localStorage as fallback
         const localProjects = localStorage.getItem('admin_projects');
         if (localProjects) {
-          setProjects(JSON.parse(localProjects));
+          setProjects(JSON.parse(localProjects).map(normalizeProject));
         }
       }
     } catch (error) {
@@ -160,7 +170,7 @@ export function AdminPanel() {
       // Load from localStorage as fallback
       const localProjects = localStorage.getItem('admin_projects');
       if (localProjects) {
-        setProjects(JSON.parse(localProjects));
+        setProjects(JSON.parse(localProjects).map(normalizeProject));
       }
     }
   };
@@ -194,12 +204,21 @@ export function AdminPanel() {
   const fetchProjects = async () => {
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/projects`
+        `https://${projectId}.supabase.co/functions/v1/server/admin/projects`,
+        {
+          headers: {
+            'Authorization': `Bearer ${ADMIN_KEY}`,
+          },
+        }
       );
 
-      const data = await response.json();
+      const fallbackResponse = response.ok
+        ? null
+        : await fetch(`https://${projectId}.supabase.co/functions/v1/server/projects`);
+
+      const data = await (response.ok ? response : fallbackResponse!).json();
       if (data.projects) {
-        setProjects(data.projects);
+        setProjects(data.projects.map(normalizeProject));
       }
     } catch (error) {
       console.error('Failed to fetch projects:', error);
@@ -216,6 +235,7 @@ export function AdminPanel() {
       link: '',
       color: '#fef08a',
       order: Date.now(),
+      hidden: false,
       blocks: [],
     };
     setSelectedProject(newProject);
@@ -250,9 +270,13 @@ export function AdminPanel() {
         console.log('Response data:', data);
         
         if (response.ok && data.project) {
+          const savedProject = normalizeProject({
+            ...data.project,
+            hidden: data.project.hidden ?? selectedProject.hidden ?? false,
+          });
           const updatedProjects = selectedProject.id
-            ? projects.map(p => p.id === data.project.id ? data.project : p)
-            : [...projects, data.project];
+            ? projects.map(p => p.id === savedProject.id ? savedProject : p)
+            : [...projects, savedProject];
           
           setProjects(updatedProjects);
           localStorage.setItem('admin_projects', JSON.stringify(updatedProjects));
@@ -264,9 +288,9 @@ export function AdminPanel() {
         }
       } else {
         // Fallback: save to localStorage only
-        const projectToSave = selectedProject.id 
+        const projectToSave = normalizeProject(selectedProject.id 
           ? selectedProject 
-          : { ...selectedProject, id: `project_${Date.now()}` };
+          : { ...selectedProject, id: `project_${Date.now()}` });
         
         const updatedProjects = selectedProject.id
           ? projects.map(p => p.id === projectToSave.id ? projectToSave : p)
@@ -282,9 +306,9 @@ export function AdminPanel() {
       
       // Try to save locally as fallback
       try {
-        const projectToSave = selectedProject.id 
+        const projectToSave = normalizeProject(selectedProject.id 
           ? selectedProject 
-          : { ...selectedProject, id: `project_${Date.now()}` };
+          : { ...selectedProject, id: `project_${Date.now()}` });
         
         const updatedProjects = selectedProject.id
           ? projects.map(p => p.id === projectToSave.id ? projectToSave : p)
@@ -370,6 +394,9 @@ export function AdminPanel() {
     });
   };
 
+  const visibleProjectCount = projects.filter(project => !project.hidden).length;
+  const hiddenProjectCount = projects.length - visibleProjectCount;
+
   // Login Screen
   if (!isAuthenticated) {
     return (
@@ -451,6 +478,18 @@ export function AdminPanel() {
               <span className="font-['Gaegu'] text-[14px] text-[#8c8fa6]">
                 {selectedProject.id ? 'Editing' : 'New Project'}
               </span>
+              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border font-['Gaegu'] text-[12px] ${
+                selectedProject.hidden
+                  ? 'bg-orange-50 text-orange-600 border-orange-200'
+                  : 'bg-green-50 text-green-600 border-green-200'
+              }`}>
+                {selectedProject.hidden ? (
+                  <EyeOff className="w-3 h-3" />
+                ) : (
+                  <Eye className="w-3 h-3" />
+                )}
+                {selectedProject.hidden ? 'Hidden' : 'Visible'}
+              </span>
             </div>
 
             <div className="flex gap-3">
@@ -482,6 +521,56 @@ export function AdminPanel() {
               <h2 className="font-['Solway'] text-[20px] text-[#474747] mb-6">
                 Project Details
               </h2>
+
+              {/* Project Visibility */}
+              <div className={`mb-6 rounded-2xl border p-4 transition-colors ${
+                selectedProject.hidden
+                  ? 'border-orange-200 bg-orange-50'
+                  : 'border-green-200 bg-green-50'
+              }`}>
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      {selectedProject.hidden ? (
+                        <EyeOff className="w-4 h-4 text-orange-600" />
+                      ) : (
+                        <Eye className="w-4 h-4 text-green-600" />
+                      )}
+                      <h3 className="font-['Gaegu'] text-[18px] text-[#474747]">
+                        Portfolio visibility
+                      </h3>
+                    </div>
+                    <p className="mt-1 font-['Gaegu'] text-[14px] text-[#8c8fa6]">
+                      Hidden projects stay in this CMS but do not appear in the public Projects section.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedProject({
+                      ...selectedProject,
+                      hidden: !selectedProject.hidden,
+                    })}
+                    className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 font-['Gaegu'] text-[16px] transition-colors ${
+                      selectedProject.hidden
+                        ? 'bg-[#474747] text-white hover:bg-[#333333]'
+                        : 'bg-white text-[#474747] border border-[#d7e8d7] hover:bg-green-100'
+                    }`}
+                  >
+                    {selectedProject.hidden ? (
+                      <>
+                        <Eye className="w-4 h-4" />
+                        Show project
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-4 h-4" />
+                        Hide project
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
               
               {/* Project Title */}
               <div className="mb-6">
@@ -673,6 +762,14 @@ export function AdminPanel() {
             <span className="text-[#8c8fa6] font-['Gaegu'] text-[16px]">
               {projects.length} {projects.length === 1 ? 'project' : 'projects'}
             </span>
+            <span className="text-[#8c8fa6] font-['Gaegu'] text-[14px]">
+              {visibleProjectCount} visible
+            </span>
+            {hiddenProjectCount > 0 && (
+              <span className="px-2 py-1 bg-orange-50 text-orange-600 rounded font-['Gaegu'] text-[12px] border border-orange-200">
+                {hiddenProjectCount} hidden
+              </span>
+            )}
             {isServerAvailable === false && (
               <span className="px-2 py-1 bg-orange-50 text-orange-600 rounded font-['Gaegu'] text-[12px] border border-orange-200">
                 Local Mode
@@ -737,7 +834,11 @@ export function AdminPanel() {
               <button
                 key={project.id}
                 onClick={() => setSelectedProject(project)}
-                className="w-full text-left p-4 hover:bg-gray-50 rounded-lg transition-colors group border border-transparent hover:border-[#e5e7f0]"
+                className={`w-full text-left p-4 rounded-lg transition-colors group border hover:border-[#e5e7f0] ${
+                  project.hidden
+                    ? 'bg-orange-50/40 border-orange-100 hover:bg-orange-50'
+                    : 'border-transparent hover:bg-gray-50'
+                }`}
               >
                 <div className="flex items-center gap-4">
                   <div
@@ -748,8 +849,14 @@ export function AdminPanel() {
                     <h3 className="font-['Gaegu'] text-[20px] text-[#474747] truncate">
                       {project.title || 'Untitled'}
                     </h3>
-                    {project.tags.length > 0 && (
-                      <div className="flex gap-2 mt-1">
+                    {(project.hidden || project.tags.length > 0) && (
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {project.hidden && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-orange-100 rounded text-[12px] font-['Gaegu'] text-orange-700">
+                            <EyeOff className="w-3 h-3" />
+                            Hidden
+                          </span>
+                        )}
                         {project.tags.map((tag, i) => (
                           <span
                             key={i}

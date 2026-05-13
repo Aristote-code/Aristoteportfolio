@@ -15,7 +15,7 @@ export function HomeSection() {
             Hi, I'm Aristote
           </h1>
           <p className="text-[#8c8fa6] text-[18px] md:text-[24px] font-['Gaegu'] leading-[28.8px]">
-            A product designer at Health Connect.
+            A senior product designer at IST Group.
           </p>
 
           {/* Decorative sticky notes - positioned relative to the centered content */}

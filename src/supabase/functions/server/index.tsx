@@ -41,19 +41,42 @@ async function verifyAdmin(authHeader: string | null) {
 
 // ==================== PROJECTS ROUTES ====================
 
+function sortProjects(projects: any[]) {
+  return projects.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+}
+
 // GET /projects - Public: Get all projects
 app.get('/projects', async (c) => {
   try {
     const projects = await kv.getByPrefix('project_');
     
-    // Sort by order or creation date
+    // Public projects only. Hidden projects stay editable through the admin route.
     const sortedProjects = projects
       .map(p => p.value)
+      .filter((project: any) => !project.hidden)
       .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
     
     return c.json({ projects: sortedProjects });
   } catch (error) {
     console.log('Error fetching projects:', error);
+    return c.json({ error: 'Failed to fetch projects' }, 500);
+  }
+});
+
+// GET /admin/projects - Admin: Get all projects, including hidden ones
+app.get('/admin/projects', async (c) => {
+  const isAdmin = await verifyAdmin(c.req.header('Authorization'));
+  if (!isAdmin) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  try {
+    const projects = await kv.getByPrefix('project_');
+    const sortedProjects = sortProjects(projects.map(p => p.value));
+
+    return c.json({ projects: sortedProjects });
+  } catch (error) {
+    console.log('Error fetching admin projects:', error);
     return c.json({ error: 'Failed to fetch projects' }, 500);
   }
 });
@@ -67,7 +90,7 @@ app.post('/admin/projects', async (c) => {
 
   try {
     const body = await c.req.json();
-    const { title, description, image, tags, link, color, blocks } = body;
+    const { title, description, image, tags, link, color, blocks, hidden } = body;
 
     if (!title) {
       return c.json({ error: 'Title is required' }, 400);
@@ -82,6 +105,7 @@ app.post('/admin/projects', async (c) => {
       tags: tags || [],
       link: link || '',
       color: color || '#fef08a',
+      hidden: Boolean(hidden),
       blocks: blocks || [],
       order: Date.now(),
       createdAt: new Date().toISOString(),
