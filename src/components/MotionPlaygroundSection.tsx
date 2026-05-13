@@ -203,117 +203,37 @@ function NumberBindingControl({
   );
 }
 
-function RiveStage({
+// Canvas only — no buttons
+function RiveCanvas({
   project,
   onRiveChange,
 }: {
   project: MotionProject;
   onRiveChange: (rive: RiveInstance | null) => void;
 }) {
-  const [isPlaying, setIsPlaying] = useState(true);
   const { rive, setCanvasRef } = usePlayableRive(project);
-
-  useEffect(() => {
-    setIsPlaying(true);
-  }, [project.id]);
 
   useEffect(() => {
     onRiveChange(rive);
     return () => onRiveChange(null);
   }, [onRiveChange, rive]);
 
-  const playbackNames = useMemo(() => {
-    if (!rive) return undefined;
-
-    const machineName = rive.stateMachineNames[0];
-    const animationName = rive.animationNames[0];
-    return machineName || animationName;
-  }, [rive]);
-
-  const togglePlayback = () => {
-    if (!rive) return;
-
-    if (isPlaying) {
-      rive.pause(playbackNames);
-    } else {
-      rive.play(playbackNames);
-    }
-
-    setIsPlaying((current) => !current);
-  };
-
-  const replay = () => {
-    if (!rive) return;
-
-    rive.reset({ autoplay: true, autoBind: true });
-    if (playbackNames) {
-      rive.play(playbackNames);
-    }
-    setIsPlaying(true);
-  };
-
   return (
-    <div className="space-y-6">
-      <div
-        className="relative overflow-hidden rounded-lg border-2 border-[#474747]"
-        style={{
-          height: "min(70vw, 420px)",
-          minHeight: 300,
-          backgroundColor: project.bgColor,
-        }}
-      >
-        <canvas
-          ref={setCanvasRef}
-          width={900}
-          height={600}
-          className="h-full w-full"
-          style={{ display: "block" }}
-        />
-      </div>
-
-      <div className="flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={togglePlayback}
-          className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
-        >
-          {isPlaying ? (
-            <Pause className="h-5 w-5" />
-          ) : (
-            <Play className="h-5 w-5" />
-          )}
-          {isPlaying ? "Pause" : "Play"}
-        </button>
-
-        <button
-          type="button"
-          onClick={replay}
-          className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
-        >
-          <RotateCcw className="h-5 w-5" />
-          Replay
-        </button>
-
-        <a
-          href={project.src}
-          download
-          className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
-        >
-          <Download className="h-5 w-5" />
-          Download
-        </a>
-
-        <a
-          href={project.marketplaceUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
-          style={{ backgroundColor: "#fff2b8" }}
-        >
-          <ExternalLink className="h-5 w-5" />
-          Open in Rive
-        </a>
-      </div>
+    <div
+      className="relative overflow-hidden rounded-lg border-2 border-[#474747]"
+      style={{
+        height: "min(70vw, 420px)",
+        minHeight: 300,
+        backgroundColor: project.bgColor,
+      }}
+    >
+      <canvas
+        ref={setCanvasRef}
+        width={900}
+        height={600}
+        className="h-full w-full"
+        style={{ display: "block" }}
+      />
     </div>
   );
 }
@@ -326,15 +246,35 @@ function MotionProjectSection({
   isFirst: boolean;
 }) {
   const [activeRive, setActiveRive] = useState<RiveInstance | null>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const playbackNames = useMemo(() => {
+    if (!activeRive) return undefined;
+    return activeRive.stateMachineNames[0] || activeRive.animationNames[0];
+  }, [activeRive]);
+
+  const togglePlayback = () => {
+    if (!activeRive) return;
+    if (isPlaying) {
+      activeRive.pause(playbackNames);
+    } else {
+      activeRive.play(playbackNames);
+    }
+    setIsPlaying((prev) => !prev);
+  };
+
+  const replay = () => {
+    if (!activeRive) return;
+    activeRive.reset({ autoplay: true, autoBind: true });
+    if (playbackNames) activeRive.play(playbackNames);
+    setIsPlaying(true);
+  };
 
   return (
-    <section
-      className="min-h-screen py-16 md:py-32 px-4 md:px-8"
-      style={{ paddingBottom: "10rem" }}
-    >
+    <section className="py-12 md:py-20 px-4 md:px-8">
       <div className="w-full max-w-6xl mx-auto">
         {isFirst && (
-          <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
+          <div className="flex items-center justify-center gap-4 md:gap-8 mb-8 md:mb-12">
             <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
             <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">
               Motion
@@ -347,11 +287,13 @@ function MotionProjectSection({
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-8"
+          className="grid md:grid-cols-2 gap-8 items-start"
         >
-          <RiveStage project={project} onRiveChange={setActiveRive} />
+          {/* Left — canvas only */}
+          <RiveCanvas project={project} onRiveChange={setActiveRive} />
 
-          <div className="space-y-6">
+          {/* Right — info, controls, buttons */}
+          <div className="space-y-4">
             <div className="rounded-lg border-2 border-[#474747] bg-white p-6">
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 {project.tags.map((tag) => (
@@ -379,6 +321,47 @@ function MotionProjectSection({
                 rive={activeRive}
               />
             )}
+
+            {/* Playback buttons */}
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={togglePlayback}
+                className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
+              >
+                {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                {isPlaying ? "Pause" : "Play"}
+              </button>
+
+              <button
+                type="button"
+                onClick={replay}
+                className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
+              >
+                <RotateCcw className="h-5 w-5" />
+                Replay
+              </button>
+
+              <a
+                href={project.src}
+                download
+                className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
+              >
+                <Download className="h-5 w-5" />
+                Download
+              </a>
+
+              <a
+                href={project.marketplaceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
+                style={{ backgroundColor: "#fff2b8" }}
+              >
+                <ExternalLink className="h-5 w-5" />
+                Open in Rive
+              </a>
+            </div>
           </div>
         </motion.div>
       </div>
