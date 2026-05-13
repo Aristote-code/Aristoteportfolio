@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { StickyNote } from "./StickyNote";
-import { Linkedin, Github, Mail, Twitter } from "lucide-react";
+import { ExternalLink, Linkedin, Github, Mail, Twitter } from "lucide-react";
 import { RiveIcon } from "./RiveIcon";
 
 const skills = [
@@ -57,14 +57,8 @@ const experienceItems = [
 ];
 
 export function AboutSection() {
-  const handleDownloadResume = () => {
-    // Create a link element and trigger download
-    const link = document.createElement("a");
-    link.href = "/resume.pdf";
-    link.download = "Gahima_Aristote_Resume.pdf";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleOpenResume = () => {
+    window.open("/resume.pdf", "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -354,23 +348,16 @@ export function AboutSection() {
                   </p>
                 </div>
 
-                {/* Download Resume Button */}
+                {/* Resume Button */}
                 <button
-                  onClick={handleDownloadResume}
+                  onClick={handleOpenResume}
+                  aria-label="Open resume in a new tab"
                   className="flex items-center gap-2 group mt-6 px-6 py-3 border-2 border-[#474747] rounded-2xl hover:bg-[#474747] hover:text-white transition-all duration-300"
                 >
                   <span className="font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] group-hover:text-white leading-[28.8px] transition-colors">
-                    Download Resume
+                    Open Resume
                   </span>
-                  <svg
-                    className="w-5 h-5 md:w-6 md:h-6 transition-colors"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M7 10l5 5 5-5M12 15V3" />
-                  </svg>
+                  <ExternalLink className="w-5 h-5 md:w-6 md:h-6 transition-colors" />
                 </button>
               </div>
             </div>

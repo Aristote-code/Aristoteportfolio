@@ -214,6 +214,18 @@ export function ProjectsSection() {
                 {selectedProject.description}
               </p>
 
+              {selectedProject.link && (
+                <a
+                  href={selectedProject.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mb-12 inline-flex items-center gap-2 rounded-full border-2 border-[#474747] bg-white px-5 py-3 font-['Gaegu'] text-[20px] text-[#474747] transition-colors hover:bg-[#f8f9fc]"
+                >
+                  <ExternalLink className="h-5 w-5" />
+                  Visit live website
+                </a>
+              )}
+
               {selectedProject.tags && selectedProject.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-12">
                   {selectedProject.tags.map((tag, i) => (
