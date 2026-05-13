@@ -1,4 +1,4 @@
-import { Home, Sparkles, User, Mail, MessageSquare, Pencil } from 'lucide-react';
+import { Film, Home, Mail, MessageSquare, Pencil, Sparkles, User } from 'lucide-react';
 import { useState } from 'react';
 
 interface IconNavigationProps {
@@ -16,14 +16,15 @@ export function IconNavigation({ activeSection, onNavigate, isCommentMode, onTog
   const navItems = [
     { id: 'home', icon: Home, label: 'Home', description: 'Back to the start' },
     { id: 'projects', icon: Sparkles, label: 'Projects', description: 'View featured work' },
+    { id: 'motion', icon: Film, label: 'Motion', description: 'Play Rive work' },
     { id: 'about', icon: User, label: 'About', description: 'Learn about me' },
     { id: 'contact', icon: Mail, label: 'Contact', description: 'Get in touch' },
   ];
 
   return (
-    <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
+    <nav className="portfolio-nav fixed bottom-8 left-1/2 -translate-x-1/2 z-40 hide-scrollbar">
       <div 
-        className="bg-white rounded-[20px] px-3 py-2 flex gap-3 relative"
+        className="portfolio-nav-shell bg-white rounded-[20px] py-2 flex relative"
         style={{
           boxShadow: '0px 0.637px 1.401px -0.938px rgba(114,98,218,0.12), 0px 1.932px 4.25px -1.875px rgba(114,98,218,0.11), 0px 5.106px 11.233px -2.813px rgba(114,98,218,0.09), 0px 16px 35.2px -3.75px rgba(114,98,218,0.04)',
         }}
@@ -38,7 +39,7 @@ export function IconNavigation({ activeSection, onNavigate, isCommentMode, onTog
           return (
             <div 
               key={item.id} 
-              className="relative h-[56px] w-[56px] flex items-center justify-center"
+              className="portfolio-nav-item relative flex items-center justify-center"
               onMouseEnter={() => setHoveredItem(item.id)}
               onMouseLeave={() => setHoveredItem(null)}
             >
@@ -74,13 +75,13 @@ export function IconNavigation({ activeSection, onNavigate, isCommentMode, onTog
         })}
 
         {/* Divider */}
-        <div className="w-px h-[56px] flex items-center justify-center">
+        <div className="portfolio-nav-divider w-px flex items-center justify-center shrink-0">
           <div className="w-px h-8 bg-[#e5e7f0]" />
         </div>
 
         {/* Comment Button */}
         <div 
-          className="relative h-[56px] w-[56px] flex items-center justify-center"
+          className="portfolio-nav-item relative flex items-center justify-center"
           onMouseEnter={() => setHoveredItem('comment')}
           onMouseLeave={() => setHoveredItem(null)}
         >
@@ -118,7 +119,7 @@ export function IconNavigation({ activeSection, onNavigate, isCommentMode, onTog
         {/* Drawing Button - Desktop only */}
         {onToggleDrawingMode && (
           <div 
-            className="relative h-[56px] w-[56px] items-center justify-center hidden md:flex"
+            className="relative h-[56px] w-[56px] items-center justify-center hidden md:flex shrink-0"
             onMouseEnter={() => setHoveredItem('draw')}
             onMouseLeave={() => setHoveredItem(null)}
           >

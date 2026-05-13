@@ -3,6 +3,7 @@ import { FigJamBackground } from "./components/FigJamBackground";
 import { IconNavigation } from "./components/IconNavigation";
 import { HomeSection } from "./components/HomeSection";
 import { ProjectsSection } from "./components/ProjectsSection";
+import { MotionPlaygroundSection } from "./components/MotionPlaygroundSection";
 import { AboutSection } from "./components/AboutSection";
 import { ContactSection } from "./components/ContactSection";
 import { CommentSystem, Comment } from "./components/CommentSystem";
@@ -52,6 +53,7 @@ export default function App() {
   const sectionsRef = {
     home: useRef<HTMLDivElement>(null),
     projects: useRef<HTMLDivElement>(null),
+    motion: useRef<HTMLDivElement>(null),
     about: useRef<HTMLDivElement>(null),
     contact: useRef<HTMLDivElement>(null),
   };
@@ -501,6 +503,10 @@ export default function App() {
 
         <div ref={sectionsRef.projects}>
           <ProjectsSection />
+        </div>
+
+        <div ref={sectionsRef.motion}>
+          <MotionPlaygroundSection />
         </div>
 
         <div ref={sectionsRef.about}>
