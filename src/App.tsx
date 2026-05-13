@@ -428,13 +428,12 @@ export default function App() {
 
   return (
     <div
-      className={`relative w-full flex flex-col ${isCommentMode
+      className={`relative isolate w-full min-h-screen flex flex-col ${isCommentMode
         ? "cursor-crosshair"
         : !isDrawingMode && userName && userCursorColor
           ? "custom-cursor-active"
           : ""
         }`}
-      style={{ maxHeight: "4830.63px", overflow: "hidden" }}
     >
       <FigJamBackground />
 
@@ -461,7 +460,6 @@ export default function App() {
       <main
         className="relative w-full"
         onClick={handlePageClick}
-        style={{ maxHeight: "4830.63px" }}
       >
         {/* Comment System */}
         <CommentSystem

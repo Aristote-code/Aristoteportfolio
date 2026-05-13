@@ -181,16 +181,30 @@ export function ProjectsSection() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="max-w-3xl mx-auto">
-              <div className="flex items-center justify-between mb-8">
+              <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="font-['Gaegu'] text-[16px] text-[#8c8fa6]">
                   Projects / {selectedProject.title}
                 </div>
-                <button
-                  onClick={() => setSelectedProject(null)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                >
-                  <X className="w-6 h-6 text-[#474747]" />
-                </button>
+                <div className="flex items-center gap-3 self-start sm:self-auto">
+                  {selectedProject.link && (
+                    <a
+                      href={selectedProject.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border-2 border-[#474747] bg-[#fff2b8] px-5 py-2.5 font-['Gaegu'] text-[19px] text-[#474747] shadow-[3px_3px_0_#474747] transition-transform hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#474747]"
+                    >
+                      <ExternalLink className="h-5 w-5" />
+                      Visit live website
+                    </a>
+                  )}
+                  <button
+                    onClick={() => setSelectedProject(null)}
+                    className="rounded-full border-2 border-transparent p-2 transition-colors hover:border-[#e5e7f0] hover:bg-gray-100"
+                    aria-label="Close project details"
+                  >
+                    <X className="w-6 h-6 text-[#474747]" />
+                  </button>
+                </div>
               </div>
 
               <h1 className="text-[52px] font-['Solway'] font-bold text-[#474747] mb-4 leading-[62px]">

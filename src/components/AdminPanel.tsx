@@ -288,8 +288,8 @@ export function AdminPanel() {
         }
       } else {
         // Fallback: save to localStorage only
-        const projectToSave = normalizeProject(selectedProject.id 
-          ? selectedProject 
+        const projectToSave = normalizeProject(selectedProject.id
+          ? selectedProject
           : { ...selectedProject, id: `project_${Date.now()}` });
         
         const updatedProjects = selectedProject.id
@@ -306,8 +306,8 @@ export function AdminPanel() {
       
       // Try to save locally as fallback
       try {
-        const projectToSave = normalizeProject(selectedProject.id 
-          ? selectedProject 
+        const projectToSave = normalizeProject(selectedProject.id
+          ? selectedProject
           : { ...selectedProject, id: `project_${Date.now()}` });
         
         const updatedProjects = selectedProject.id
