@@ -271,10 +271,10 @@ function MotionProjectSection({
   };
 
   return (
-    <section className="py-12 md:py-20 px-4 md:px-8">
+    <section className={`${isFirst ? "py-16 md:py-32" : "py-12 md:py-20"} px-4 md:px-8`}>
       <div className="w-full max-w-6xl mx-auto">
         {isFirst && (
-          <div className="flex items-center justify-center gap-4 md:gap-8 mb-8 md:mb-12">
+          <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
             <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
             <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">
               Motion
