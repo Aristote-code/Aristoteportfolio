@@ -259,21 +259,26 @@ export function AdminPanel() {
     try {
       // If server is available, save to server
       if (isServerAvailable) {
-        const url = selectedProject.id
-          ? `https://${projectId}.supabase.co/functions/v1/server/admin/projects/${selectedProject.id}`
-          : `https://${projectId}.supabase.co/functions/v1/server/admin/projects`;
+        const isLocalProject = selectedProject.id.startsWith('local_');
+        const shouldCreateProject = !selectedProject.id || isLocalProject;
+        const projectPayload = isLocalProject
+          ? { ...selectedProject, id: '' }
+          : selectedProject;
+        const url = shouldCreateProject
+          ? `https://${projectId}.supabase.co/functions/v1/server/admin/projects`
+          : `https://${projectId}.supabase.co/functions/v1/server/admin/projects/${selectedProject.id}`;
 
         console.log('Saving project to server:', url);
         console.log('Using admin key:', ADMIN_KEY);
-        console.log('Project data:', selectedProject);
+        console.log('Project data:', projectPayload);
 
         const response = await fetch(url, {
-          method: selectedProject.id ? 'PUT' : 'POST',
+          method: shouldCreateProject ? 'POST' : 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${ADMIN_KEY}`,
           },
-          body: JSON.stringify(selectedProject),
+          body: JSON.stringify(projectPayload),
         });
 
         console.log('Response status:', response.status);
@@ -285,9 +290,17 @@ export function AdminPanel() {
             ...data.project,
             hidden: data.project.hidden ?? selectedProject.hidden ?? false,
           });
-          const updatedProjects = selectedProject.id
-            ? projects.map(p => p.id === savedProject.id ? savedProject : p)
-            : [...projects, savedProject];
+          const updatedProjects = shouldCreateProject
+            ? [
+                ...projects.filter(
+                  (project) =>
+                    project.id !== selectedProject.id &&
+                    project.title.trim().toLowerCase() !==
+                      savedProject.title.trim().toLowerCase()
+                ),
+                savedProject,
+              ].sort((a, b) => (a.order || 0) - (b.order || 0))
+            : projects.map(p => p.id === savedProject.id ? savedProject : p);
           
           setProjects(updatedProjects);
           localStorage.setItem('admin_projects', JSON.stringify(updatedProjects));
