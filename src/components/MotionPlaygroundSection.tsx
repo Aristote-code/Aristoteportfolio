@@ -238,13 +238,7 @@ function RiveCanvas({
   );
 }
 
-function MotionProjectSection({
-  project,
-  isFirst,
-}: {
-  project: MotionProject;
-  isFirst: boolean;
-}) {
+function MotionProjectItem({ project }: { project: MotionProject }) {
   const [activeRive, setActiveRive] = useState<RiveInstance | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
 
@@ -271,114 +265,108 @@ function MotionProjectSection({
   };
 
   return (
-    <section className={`${isFirst ? "py-16 md:py-32" : "py-12 md:py-20"} px-4 md:px-8`}>
-      <div className="w-full max-w-6xl mx-auto">
-        {isFirst && (
-          <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
-            <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
-            <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">
-              Motion
-            </h2>
-            <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="grid md:grid-cols-2 gap-8 items-start"
+    >
+      {/* Left — canvas only */}
+      <RiveCanvas project={project} onRiveChange={setActiveRive} />
+
+      {/* Right — info, controls, buttons */}
+      <div className="space-y-4">
+        <div className="rounded-lg border-2 border-[#474747] bg-white p-6">
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-lg border-2 border-[#e5e7f0] bg-[#f8f9fc] px-4 py-2 font-['Gaegu'] text-[16px] text-[#474747]"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
+
+          <h3 className="font-['Solway'] font-bold text-[32px] leading-[38.4px] text-[#474747]">
+            {project.title}
+          </h3>
+          <p className="mt-4 font-['Gaegu'] text-[20px] leading-[24px] text-[#474747]">
+            {project.description}
+          </p>
+        </div>
+
+        {project.control && (
+          <NumberBindingControl
+            key={project.control.path}
+            control={project.control}
+            rive={activeRive}
+          />
         )}
 
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-8 items-start"
-        >
-          {/* Left — canvas only */}
-          <RiveCanvas project={project} onRiveChange={setActiveRive} />
+        {/* Playback buttons */}
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={togglePlayback}
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
+          >
+            {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+            {isPlaying ? "Pause" : "Play"}
+          </button>
 
-          {/* Right — info, controls, buttons */}
-          <div className="space-y-4">
-            <div className="rounded-lg border-2 border-[#474747] bg-white p-6">
-              <div className="flex flex-wrap items-center gap-2 mb-4">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-lg border-2 border-[#e5e7f0] bg-[#f8f9fc] px-4 py-2 font-['Gaegu'] text-[16px] text-[#474747]"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+          <button
+            type="button"
+            onClick={replay}
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
+          >
+            <RotateCcw className="h-5 w-5" />
+            Replay
+          </button>
 
-              <h3 className="font-['Solway'] font-bold text-[32px] leading-[38.4px] text-[#474747]">
-                {project.title}
-              </h3>
-              <p className="mt-4 font-['Gaegu'] text-[20px] leading-[24px] text-[#474747]">
-                {project.description}
-              </p>
-            </div>
+          <a
+            href={project.src}
+            download
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
+          >
+            <Download className="h-5 w-5" />
+            Download
+          </a>
 
-            {project.control && (
-              <NumberBindingControl
-                key={project.control.path}
-                control={project.control}
-                rive={activeRive}
-              />
-            )}
-
-            {/* Playback buttons */}
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={togglePlayback}
-                className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
-              >
-                {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                {isPlaying ? "Pause" : "Play"}
-              </button>
-
-              <button
-                type="button"
-                onClick={replay}
-                className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
-              >
-                <RotateCcw className="h-5 w-5" />
-                Replay
-              </button>
-
-              <a
-                href={project.src}
-                download
-                className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] bg-white px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
-              >
-                <Download className="h-5 w-5" />
-                Download
-              </a>
-
-              <a
-                href={project.marketplaceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
-                style={{ backgroundColor: "#fff2b8" }}
-              >
-                <ExternalLink className="h-5 w-5" />
-                Open in Rive
-              </a>
-            </div>
-          </div>
-        </motion.div>
+          <a
+            href={project.marketplaceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
+            style={{ backgroundColor: "#fff2b8" }}
+          >
+            <ExternalLink className="h-5 w-5" />
+            Open in Rive
+          </a>
+        </div>
       </div>
-    </section>
+    </motion.div>
   );
 }
 
 export function MotionPlaygroundSection() {
   return (
-    <>
-      {motionProjects.map((project, index) => (
-        <MotionProjectSection
-          key={project.id}
-          project={project}
-          isFirst={index === 0}
-        />
-      ))}
-    </>
+    <section className="py-16 md:py-32 px-4 md:px-8">
+      <div className="w-full max-w-6xl mx-auto">
+        <div className="flex items-center justify-center gap-4 md:gap-8 mb-12 md:mb-24">
+          <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
+          <h2 className="text-[32px] md:text-[42px] font-['Solway'] text-[#474747] whitespace-nowrap">
+            Motion
+          </h2>
+          <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
+        </div>
+
+        <div className="space-y-12 md:space-y-16">
+          {motionProjects.map((project) => (
+            <MotionProjectItem key={project.id} project={project} />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
