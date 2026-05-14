@@ -3,6 +3,10 @@ import { ArrowLeft, Eye, EyeOff, Plus, Trash2, GripVertical, LogOut, X } from 'l
 import { projectId } from '../utils/supabase/info';
 import { RichTextEditor } from './RichTextEditor';
 import { ImageUpload } from './ImageUpload';
+import {
+  mergeWithLocalProjects,
+  type PortfolioProject,
+} from '../data/localProjects';
 
 // Hardcoded admin credentials
 const ADMIN_EMAIL = 'gahimaaristote1@gmail.com';
@@ -117,7 +121,7 @@ interface Project {
   blocks?: ContentBlock[];
 }
 
-function normalizeProject(project: Project): Project {
+function normalizeProject(project: Project | PortfolioProject): Project {
   return {
     ...project,
     tags: project.tags || [],
@@ -161,7 +165,9 @@ export function AdminPanel() {
         // Load from localStorage as fallback
         const localProjects = localStorage.getItem('admin_projects');
         if (localProjects) {
-          setProjects(JSON.parse(localProjects).map(normalizeProject));
+          setProjects(mergeWithLocalProjects(JSON.parse(localProjects).map(normalizeProject)).map(normalizeProject));
+        } else {
+          setProjects(mergeWithLocalProjects([]).map(normalizeProject));
         }
       }
     } catch (error) {
@@ -170,7 +176,9 @@ export function AdminPanel() {
       // Load from localStorage as fallback
       const localProjects = localStorage.getItem('admin_projects');
       if (localProjects) {
-        setProjects(JSON.parse(localProjects).map(normalizeProject));
+        setProjects(mergeWithLocalProjects(JSON.parse(localProjects).map(normalizeProject)).map(normalizeProject));
+      } else {
+        setProjects(mergeWithLocalProjects([]).map(normalizeProject));
       }
     }
   };
@@ -218,10 +226,13 @@ export function AdminPanel() {
 
       const data = await (response.ok ? response : fallbackResponse!).json();
       if (data.projects) {
-        setProjects(data.projects.map(normalizeProject));
+        setProjects(mergeWithLocalProjects(data.projects.map(normalizeProject)).map(normalizeProject));
+      } else {
+        setProjects(mergeWithLocalProjects([]).map(normalizeProject));
       }
     } catch (error) {
       console.error('Failed to fetch projects:', error);
+      setProjects(mergeWithLocalProjects([]).map(normalizeProject));
     }
   };
 
