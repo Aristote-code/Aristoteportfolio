@@ -3,20 +3,6 @@ import { StickyNote } from "./StickyNote";
 import { ExternalLink, Linkedin, Github, Mail, Twitter } from "lucide-react";
 import { RiveIcon } from "./RiveIcon";
 
-const skills = [
-  "Figma",
-  "Rive",
-  "Framer",
-  "Webflow",
-  "Design Systems",
-  "Interaction Design",
-  "UX Research",
-  "Prototyping",
-  "Accessibility",
-  "React",
-  "Tailwind",
-  "Automation",
-];
 
 const experienceItems = [
   {
@@ -266,23 +252,6 @@ export function AboutSection() {
                   >
                     <link.icon className="w-5 h-5 text-[#474747] group-hover:text-white transition-colors" />
                   </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Skills */}
-            <div>
-              <h3 className="text-[24px] md:text-[28px] font-['Solway'] text-[#474747] mb-4 md:mb-6 leading-[33.6px]">
-                Skills
-              </h3>
-              <div className="flex flex-wrap gap-3 md:gap-4">
-                {skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-3 md:px-4 py-2 border-2 border-[#474747] rounded-2xl font-['Gaegu'] text-[20px] md:text-[24px] text-[#474747] leading-[28.8px]"
-                  >
-                    {skill}
-                  </span>
                 ))}
               </div>
             </div>
