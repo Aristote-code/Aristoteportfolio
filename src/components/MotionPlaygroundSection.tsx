@@ -582,6 +582,12 @@ export function MotionPlaygroundSection() {
           <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full" />
         </div>
 
+        <p className="mx-auto mb-12 max-w-[760px] text-center font-['Gaegu'] text-[20px] leading-[26px] text-[#474747]">
+          A Rive animation playground for interactive motion experiments,
+          data-bound UI states, loaders, and learning-path prototypes that can
+          be played directly inside the portfolio.
+        </p>
+
         <div className="space-y-12 md:space-y-16">
           {motionProjects.map((project) => (
             <MotionProjectItem key={project.id} project={project} />

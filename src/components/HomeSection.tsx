@@ -17,6 +17,11 @@ export function HomeSection() {
           <p className="text-[#8c8fa6] text-[18px] md:text-[24px] font-['Gaegu'] leading-[28.8px]">
             A senior product designer at IST Group.
           </p>
+          <p className="mt-4 font-['Gaegu'] text-[18px] md:text-[22px] leading-[26px] text-[#474747]">
+            I design AI-powered workflows, product interfaces, design systems,
+            and interactive Rive motion for teams building useful digital
+            products.
+          </p>
 
           {/* Decorative sticky notes - positioned relative to the centered content */}
           <div className="hidden md:block absolute top-0 left-0 w-full h-full pointer-events-none">
