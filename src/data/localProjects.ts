@@ -159,9 +159,29 @@ export const localProjects: PortfolioProject[] = [
 export function mergeWithLocalProjects<T extends PortfolioProject>(
   projects: T[]
 ): Array<T | PortfolioProject> {
-  const existingIds = new Set(projects.map((project) => project.id));
+  const projectsWithLocalOverrides = projects.map((project) => {
+    const localProject = localProjects.find(
+      (candidate) =>
+        candidate.title.trim().toLowerCase() ===
+        project.title.trim().toLowerCase()
+    );
+
+    if (!localProject) {
+      return project;
+    }
+
+    return {
+      ...localProject,
+      ...project,
+      image: localProject.image,
+      tags: project.tags?.length ? project.tags : localProject.tags,
+      blocks: project.blocks?.length ? project.blocks : localProject.blocks,
+    };
+  });
+
+  const existingIds = new Set(projectsWithLocalOverrides.map((project) => project.id));
   const existingTitles = new Set(
-    projects.map((project) => project.title.trim().toLowerCase())
+    projectsWithLocalOverrides.map((project) => project.title.trim().toLowerCase())
   );
   const additions = localProjects.filter(
     (project) =>
@@ -169,7 +189,7 @@ export function mergeWithLocalProjects<T extends PortfolioProject>(
       !existingTitles.has(project.title.trim().toLowerCase())
   );
 
-  return [...projects, ...additions].sort(
+  return [...projectsWithLocalOverrides, ...additions].sort(
     (a, b) => (a.order || 0) - (b.order || 0)
   );
 }

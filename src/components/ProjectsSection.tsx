@@ -120,6 +120,12 @@ export function ProjectsSection() {
             <div className="h-[3px] w-[40px] md:w-[87px] bg-[#474747] rounded-full"></div>
           </div>
 
+          <p className="mx-auto mb-12 max-w-[620px] text-center font-['Gaegu'] text-[20px] leading-[26px] text-[#474747]">
+            Selected product design case studies covering AI user experience,
+            call center workflows, CRM ticketing, design systems, and practical
+            interface decisions from research to handoff.
+          </p>
+
           {/* Loading State */}
           {loading && (
             <div className="text-center py-12">
