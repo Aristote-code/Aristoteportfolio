@@ -33,7 +33,7 @@ interface MotionProject {
   title: string;
   description: string;
   src: string;
-  marketplaceUrl: string;
+  marketplaceUrl?: string;
   tags: string[];
   accent: string;
   bgColor: string;
@@ -72,6 +72,16 @@ const motionProjects: MotionProject[] = [
     tags: ["Rive", "Loader", "Motion"],
     accent: "#8774ff",
     bgColor: "#0d0820",
+    fit: Fit.Contain,
+  },
+  {
+    id: "study-screen-animation",
+    title: "Study screen animation",
+    description: "A focused study screen motion piece for learning/product flows.",
+    src: "/rive/study-screen-animation.riv",
+    tags: ["Rive", "Study", "Interface"],
+    accent: "#65c8ff",
+    bgColor: "#f3f7ff",
     fit: Fit.Contain,
   },
 ];
@@ -333,16 +343,18 @@ function MotionProjectItem({ project }: { project: MotionProject }) {
             Download
           </a>
 
-          <a
-            href={project.marketplaceUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
-            style={{ backgroundColor: "#fff2b8" }}
-          >
-            <ExternalLink className="h-5 w-5" />
-            Open in Rive
-          </a>
+          {project.marketplaceUrl && (
+            <a
+              href={project.marketplaceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border-2 border-[#474747] px-4 py-2 font-['Gaegu'] text-[20px] text-[#474747] transition-transform hover:scale-[1.02]"
+              style={{ backgroundColor: "#fff2b8" }}
+            >
+              <ExternalLink className="h-5 w-5" />
+              Open in Rive
+            </a>
+          )}
         </div>
       </div>
     </motion.div>
