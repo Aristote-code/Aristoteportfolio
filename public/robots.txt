@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aristoteportfolio.vercel.app/sitemap.xml
+Sitemap: https://www.aristote.dev/sitemap.xml
