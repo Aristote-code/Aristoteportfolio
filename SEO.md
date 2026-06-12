@@ -2,7 +2,7 @@
 
 The current canonical site URL is:
 
-https://aristoteportfolio.vercel.app/
+https://www.aristote.dev/
 
 When a custom domain is connected, update this URL in:
 
